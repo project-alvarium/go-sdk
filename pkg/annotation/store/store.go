@@ -37,9 +37,8 @@ func New(persistence store.Contract) *Persistence {
 
 // previous returns a non-nil non-id-matching identity if one exists.
 func (*Persistence) previous(m envelope.Annotations, p, id identity.Contract) identity.Contract {
-	idContract := identity.Factory(m.PreviousIdentityKind, m.PreviousIdentity)
-	if p == nil && m.PreviousIdentity != nil && !bytes.Equal(idContract.Binary(), id.Binary()) {
-		p = idContract
+	if p == nil && m.PreviousIdentity != nil && !bytes.Equal(m.PreviousIdentity.Binary(), id.Binary()) {
+		p = m.PreviousIdentity
 	}
 	return p
 }

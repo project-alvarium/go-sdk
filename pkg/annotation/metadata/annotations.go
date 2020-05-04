@@ -21,32 +21,30 @@ import (
 
 // Annotations is the standard metadata returned by all Annotate() methods.
 type Annotations struct {
-	Unique               string      `json:"unique"`
-	Created              string      `json:"created"`
-	CurrentIdentityKind  string      `json:"identityCurrentType"`
-	CurrentIdentity      interface{} `json:"identityCurrent"`
-	PreviousIdentityKind string      `json:"identityPreviousType"`
-	PreviousIdentity     interface{} `json:"identityPrevious"`
-	MetadataKind         string      `json:"metadataType"`
-	Metadata             interface{} `json:"metadata"`
+	Unique           string            `json:"unique"`
+	IdentityKind     string            `json:"identityType"`
+	CurrentIdentity  identity.Contract `json:"identityCurrent"`
+	PreviousIdentity identity.Contract `json:"identityPrevious"`
+	Created          string            `json:"created"`
+	MetadataKind     string            `json:"metadataType"`
+	Metadata         interface{}       `json:"metadata"`
 }
 
 // New is a factory function that returns an initialized Annotations.
 func New(
 	unique string,
-	currentIdentity identity.Contract,
+	identity identity.Contract,
 	previousIdentity identity.Contract,
 	metadataKind string,
 	metadata interface{}) *Annotations {
 
 	return &Annotations{
-		Unique:               unique,
-		Created:              datetime.Created(),
-		CurrentIdentityKind:  currentIdentity.Kind(),
-		CurrentIdentity:      currentIdentity,
-		PreviousIdentityKind: currentIdentity.Kind(),
-		PreviousIdentity:     previousIdentity,
-		MetadataKind:         metadataKind,
-		Metadata:             metadata,
+		Unique:           unique,
+		IdentityKind:     identity.Kind(),
+		CurrentIdentity:  identity,
+		PreviousIdentity: previousIdentity,
+		Created:          datetime.Created(),
+		MetadataKind:     metadataKind,
+		Metadata:         metadata,
 	}
 }

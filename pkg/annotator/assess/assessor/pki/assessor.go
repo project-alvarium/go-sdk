@@ -20,7 +20,6 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory"
 	pkiAssessorMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/metadata"
 	pkiAnnotatorMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/identity"
 )
 
 const name = "verifier"
@@ -53,10 +52,7 @@ func (a *assessor) Assess(annotations []*envelope.Annotations) assessment.Contra
 
 		m := annotations[i].Metadata.(*pkiAnnotatorMetadata.Annotations)
 		v := a.factory.Factory(m.SignerKind, m.SignerMetadata)
-		idContract := identity.Factory(annotations[i].CurrentIdentityKind, annotations[i].CurrentIdentity)
-		if v == nil ||
-			idContract == nil ||
-			v.VerifyIdentity(idContract.Binary(), m.IdentitySignature, m.PublicKey) == false {
+		if v == nil || v.VerifyIdentity(annotations[i].CurrentIdentity.Binary(), m.IdentitySignature, m.PublicKey) == false {
 			return pkiAssessorMetadata.New(false, []string{annotations[i].Unique})
 		}
 		uniques = append(uniques, annotations[i].Unique)
