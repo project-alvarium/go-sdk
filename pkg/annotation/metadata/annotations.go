@@ -21,30 +21,38 @@ import (
 
 // Annotations is the standard metadata returned by all Annotate() methods.
 type Annotations struct {
-	Unique           string            `json:"unique"`
-	IdentityKind     string            `json:"identityType"`
-	CurrentIdentity  identity.Contract `json:"identityCurrent"`
-	PreviousIdentity identity.Contract `json:"identityPrevious"`
-	Created          string            `json:"created"`
-	MetadataKind     string            `json:"metadataType"`
-	Metadata         interface{}       `json:"metadata"`
+	Unique               string            `json:"unique"`
+	Created              string            `json:"created"`
+	CurrentIdentityKind  string            `json:"identityCurrentType"`
+	CurrentIdentity      identity.Contract `json:"identityCurrent"`
+	PreviousIdentityKind string            `json:"identityPreviousType"`
+	PreviousIdentity     identity.Contract `json:"identityPrevious"`
+	MetadataKind         string            `json:"metadataType"`
+	Metadata             interface{}       `json:"metadata"`
 }
 
 // New is a factory function that returns an initialized Annotations.
 func New(
 	unique string,
-	identity identity.Contract,
+	currentIdentity identity.Contract,
 	previousIdentity identity.Contract,
 	metadataKind string,
 	metadata interface{}) *Annotations {
 
+	currentIdentityKind := currentIdentity.Kind()
+	previousIdentityKind := currentIdentityKind
+	if previousIdentity != nil {
+		previousIdentityKind = previousIdentity.Kind()
+	}
+
 	return &Annotations{
-		Unique:           unique,
-		IdentityKind:     identity.Kind(),
-		CurrentIdentity:  identity,
-		PreviousIdentity: previousIdentity,
-		Created:          datetime.Created(),
-		MetadataKind:     metadataKind,
-		Metadata:         metadata,
+		Unique:               unique,
+		Created:              datetime.Created(),
+		CurrentIdentityKind:  currentIdentityKind,
+		CurrentIdentity:      currentIdentity,
+		PreviousIdentityKind: previousIdentityKind,
+		PreviousIdentity:     previousIdentity,
+		MetadataKind:         metadataKind,
+		Metadata:             metadata,
 	}
 }
