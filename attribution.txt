@@ -1,0 +1,28 @@
+The following open source projects are referenced by dcf-sdk:
+
+google/go-tpm (Apache 2.0) https://github.com/google/go-tpm
+https://github.com/google/go-tpm/blob/master/LICENSE
+
+ipfs/go-ipfs (MIT, Apache 2.0) https://github.com/ipfs/go-ipfs
+https://github.com/ipfs/go-ipfs/blob/master/LICENSE
+
+ipfs/go-ipfs-api (MIT) https://github.com/ipfs/go-ipfs-api
+https://github.com/ipfs/go-ipfs-api/blob/master/LICENSE
+
+ipfs/go-ipfs-config (MIT) https://github.com/ipfs/go-ipfs-config
+https://github.com/ipfs/go-ipfs-config/blob/master/LICENSE
+
+ipfs/go-ipfs-files (MIT) https://github.com/ipfs/go-ipfs-files
+https://github.com/ipfs/go-ipfs-files/blob/master/LICENSE
+
+ipfs/interface-go-ipfs-core (MIT) https://github.com/ipfs/interface-go-ipfs-core
+https://github.com/ipfs/interface-go-ipfs-core/blob/master/LICENSE
+
+libp2p/go-libp2p-peerstore (MIT) https://github.com/libp2p/go-libp2p-peerstore
+https://github.com/libp2p/go-libp2p-peerstore/blob/master/LICENSE
+
+oklog/ulid/v2 (Apache 2.0) https://github.com/oklog/ulid
+https://github.com/oklog/ulid/blob/master/LICENSE
+
+stretchr/testify (MIT) https://github.com/stretchr/testify
+https://github.com/stretchr/testify/blob/master/LICENSE
