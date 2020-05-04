@@ -20,6 +20,7 @@ import (
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory"
@@ -168,7 +169,7 @@ func TestAssessor_Assess(t *testing.T) {
 				h:        h,
 				verifier: fail.New(),
 				preCondition: func(t *testing.T, sut *assessor) []*annotation.Instance {
-					a := annotation.New(ulid.New().Get(), id, nil, "otherType", nil)
+					a := annotation.New(ulid.New().Get(), id, nil, metadataStub.New("otherType", nil))
 					assert.Equal(t, status.Success, s.Create(id, a))
 
 					annotations, result := s.FindByIdentity(id)

@@ -91,7 +91,6 @@ func (a *annotator) assess(newData []byte) *status.Contract {
 		a.uniqueProvider.Get(),
 		id,
 		nil,
-		metadata.Kind,
 		metadata.New(a.provenance, a.assessor.Kind(), assessResult),
 	)
 	result = a.store.Append(id, m)

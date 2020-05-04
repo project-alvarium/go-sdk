@@ -19,24 +19,34 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 )
 
-const Kind = "publish"
+const kind = "publish"
 
-// Annotations is the annotator-specific metadata.
-type Annotations struct {
+// Instance is the annotator-specific metadata.
+type Instance struct {
 	Provenance        provenance.Contract `json:"provenance"`
 	PublisherKind     string              `json:"publisherType"`
 	PublisherMetadata published.Contract  `json:"publisherMetadata"`
 }
 
-// New is a factory function that returns an initialized Annotations.
+// New is a factory function that returns an initialized Instance.
 func New(
 	provenance provenance.Contract,
 	publisherKind string,
-	publisherMetadata published.Contract) *Annotations {
+	publisherMetadata published.Contract) *Instance {
 
-	return &Annotations{
+	return &Instance{
 		Provenance:        provenance,
 		PublisherKind:     publisherKind,
 		PublisherMetadata: publisherMetadata,
 	}
+}
+
+// Kind returns the type of concrete implementation.
+func (*Instance) Kind() string {
+	return Kind()
+}
+
+// Kind returns the type of concrete implementation.
+func Kind() string {
+	return kind
 }

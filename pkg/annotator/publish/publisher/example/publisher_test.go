@@ -19,6 +19,7 @@ import (
 	"testing"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/writer"
@@ -88,8 +89,7 @@ func TestPublisher_Publish(t *testing.T) {
 						test.FactoryRandomString(),
 						id,
 						nil,
-						test.FactoryRandomString(),
-						test.FactoryRandomString(),
+						metadataStub.New(test.FactoryRandomString(), test.FactoryRandomString()),
 					),
 				},
 				expectedResult: metadata.New(status.PublisherError),
@@ -102,7 +102,7 @@ func TestPublisher_Publish(t *testing.T) {
 			id := idProvider.Derive(data)
 			kind := test.FactoryRandomString()
 			annotations := []*annotation.Instance{
-				annotation.New(test.FactoryRandomString(), id, nil, kind, test.FactoryRandomString()),
+				annotation.New(test.FactoryRandomString(), id, nil, metadataStub.New(kind, test.FactoryRandomString())),
 			}
 			return testCase{
 				name:           "single annotation as string",
@@ -122,14 +122,16 @@ func TestPublisher_Publish(t *testing.T) {
 					test.FactoryRandomString(),
 					id,
 					nil,
-					kind,
-					struct {
-						Name  string
-						Value int
-					}{
-						Name:  test.FactoryRandomString(),
-						Value: test.FactoryRandomInt(),
-					},
+					metadataStub.New(
+						kind,
+						struct {
+							Name  string
+							Value int
+						}{
+							Name:  test.FactoryRandomString(),
+							Value: test.FactoryRandomInt(),
+						},
+					),
 				),
 			}
 			return testCase{
@@ -147,8 +149,18 @@ func TestPublisher_Publish(t *testing.T) {
 			id2 := idProvider.Derive(data)
 			kind := test.FactoryRandomString()
 			annotations := []*annotation.Instance{
-				annotation.New(test.FactoryRandomString(), id1, nil, kind, test.FactoryRandomString()),
-				annotation.New(test.FactoryRandomString(), id2, id1, kind, test.FactoryRandomString()),
+				annotation.New(
+					test.FactoryRandomString(),
+					id1,
+					nil,
+					metadataStub.New(kind, test.FactoryRandomString()),
+				),
+				annotation.New(
+					test.FactoryRandomString(),
+					id2,
+					id1,
+					metadataStub.New(kind, test.FactoryRandomString()),
+				),
 			}
 			return testCase{
 				name:           "two annotations",

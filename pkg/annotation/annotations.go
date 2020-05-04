@@ -16,6 +16,7 @@ package annotation
 
 import (
 	"github.com/project-alvarium/go-sdk/internal/pkg/datetime"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/identity"
 )
 
@@ -28,7 +29,7 @@ type Instance struct {
 	PreviousIdentityKind string            `json:"identityPreviousType"`
 	PreviousIdentity     identity.Contract `json:"identityPrevious"`
 	MetadataKind         string            `json:"metadataType"`
-	Metadata             interface{}       `json:"metadata"`
+	Metadata             metadata.Contract `json:"metadata"`
 }
 
 // New is a factory function that returns an initialized Instance.
@@ -36,8 +37,7 @@ func New(
 	unique string,
 	currentIdentity identity.Contract,
 	previousIdentity identity.Contract,
-	metadataKind string,
-	metadata interface{}) *Instance {
+	metadata metadata.Contract) *Instance {
 
 	currentIdentityKind := currentIdentity.Kind()
 	previousIdentityKind := currentIdentityKind
@@ -52,7 +52,7 @@ func New(
 		CurrentIdentity:      currentIdentity,
 		PreviousIdentityKind: previousIdentityKind,
 		PreviousIdentity:     previousIdentity,
-		MetadataKind:         metadataKind,
+		MetadataKind:         metadata.Kind(),
 		Metadata:             metadata,
 	}
 }

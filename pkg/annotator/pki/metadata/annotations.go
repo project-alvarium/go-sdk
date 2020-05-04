@@ -16,10 +16,10 @@ package metadata
 
 import "github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
 
-const Kind = "PKI"
+const kind = "PKI"
 
-// Annotations is the annotator-specific metadata.
-type Annotations struct {
+// Instance is the annotator-specific metadata.
+type Instance struct {
 	Provenance        provenance.Contract `json:"provenance"`
 	IdentitySignature []byte              `json:"identitySignature"`
 	DataSignature     []byte              `json:"dataSignature"`
@@ -28,16 +28,16 @@ type Annotations struct {
 	SignerMetadata    interface{}         `json:"signerMetadata"`
 }
 
-// New is a factory function that returns an initialized Annotations.
+// New is a factory function that returns an initialized Instance.
 func New(
 	provenance provenance.Contract,
 	identitySignature []byte,
 	dataSignature []byte,
 	publicKey []byte,
 	signerKind string,
-	signerMetadata interface{}) *Annotations {
+	signerMetadata interface{}) *Instance {
 
-	return &Annotations{
+	return &Instance{
 		Provenance:        provenance,
 		IdentitySignature: identitySignature,
 		DataSignature:     dataSignature,
@@ -45,4 +45,14 @@ func New(
 		SignerKind:        signerKind,
 		SignerMetadata:    signerMetadata,
 	}
+}
+
+// Kind returns the type of concrete implementation.
+func (*Instance) Kind() string {
+	return Kind()
+}
+
+// Kind returns the type of concrete implementation.
+func Kind() string {
+	return kind
 }

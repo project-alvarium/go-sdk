@@ -19,6 +19,7 @@ import (
 
 	testMetadata "github.com/project-alvarium/go-sdk/internal/pkg/test/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/filter/passthrough"
@@ -95,7 +96,6 @@ func TestAnnotator_Create(t *testing.T) {
 							test.FactoryRandomString(),
 							id,
 							nil,
-							publishMetadata.Kind,
 							publishMetadata.New(prov, kind, sut.failureFindByIdentity(status.NotFound)),
 						),
 					},
@@ -114,7 +114,12 @@ func TestAnnotator_Create(t *testing.T) {
 				data := test.FactoryRandomByteSlice()
 				id := idProvider.Derive(data)
 				m := test.FactoryRandomString()
-				a := annotation.New(test.FactoryRandomString(), id, nil, test.FactoryRandomString(), m)
+				a := annotation.New(
+					test.FactoryRandomString(),
+					id,
+					nil,
+					metadataStub.New(test.FactoryRandomString(), m),
+				)
 				assert.Equal(t, status.Success, s.Create(id, a))
 				sut := newSUT(prov, idProvider, s, stub.New(kind, m))
 
@@ -125,7 +130,7 @@ func TestAnnotator_Create(t *testing.T) {
 					t,
 					[]*annotation.Instance{
 						a,
-						annotation.New(test.FactoryRandomString(), id, nil, publishMetadata.Kind, publishMetadata.New(prov, kind, m)),
+						annotation.New(test.FactoryRandomString(), id, nil, publishMetadata.New(prov, kind, m)),
 					},
 					id,
 					s,
@@ -168,7 +173,6 @@ func TestAnnotator_Mutate(t *testing.T) {
 							test.FactoryRandomString(),
 							id,
 							nil,
-							publishMetadata.Kind,
 							publishMetadata.New(prov, kind, sut.failureFindByIdentity(status.NotFound)),
 						),
 					},
@@ -187,7 +191,12 @@ func TestAnnotator_Mutate(t *testing.T) {
 				data := test.FactoryRandomByteSlice()
 				id := idProvider.Derive(data)
 				m := test.FactoryRandomString()
-				a := annotation.New(test.FactoryRandomString(), id, nil, test.FactoryRandomString(), m)
+				a := annotation.New(
+					test.FactoryRandomString(),
+					id,
+					nil,
+					metadataStub.New(test.FactoryRandomString(), m),
+				)
 				assert.Equal(t, status.Success, s.Create(id, a))
 				sut := newSUT(prov, idProvider, s, stub.New(kind, m))
 
@@ -198,7 +207,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 					t,
 					[]*annotation.Instance{
 						a,
-						annotation.New(test.FactoryRandomString(), id, nil, publishMetadata.Kind, publishMetadata.New(prov, kind, m)),
+						annotation.New(test.FactoryRandomString(), id, nil, publishMetadata.New(prov, kind, m)),
 					},
 					id,
 					s,

@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
@@ -57,13 +58,7 @@ func TestFilter_Do(t *testing.T) {
 			id2 := idProvider.Derive(test.FactoryRandomByteSlice())
 			metadataKind := test.FactoryRandomString()
 			unique := ulid.New().Get()
-			match := annotation.New(
-				unique,
-				id1,
-				nil,
-				metadataKind,
-				test.FactoryRandomString(),
-			)
+			match := annotation.New(unique, id1, nil, metadataStub.New(metadataKind, nil))
 
 			return testCase{
 				name: "single match",
@@ -71,13 +66,7 @@ func TestFilter_Do(t *testing.T) {
 					return annotation.MetadataKind == metadataKind
 				},
 				annotations: []*annotation.Instance{
-					annotation.New(
-						unique,
-						id2,
-						id1,
-						test.FactoryRandomString(),
-						test.FactoryRandomString(),
-					),
+					annotation.New(unique, id2, id1, metadataStub.New(test.FactoryRandomString(), nil)),
 					match,
 				},
 				expectedResult: []*annotation.Instance{
@@ -92,20 +81,8 @@ func TestFilter_Do(t *testing.T) {
 			id3 := idProvider.Derive(test.FactoryRandomByteSlice())
 			metadataKind := test.FactoryRandomString()
 			unique := ulid.New().Get()
-			match1 := annotation.New(
-				unique,
-				id1,
-				nil,
-				metadataKind,
-				test.FactoryRandomString(),
-			)
-			match2 := annotation.New(
-				unique,
-				id2,
-				id1,
-				metadataKind,
-				test.FactoryRandomString(),
-			)
+			match1 := annotation.New(unique, id1, nil, metadataStub.New(metadataKind, test.FactoryRandomString()))
+			match2 := annotation.New(unique, id2, id1, metadataStub.New(metadataKind, test.FactoryRandomString()))
 
 			return testCase{
 				name: "multiple matches",
@@ -118,8 +95,7 @@ func TestFilter_Do(t *testing.T) {
 						unique,
 						id3,
 						id2,
-						test.FactoryRandomString(),
-						test.FactoryRandomString(),
+						metadataStub.New(test.FactoryRandomString(), test.FactoryRandomString()),
 					),
 					match1,
 				},

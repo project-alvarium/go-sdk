@@ -114,7 +114,6 @@ func TestAnnotator_Create(t *testing.T) {
 								test.FactoryRandomString(),
 								id,
 								nil,
-								metadata.Kind,
 								metadata.New(
 									p,
 									identitySignature,
@@ -167,7 +166,6 @@ func TestAnnotator_Create(t *testing.T) {
 								test.FactoryRandomString(),
 								id,
 								nil,
-								metadata.Kind,
 								metadata.New(
 									p,
 									identitySignature,
@@ -217,7 +215,6 @@ func TestAnnotator_Create(t *testing.T) {
 								test.FactoryRandomString(),
 								id,
 								nil,
-								metadata.Kind,
 								metadata.New(p, identitySignature, dataSignature, nil, s.Kind(), failMetadata.New()),
 							),
 						},
@@ -301,7 +298,6 @@ func TestAnnotator_Mutate(t *testing.T) {
 								test.FactoryRandomString(),
 								id,
 								nil,
-								metadata.Kind,
 								metadata.New(
 									p,
 									identitySignature,
@@ -315,7 +311,6 @@ func TestAnnotator_Mutate(t *testing.T) {
 								test.FactoryRandomString(),
 								id,
 								id,
-								metadata.Kind,
 								metadata.New(
 									p,
 									identitySignature,
@@ -373,7 +368,6 @@ func TestAnnotator_Mutate(t *testing.T) {
 								test.FactoryRandomString(),
 								id2,
 								id1,
-								metadata.Kind,
 								metadata.New(
 									p,
 									identitySignature2,
@@ -387,7 +381,6 @@ func TestAnnotator_Mutate(t *testing.T) {
 								test.FactoryRandomString(),
 								id1,
 								nil,
-								metadata.Kind,
 								metadata.New(
 									p,
 									identitySignature1,
@@ -454,7 +447,6 @@ func TestAnnotator_Mutate(t *testing.T) {
 								test.FactoryRandomString(),
 								id3,
 								id2,
-								metadata.Kind,
 								metadata.New(
 									p,
 									identitySignature3,
@@ -468,7 +460,6 @@ func TestAnnotator_Mutate(t *testing.T) {
 								test.FactoryRandomString(),
 								id2,
 								id1,
-								metadata.Kind,
 								metadata.New(
 									p,
 									identitySignature2,
@@ -482,7 +473,6 @@ func TestAnnotator_Mutate(t *testing.T) {
 								test.FactoryRandomString(),
 								id1,
 								nil,
-								metadata.Kind,
 								metadata.New(
 									p,
 									identitySignature1,
@@ -558,7 +548,6 @@ func TestAnnotator_Mutate(t *testing.T) {
 							test.FactoryRandomString(),
 							id,
 							id,
-							metadata.Kind,
 							metadata.New(p, identitySignature, dataSignature, nil, s.Kind(), failMetadata.New()),
 						),
 					)

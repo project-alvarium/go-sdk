@@ -66,7 +66,6 @@ func (a *annotator) metadata(
 		a.uniqueProvider.Get(),
 		identity,
 		previousIdentity,
-		metadata.Kind,
 		metadata.New(
 			a.provenance,
 			identitySignature,

@@ -15,43 +15,38 @@
 package metadata
 
 import (
-	"github.com/project-alvarium/go-sdk/pkg/annotator"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessment"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
 )
 
-const Kind = "assess"
+const kind = "assess"
 
-// Annotations is the annotator-specific metadata.
-type Annotations struct {
+// Instance is the annotator-specific metadata.
+type Instance struct {
 	Provenance       provenance.Contract `json:"provenance"`
 	AssessorKind     string              `json:"assessorType"`
 	AssessorMetadata assessment.Contract `json:"assessorMetadata"`
 }
 
-// New is a factory function that returns an initialized Annotations.
+// New is a factory function that returns an initialized Instance.
 func New(
 	provenance provenance.Contract,
 	assessorKind string,
-	assessorMetadata assessment.Contract) *Annotations {
+	assessorMetadata assessment.Contract) *Instance {
 
-	return &Annotations{
+	return &Instance{
 		Provenance:       provenance,
 		AssessorKind:     assessorKind,
 		AssessorMetadata: assessorMetadata,
 	}
 }
 
-// AssessFailure defines the structure that encapsulates this assessor's result.
-type AssessFailure struct {
-	Kind         string `json:"type"`
-	ErrorMessage string `json:"errorMessage"`
+// Kind returns the type of concrete implementation.
+func (*Instance) Kind() string {
+	return Kind()
 }
 
-// NewFailure is a factory function that returns an initialized Assessment.
-func NewFailure(errorMessage string) *AssessFailure {
-	return &AssessFailure{
-		Kind:         annotator.FailureKind,
-		ErrorMessage: errorMessage,
-	}
+// Kind returns the type of concrete implementation.
+func Kind() string {
+	return kind
 }

@@ -5,6 +5,7 @@ import (
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk"
@@ -101,8 +102,7 @@ func TestPublisher_Publish(t *testing.T) {
 						test.FactoryRandomString(),
 						identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 						nil,
-						test.FactoryRandomString(),
-						test.FactoryRandomString(),
+						metadataStub.New(test.FactoryRandomString(), test.FactoryRandomString()),
 					),
 				},
 				sdk: stub.New(result),
@@ -121,14 +121,16 @@ func TestPublisher_Publish(t *testing.T) {
 						test.FactoryRandomString(),
 						identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 						nil,
-						test.FactoryRandomString(),
-						struct {
-							Name  string
-							Value int
-						}{
-							Name:  test.FactoryRandomString(),
-							Value: test.FactoryRandomInt(),
-						},
+						metadataStub.New(
+							test.FactoryRandomString(),
+							struct {
+								Name  string
+								Value int
+							}{
+								Name:  test.FactoryRandomString(),
+								Value: test.FactoryRandomInt(),
+							},
+						),
 					),
 				},
 				sdk: stub.New(result),
@@ -148,8 +150,18 @@ func TestPublisher_Publish(t *testing.T) {
 			return testCase{
 				name: "two annotations",
 				annotations: []*annotation.Instance{
-					annotation.New(test.FactoryRandomString(), id2, id1, kind, test.FactoryRandomString()),
-					annotation.New(test.FactoryRandomString(), id1, nil, kind, test.FactoryRandomString()),
+					annotation.New(
+						test.FactoryRandomString(),
+						id2,
+						id1,
+						metadataStub.New(kind, test.FactoryRandomString()),
+					),
+					annotation.New(
+						test.FactoryRandomString(),
+						id1,
+						nil,
+						metadataStub.New(kind, test.FactoryRandomString()),
+					),
 				},
 				sdk: stub.New(result),
 				expectedResult: func(sut *publisher) published.Contract {

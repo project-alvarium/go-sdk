@@ -21,6 +21,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/sdk"
@@ -83,8 +84,7 @@ func TestPublisher_Publish(t *testing.T) {
 						test.FactoryRandomString(),
 						identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 						nil,
-						test.FactoryRandomString(),
-						test.FactoryRandomString(),
+						metadataStub.New(test.FactoryRandomString(), test.FactoryRandomString()),
 					),
 				},
 				expectedResult: func(sut *publisher) published.Contract {
@@ -102,8 +102,7 @@ func TestPublisher_Publish(t *testing.T) {
 						test.FactoryRandomString(),
 						identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 						nil,
-						test.FactoryRandomString(),
-						test.FactoryRandomString(),
+						metadataStub.New(test.FactoryRandomString(), test.FactoryRandomString()),
 					),
 				},
 				expectedResult: func(sut *publisher) published.Contract {
@@ -121,14 +120,16 @@ func TestPublisher_Publish(t *testing.T) {
 						test.FactoryRandomString(),
 						identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 						nil,
-						test.FactoryRandomString(),
-						struct {
-							Name  string
-							Value int
-						}{
-							Name:  test.FactoryRandomString(),
-							Value: test.FactoryRandomInt(),
-						},
+						metadataStub.New(
+							test.FactoryRandomString(),
+							struct {
+								Name  string
+								Value int
+							}{
+								Name:  test.FactoryRandomString(),
+								Value: test.FactoryRandomInt(),
+							},
+						),
 					),
 				},
 				expectedResult: func(sut *publisher) published.Contract {
@@ -147,8 +148,18 @@ func TestPublisher_Publish(t *testing.T) {
 				name: "two annotations",
 				sdk:  stub.New(cid, nil),
 				annotations: []*annotation.Instance{
-					annotation.New(test.FactoryRandomString(), id2, id1, kind, test.FactoryRandomString()),
-					annotation.New(test.FactoryRandomString(), id1, nil, kind, test.FactoryRandomString()),
+					annotation.New(
+						test.FactoryRandomString(),
+						id2,
+						id1,
+						metadataStub.New(kind, test.FactoryRandomString()),
+					),
+					annotation.New(
+						test.FactoryRandomString(),
+						id1,
+						nil,
+						metadataStub.New(kind, test.FactoryRandomString()),
+					),
 				},
 				expectedResult: func(sut *publisher) published.Contract {
 					return metadata.New(cid)

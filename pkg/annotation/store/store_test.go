@@ -58,7 +58,6 @@ func TestStore_FindByIdentity(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -113,7 +112,6 @@ func TestStore_Create(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -137,7 +135,6 @@ func TestStore_Create(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -151,7 +148,6 @@ func TestStore_Create(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -212,7 +208,6 @@ func TestStore_Append(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -226,7 +221,6 @@ func TestStore_Append(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -253,7 +247,6 @@ func TestStore_Append(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -267,7 +260,6 @@ func TestStore_Append(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -281,7 +273,6 @@ func TestStore_Append(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -310,7 +301,6 @@ func TestStore_Append(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -324,7 +314,6 @@ func TestStore_Append(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -338,7 +327,6 @@ func TestStore_Append(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),
@@ -352,7 +340,6 @@ func TestStore_Append(t *testing.T) {
 				test.FactoryRandomString(),
 				id,
 				nil,
-				metadata.Kind,
 				metadata.New(
 					test.FactoryRandomString(),
 					test.FactoryRandomByteSlice(),

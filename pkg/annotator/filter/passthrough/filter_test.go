@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
@@ -39,8 +40,7 @@ func TestFilter_Do(t *testing.T) {
 				ulid.New().Get(),
 				identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 				identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
-				test.FactoryRandomString(),
-				nil,
+				metadataStub.New(test.FactoryRandomString(), nil),
 			),
 		}
 		sut := newSUT()

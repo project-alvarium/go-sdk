@@ -91,7 +91,6 @@ func (a *annotator) publish(data []byte) *status.Contract {
 		a.uniqueProvider.Get(),
 		id,
 		nil,
-		publishMetadata.Kind,
 		publishMetadata.New(a.provenance, a.publisher.Kind(), publishResult),
 	)
 	result = a.store.Append(id, m)

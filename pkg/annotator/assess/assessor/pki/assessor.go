@@ -46,11 +46,11 @@ func (*assessor) TearDown() {}
 func (a *assessor) Assess(annotations []*annotation.Instance) assessment.Contract {
 	uniques := make([]string, 0)
 	for i := range annotations {
-		if annotations[i].MetadataKind != pkiAnnotatorMetadata.Kind {
+		if annotations[i].MetadataKind != pkiAnnotatorMetadata.Kind() {
 			continue
 		}
 
-		m := annotations[i].Metadata.(*pkiAnnotatorMetadata.Annotations)
+		m := annotations[i].Metadata.(*pkiAnnotatorMetadata.Instance)
 		v := a.factory.Factory(m.SignerKind, m.SignerMetadata)
 		if v == nil || v.VerifyIdentity(annotations[i].CurrentIdentity.Binary(), m.IdentitySignature, m.PublicKey) == false {
 			return pkiAssessorMetadata.New(false, []string{annotations[i].Unique})
