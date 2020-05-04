@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"github.com/project-alvarium/go-sdk/internal/pkg/datetime"
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/identity"
 	"github.com/project-alvarium/go-sdk/pkg/status"
@@ -28,7 +28,7 @@ import (
 )
 
 // Assert compares metadata actual against expected and allows for a +/- one second variance in the Created value.
-func Assert(t *testing.T, expected []*envelope.Annotations, id identity.Contract, store store.Contract) {
+func Assert(t *testing.T, expected []*annotation.Instance, id identity.Contract, store store.Contract) {
 	actual, result := store.FindByIdentity(id)
 	if !assert.Equal(t, status.Success, result) {
 		assert.FailNow(t, "FindByIdentity faulted")

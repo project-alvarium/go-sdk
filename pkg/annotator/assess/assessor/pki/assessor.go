@@ -15,7 +15,7 @@
 package pki
 
 import (
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessment"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory"
 	pkiAssessorMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/metadata"
@@ -43,7 +43,7 @@ func (*assessor) SetUp() {}
 func (*assessor) TearDown() {}
 
 // Assess accepts data and returns associated assessments.
-func (a *assessor) Assess(annotations []*envelope.Annotations) assessment.Contract {
+func (a *assessor) Assess(annotations []*annotation.Instance) assessment.Contract {
 	uniques := make([]string, 0)
 	for i := range annotations {
 		if annotations[i].MetadataKind != pkiAnnotatorMetadata.Kind {

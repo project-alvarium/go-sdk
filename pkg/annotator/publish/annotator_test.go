@@ -18,7 +18,7 @@ import (
 	"testing"
 
 	testMetadata "github.com/project-alvarium/go-sdk/internal/pkg/test/metadata"
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/filter/passthrough"
@@ -90,8 +90,8 @@ func TestAnnotator_Create(t *testing.T) {
 				assert.Equal(t, status.New(prov, status.Success), result)
 				testMetadata.Assert(
 					t,
-					[]*envelope.Annotations{
-						envelope.New(
+					[]*annotation.Instance{
+						annotation.New(
 							test.FactoryRandomString(),
 							id,
 							nil,
@@ -114,7 +114,7 @@ func TestAnnotator_Create(t *testing.T) {
 				data := test.FactoryRandomByteSlice()
 				id := idProvider.Derive(data)
 				m := test.FactoryRandomString()
-				a := envelope.New(test.FactoryRandomString(), id, nil, test.FactoryRandomString(), m)
+				a := annotation.New(test.FactoryRandomString(), id, nil, test.FactoryRandomString(), m)
 				assert.Equal(t, status.Success, s.Create(id, a))
 				sut := newSUT(prov, idProvider, s, stub.New(kind, m))
 
@@ -123,9 +123,9 @@ func TestAnnotator_Create(t *testing.T) {
 				assert.Equal(t, status.New(prov, status.Success), result)
 				testMetadata.Assert(
 					t,
-					[]*envelope.Annotations{
+					[]*annotation.Instance{
 						a,
-						envelope.New(test.FactoryRandomString(), id, nil, publishMetadata.Kind, publishMetadata.New(prov, kind, m)),
+						annotation.New(test.FactoryRandomString(), id, nil, publishMetadata.Kind, publishMetadata.New(prov, kind, m)),
 					},
 					id,
 					s,
@@ -163,8 +163,8 @@ func TestAnnotator_Mutate(t *testing.T) {
 				assert.Equal(t, status.New(prov, status.Success), result)
 				testMetadata.Assert(
 					t,
-					[]*envelope.Annotations{
-						envelope.New(
+					[]*annotation.Instance{
+						annotation.New(
 							test.FactoryRandomString(),
 							id,
 							nil,
@@ -187,7 +187,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 				data := test.FactoryRandomByteSlice()
 				id := idProvider.Derive(data)
 				m := test.FactoryRandomString()
-				a := envelope.New(test.FactoryRandomString(), id, nil, test.FactoryRandomString(), m)
+				a := annotation.New(test.FactoryRandomString(), id, nil, test.FactoryRandomString(), m)
 				assert.Equal(t, status.Success, s.Create(id, a))
 				sut := newSUT(prov, idProvider, s, stub.New(kind, m))
 
@@ -196,9 +196,9 @@ func TestAnnotator_Mutate(t *testing.T) {
 				assert.Equal(t, status.New(prov, status.Success), result)
 				testMetadata.Assert(
 					t,
-					[]*envelope.Annotations{
+					[]*annotation.Instance{
 						a,
-						envelope.New(test.FactoryRandomString(), id, nil, publishMetadata.Kind, publishMetadata.New(prov, kind, m)),
+						annotation.New(test.FactoryRandomString(), id, nil, publishMetadata.Kind, publishMetadata.New(prov, kind, m)),
 					},
 					id,
 					s,

@@ -18,7 +18,9 @@ import (
 	"errors"
 	"testing"
 
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/sdk"
@@ -26,7 +28,6 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/test"
-	"github.com/stretchr/testify/assert"
 )
 
 // newSUT returns a new system under test.
@@ -67,7 +68,7 @@ func TestPublisher_Publish(t *testing.T) {
 	type testCase struct {
 		name           string
 		sdk            sdk.Contract
-		annotations    []*envelope.Annotations
+		annotations    []*annotation.Instance
 		expectedResult func(sut *publisher) published.Contract
 	}
 
@@ -77,8 +78,8 @@ func TestPublisher_Publish(t *testing.T) {
 			return testCase{
 				name: "add failure",
 				sdk:  stub.New(test.FactoryRandomString(), errors.New(message)),
-				annotations: []*envelope.Annotations{
-					envelope.New(
+				annotations: []*annotation.Instance{
+					annotation.New(
 						test.FactoryRandomString(),
 						identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 						nil,
@@ -96,8 +97,8 @@ func TestPublisher_Publish(t *testing.T) {
 			return testCase{
 				name: "single annotation as string",
 				sdk:  stub.New(cid, nil),
-				annotations: []*envelope.Annotations{
-					envelope.New(
+				annotations: []*annotation.Instance{
+					annotation.New(
 						test.FactoryRandomString(),
 						identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 						nil,
@@ -115,8 +116,8 @@ func TestPublisher_Publish(t *testing.T) {
 			return testCase{
 				name: "single annotation as structure",
 				sdk:  stub.New(cid, nil),
-				annotations: []*envelope.Annotations{
-					envelope.New(
+				annotations: []*annotation.Instance{
+					annotation.New(
 						test.FactoryRandomString(),
 						identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 						nil,
@@ -145,9 +146,9 @@ func TestPublisher_Publish(t *testing.T) {
 			return testCase{
 				name: "two annotations",
 				sdk:  stub.New(cid, nil),
-				annotations: []*envelope.Annotations{
-					envelope.New(test.FactoryRandomString(), id2, id1, kind, test.FactoryRandomString()),
-					envelope.New(test.FactoryRandomString(), id1, nil, kind, test.FactoryRandomString()),
+				annotations: []*annotation.Instance{
+					annotation.New(test.FactoryRandomString(), id2, id1, kind, test.FactoryRandomString()),
+					annotation.New(test.FactoryRandomString(), id1, nil, kind, test.FactoryRandomString()),
 				},
 				expectedResult: func(sut *publisher) published.Contract {
 					return metadata.New(cid)

@@ -18,7 +18,7 @@ import (
 	"io"
 	"testing"
 
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/writer"
@@ -70,9 +70,9 @@ func TestPublisher_Publish(t *testing.T) {
 	type testCase struct {
 		name           string
 		writer         writer.Contract
-		annotations    []*envelope.Annotations
+		annotations    []*annotation.Instance
 		expectedResult published.Contract
-		expectedGet    []*envelope.Annotations
+		expectedGet    []*annotation.Instance
 	}
 
 	cases := []testCase{
@@ -83,8 +83,8 @@ func TestPublisher_Publish(t *testing.T) {
 			return testCase{
 				name:   "writer.Write failure",
 				writer: failwriter.New(),
-				annotations: []*envelope.Annotations{
-					envelope.New(
+				annotations: []*annotation.Instance{
+					annotation.New(
 						test.FactoryRandomString(),
 						id,
 						nil,
@@ -101,8 +101,8 @@ func TestPublisher_Publish(t *testing.T) {
 			data := test.FactoryRandomByteSlice()
 			id := idProvider.Derive(data)
 			kind := test.FactoryRandomString()
-			annotations := []*envelope.Annotations{
-				envelope.New(test.FactoryRandomString(), id, nil, kind, test.FactoryRandomString()),
+			annotations := []*annotation.Instance{
+				annotation.New(test.FactoryRandomString(), id, nil, kind, test.FactoryRandomString()),
 			}
 			return testCase{
 				name:           "single annotation as string",
@@ -117,8 +117,8 @@ func TestPublisher_Publish(t *testing.T) {
 			data := test.FactoryRandomByteSlice()
 			id := idProvider.Derive(data)
 			kind := test.FactoryRandomString()
-			annotations := []*envelope.Annotations{
-				envelope.New(
+			annotations := []*annotation.Instance{
+				annotation.New(
 					test.FactoryRandomString(),
 					id,
 					nil,
@@ -146,9 +146,9 @@ func TestPublisher_Publish(t *testing.T) {
 			id1 := idProvider.Derive(test.FactoryRandomByteSlice())
 			id2 := idProvider.Derive(data)
 			kind := test.FactoryRandomString()
-			annotations := []*envelope.Annotations{
-				envelope.New(test.FactoryRandomString(), id1, nil, kind, test.FactoryRandomString()),
-				envelope.New(test.FactoryRandomString(), id2, id1, kind, test.FactoryRandomString()),
+			annotations := []*annotation.Instance{
+				annotation.New(test.FactoryRandomString(), id1, nil, kind, test.FactoryRandomString()),
+				annotation.New(test.FactoryRandomString(), id2, id1, kind, test.FactoryRandomString()),
 			}
 			return testCase{
 				name:           "two annotations",

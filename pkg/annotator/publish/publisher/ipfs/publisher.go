@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
@@ -59,7 +59,7 @@ func (*publisher) failureAdd(message string) *publishMetadata.PublishedFailure {
 }
 
 // Publish retrieves and "publishes" annotations.
-func (p *publisher) Publish(annotations []*envelope.Annotations) published.Contract {
+func (p *publisher) Publish(annotations []*annotation.Instance) published.Contract {
 	marshaledAnnotations, _ := json.Marshal(annotations)
 	cid, err := p.sdk.Add(p.url, marshaledAnnotations)
 	if err != nil {

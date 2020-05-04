@@ -17,7 +17,7 @@ package passthrough
 import (
 	"testing"
 
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
@@ -34,8 +34,8 @@ func newSUT() *filter {
 // TestFilter_Do tests passthrough.Do.
 func TestFilter_Do(t *testing.T) {
 	for i := 0; i < 10; i++ {
-		annotations := []*envelope.Annotations{
-			envelope.New(
+		annotations := []*annotation.Instance{
+			annotation.New(
 				ulid.New().Get(),
 				identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 				identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),

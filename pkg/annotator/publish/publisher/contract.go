@@ -15,7 +15,7 @@
 package publisher
 
 import (
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 )
 
@@ -28,7 +28,7 @@ type Contract interface {
 	TearDown()
 
 	// Publish retrieves and "publishes" annotations.
-	Publish(annotations []*envelope.Annotations) published.Contract
+	Publish(annotations []*annotation.Instance) published.Contract
 
 	// Kind returns an implementation mnemonic.
 	Kind() string

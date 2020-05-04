@@ -14,7 +14,9 @@
 
 package passthrough
 
-import envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+import (
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
+)
 
 // filter is a receiver that encapsulates required dependencies.
 type filter struct{}
@@ -25,6 +27,6 @@ func New() *filter {
 }
 
 // Do implements an annotation filter
-func (*filter) Do(annotations []*envelope.Annotations) []*envelope.Annotations {
+func (*filter) Do(annotations []*annotation.Instance) []*annotation.Instance {
 	return annotations
 }

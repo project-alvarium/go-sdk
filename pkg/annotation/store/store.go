@@ -17,7 +17,7 @@ package store
 import (
 	"bytes"
 
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/identity"
 	"github.com/project-alvarium/go-sdk/pkg/status"
 	"github.com/project-alvarium/go-sdk/pkg/store"
@@ -36,7 +36,7 @@ func New(persistence store.Contract) *Persistence {
 }
 
 // previous returns a non-nil non-id-matching identity if one exists.
-func (*Persistence) previous(m envelope.Annotations, p, id identity.Contract) identity.Contract {
+func (*Persistence) previous(m annotation.Instance, p, id identity.Contract) identity.Contract {
 	if p == nil && m.PreviousIdentity != nil && !bytes.Equal(m.PreviousIdentity.Binary(), id.Binary()) {
 		p = m.PreviousIdentity
 	}
@@ -44,7 +44,7 @@ func (*Persistence) previous(m envelope.Annotations, p, id identity.Contract) id
 }
 
 // recursiveGet recursively traverses a chain of custody and returns its annotations.
-func (p *Persistence) recursiveGet(id identity.Contract, annotations *[]*envelope.Annotations) status.Value {
+func (p *Persistence) recursiveGet(id identity.Contract, annotations *[]*annotation.Instance) status.Value {
 	m, result := p.persistence.FindByIdentity(id)
 	if result != status.Success {
 		return result
@@ -52,7 +52,7 @@ func (p *Persistence) recursiveGet(id identity.Contract, annotations *[]*envelop
 
 	var previousIdentity identity.Contract = nil
 	for i := range m {
-		if a, ok := m[i].(*envelope.Annotations); ok {
+		if a, ok := m[i].(*annotation.Instance); ok {
 			previousIdentity = p.previous(*a, previousIdentity, id)
 			*annotations = append(*annotations, a)
 		}
@@ -64,18 +64,18 @@ func (p *Persistence) recursiveGet(id identity.Contract, annotations *[]*envelop
 }
 
 // FindByIdentity returns annotations and status corresponding to identity.
-func (p *Persistence) FindByIdentity(id identity.Contract) ([]*envelope.Annotations, status.Value) {
-	annotations := make([]*envelope.Annotations, 0)
+func (p *Persistence) FindByIdentity(id identity.Contract) ([]*annotation.Instance, status.Value) {
+	annotations := make([]*annotation.Instance, 0)
 	result := p.recursiveGet(id, &annotations)
 	return annotations, result
 }
 
 // Create stores annotations corresponding to a new identity and returns status.
-func (p *Persistence) Create(id identity.Contract, m *envelope.Annotations) status.Value {
+func (p *Persistence) Create(id identity.Contract, m *annotation.Instance) status.Value {
 	return p.persistence.Create(id, m)
 }
 
 // Append stores annotations corresponding to identity and returns status.
-func (p *Persistence) Append(id identity.Contract, m *envelope.Annotations) status.Value {
+func (p *Persistence) Append(id identity.Contract, m *annotation.Instance) status.Value {
 	return p.persistence.Append(id, m)
 }

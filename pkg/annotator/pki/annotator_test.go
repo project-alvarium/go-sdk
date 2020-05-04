@@ -20,7 +20,7 @@ import (
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	testMetadata "github.com/project-alvarium/go-sdk/internal/pkg/test/metadata"
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/metadata"
@@ -109,8 +109,8 @@ func TestAnnotator_Create(t *testing.T) {
 
 					testMetadata.Assert(
 						t,
-						[]*envelope.Annotations{
-							envelope.New(
+						[]*annotation.Instance{
+							annotation.New(
 								test.FactoryRandomString(),
 								id,
 								nil,
@@ -162,8 +162,8 @@ func TestAnnotator_Create(t *testing.T) {
 
 					testMetadata.Assert(
 						t,
-						[]*envelope.Annotations{
-							envelope.New(
+						[]*annotation.Instance{
+							annotation.New(
 								test.FactoryRandomString(),
 								id,
 								nil,
@@ -212,8 +212,8 @@ func TestAnnotator_Create(t *testing.T) {
 
 					testMetadata.Assert(
 						t,
-						[]*envelope.Annotations{
-							envelope.New(
+						[]*annotation.Instance{
+							annotation.New(
 								test.FactoryRandomString(),
 								id,
 								nil,
@@ -296,8 +296,8 @@ func TestAnnotator_Mutate(t *testing.T) {
 
 					testMetadata.Assert(
 						t,
-						[]*envelope.Annotations{
-							envelope.New(
+						[]*annotation.Instance{
+							annotation.New(
 								test.FactoryRandomString(),
 								id,
 								nil,
@@ -311,7 +311,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 									s.Metadata(),
 								),
 							),
-							envelope.New(
+							annotation.New(
 								test.FactoryRandomString(),
 								id,
 								id,
@@ -368,8 +368,8 @@ func TestAnnotator_Mutate(t *testing.T) {
 
 					testMetadata.Assert(
 						t,
-						[]*envelope.Annotations{
-							envelope.New(
+						[]*annotation.Instance{
+							annotation.New(
 								test.FactoryRandomString(),
 								id2,
 								id1,
@@ -383,7 +383,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 									s.Metadata(),
 								),
 							),
-							envelope.New(
+							annotation.New(
 								test.FactoryRandomString(),
 								id1,
 								nil,
@@ -449,8 +449,8 @@ func TestAnnotator_Mutate(t *testing.T) {
 
 					testMetadata.Assert(
 						t,
-						[]*envelope.Annotations{
-							envelope.New(
+						[]*annotation.Instance{
+							annotation.New(
 								test.FactoryRandomString(),
 								id3,
 								id2,
@@ -464,7 +464,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 									s.Metadata(),
 								),
 							),
-							envelope.New(
+							annotation.New(
 								test.FactoryRandomString(),
 								id2,
 								id1,
@@ -478,7 +478,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 									s.Metadata(),
 								),
 							),
-							envelope.New(
+							annotation.New(
 								test.FactoryRandomString(),
 								id1,
 								nil,
@@ -507,7 +507,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 			s := fail.New()
 			data := test.FactoryRandomByteSlice()
 			id := idProvider.Derive(data)
-			var expectedAnnotations []*envelope.Annotations
+			var expectedAnnotations []*annotation.Instance
 			return testCase{
 				name:             "Fail (signer)",
 				provenance:       p,
@@ -554,7 +554,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 
 					expectedAnnotations = append(
 						expectedAnnotations,
-						envelope.New(
+						annotation.New(
 							test.FactoryRandomString(),
 							id,
 							id,

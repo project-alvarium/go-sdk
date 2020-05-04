@@ -17,7 +17,7 @@ package iota
 import (
 	"encoding/json"
 
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk"
@@ -62,7 +62,7 @@ func (*publisher) failureNoAnnotations() *publishMetadata.PublishedFailure {
 }
 
 // Publish retrieves and "publishes" annotations.
-func (p *publisher) Publish(annotations []*envelope.Annotations) published.Contract {
+func (p *publisher) Publish(annotations []*annotation.Instance) published.Contract {
 	if len(annotations) == 0 {
 		return p.failureNoAnnotations()
 	}

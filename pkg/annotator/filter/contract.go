@@ -14,10 +14,12 @@
 
 package filter
 
-import envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+import (
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
+)
 
 // Contract defines the filter abstraction.
 type Contract interface {
 	// Do implements an annotation filter
-	Do(annotations []*envelope.Annotations) []*envelope.Annotations
+	Do(annotations []*annotation.Instance) []*annotation.Instance
 }

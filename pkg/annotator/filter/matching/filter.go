@@ -14,10 +14,12 @@
 
 package matching
 
-import envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+import (
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
+)
 
 // Compare is a function which facilitates filtering determining if an annotation should be included in the result.
-type Compare func(annotation *envelope.Annotations) bool
+type Compare func(annotation *annotation.Instance) bool
 
 // filter is receiver that encapsulates required dependencies.
 type filter struct {
@@ -32,8 +34,8 @@ func New(compare Compare) *filter {
 }
 
 // Do implements an annotation filter.
-func (f *filter) Do(annotations []*envelope.Annotations) []*envelope.Annotations {
-	filteredAnnotations := make([]*envelope.Annotations, 0)
+func (f *filter) Do(annotations []*annotation.Instance) []*annotation.Instance {
+	filteredAnnotations := make([]*annotation.Instance, 0)
 	for i := range annotations {
 		if f.compare(annotations[i]) {
 			filteredAnnotations = append(filteredAnnotations, annotations[i])

@@ -19,7 +19,7 @@ import (
 	"testing"
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory"
@@ -64,7 +64,7 @@ func TestAssessor_Assess(t *testing.T) {
 		name               string
 		h                  crypto.Hash
 		verifier           factory.Contract
-		preCondition       func(t *testing.T, sut *assessor) []*envelope.Annotations
+		preCondition       func(t *testing.T, sut *assessor) []*annotation.Instance
 		expectedAssessment func() *metadata.Assessment
 	}
 
@@ -83,12 +83,12 @@ func TestAssessor_Assess(t *testing.T) {
 				signer.New(h, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider),
 			)
 			data := test.FactoryRandomByteSlice()
-			var annotations []*envelope.Annotations
+			var annotations []*annotation.Instance
 			return testCase{
 				name:     "Create only",
 				h:        h,
 				verifier: verifier.New(),
-				preCondition: func(t *testing.T, sut *assessor) []*envelope.Annotations {
+				preCondition: func(t *testing.T, sut *assessor) []*annotation.Instance {
 					assert.Equal(
 						t,
 						testInternal.Marshal(t, status.New(p, status.Success)),
@@ -125,12 +125,12 @@ func TestAssessor_Assess(t *testing.T) {
 			)
 			data1 := test.FactoryRandomByteSlice()
 			data2 := test.FactoryRandomByteSlice()
-			var annotations []*envelope.Annotations
+			var annotations []*annotation.Instance
 			return testCase{
 				name:     "Create and Mutate Once",
 				h:        h,
 				verifier: verifier.New(),
-				preCondition: func(t *testing.T, sut *assessor) []*envelope.Annotations {
+				preCondition: func(t *testing.T, sut *assessor) []*annotation.Instance {
 					assert.Equal(
 						t,
 						testInternal.Marshal(t, status.New(p, status.Success)),
@@ -167,8 +167,8 @@ func TestAssessor_Assess(t *testing.T) {
 				name:     "Ignore other type",
 				h:        h,
 				verifier: fail.New(),
-				preCondition: func(t *testing.T, sut *assessor) []*envelope.Annotations {
-					a := envelope.New(ulid.New().Get(), id, nil, "otherType", nil)
+				preCondition: func(t *testing.T, sut *assessor) []*annotation.Instance {
+					a := annotation.New(ulid.New().Get(), id, nil, "otherType", nil)
 					assert.Equal(t, status.Success, s.Create(id, a))
 
 					annotations, result := s.FindByIdentity(id)
@@ -187,12 +187,12 @@ func TestAssessor_Assess(t *testing.T) {
 			idProvider := identityProvider.New(hashProvider)
 			s := store.New(memory.New())
 			data := test.FactoryRandomByteSlice()
-			var annotations []*envelope.Annotations
+			var annotations []*annotation.Instance
 			return testCase{
 				name:     "Fail (verifier)",
 				h:        h,
 				verifier: fail.New(),
-				preCondition: func(t *testing.T, sut *assessor) []*envelope.Annotations {
+				preCondition: func(t *testing.T, sut *assessor) []*annotation.Instance {
 					p := test.FactoryRandomString()
 					a := pki.New(
 						p,

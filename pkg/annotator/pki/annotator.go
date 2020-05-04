@@ -18,7 +18,7 @@ package pki
 import (
 	"bytes"
 
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/metadata"
@@ -60,9 +60,9 @@ func (a *annotator) metadata(
 	identity identity.Contract,
 	previousIdentity identity.Contract,
 	identitySignature []byte,
-	dataSignature []byte) *envelope.Annotations {
+	dataSignature []byte) *annotation.Instance {
 
-	return envelope.New(
+	return annotation.New(
 		a.uniqueProvider.Get(),
 		identity,
 		previousIdentity,
@@ -89,7 +89,7 @@ func (a *annotator) TearDown() {
 }
 
 // sign evaluates data and returns metadata.
-func (a *annotator) sign(oldIdentity identity.Contract, data []byte) (identity.Contract, *envelope.Annotations) {
+func (a *annotator) sign(oldIdentity identity.Contract, data []byte) (identity.Contract, *annotation.Instance) {
 	id := a.identityProvider.Derive(data)
 	identitySignature, dataSignature := a.signer.Sign(id.Binary(), data)
 	return id, a.metadata(id, oldIdentity, identitySignature, dataSignature)

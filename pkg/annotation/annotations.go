@@ -12,15 +12,15 @@
  * the License.
  *******************************************************************************/
 
-package metadata
+package annotation
 
 import (
 	"github.com/project-alvarium/go-sdk/internal/pkg/datetime"
 	"github.com/project-alvarium/go-sdk/pkg/identity"
 )
 
-// Annotations is the standard metadata returned by all Annotate() methods.
-type Annotations struct {
+// Instance is the standard metadata returned by all Annotate() methods.
+type Instance struct {
 	Unique               string            `json:"unique"`
 	Created              string            `json:"created"`
 	CurrentIdentityKind  string            `json:"identityCurrentType"`
@@ -31,13 +31,13 @@ type Annotations struct {
 	Metadata             interface{}       `json:"metadata"`
 }
 
-// New is a factory function that returns an initialized Annotations.
+// New is a factory function that returns an initialized Instance.
 func New(
 	unique string,
 	currentIdentity identity.Contract,
 	previousIdentity identity.Contract,
 	metadataKind string,
-	metadata interface{}) *Annotations {
+	metadata interface{}) *Instance {
 
 	currentIdentityKind := currentIdentity.Kind()
 	previousIdentityKind := currentIdentityKind
@@ -45,7 +45,7 @@ func New(
 		previousIdentityKind = previousIdentity.Kind()
 	}
 
-	return &Annotations{
+	return &Instance{
 		Unique:               unique,
 		Created:              datetime.Created(),
 		CurrentIdentityKind:  currentIdentityKind,

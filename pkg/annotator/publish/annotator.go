@@ -18,7 +18,7 @@ package publish
 import (
 	"fmt"
 
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/filter"
@@ -87,7 +87,7 @@ func (a *annotator) publish(data []byte) *status.Contract {
 		publishResult = a.failureFindByIdentity(result)
 	}
 
-	m := envelope.New(
+	m := annotation.New(
 		a.uniqueProvider.Get(),
 		id,
 		nil,

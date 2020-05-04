@@ -17,7 +17,7 @@ package matching
 import (
 	"testing"
 
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
@@ -36,19 +36,19 @@ func TestFilter_Do(t *testing.T) {
 	type testCase struct {
 		name           string
 		compare        Compare
-		annotations    []*envelope.Annotations
-		expectedResult []*envelope.Annotations
+		annotations    []*annotation.Instance
+		expectedResult []*annotation.Instance
 	}
 
 	cases := []testCase{
 		func() testCase {
 			return testCase{
 				name: "no annotations",
-				compare: func(annotation *envelope.Annotations) bool {
+				compare: func(annotation *annotation.Instance) bool {
 					return true
 				},
-				annotations:    []*envelope.Annotations{},
-				expectedResult: []*envelope.Annotations{},
+				annotations:    []*annotation.Instance{},
+				expectedResult: []*annotation.Instance{},
 			}
 		}(),
 		func() testCase {
@@ -57,7 +57,7 @@ func TestFilter_Do(t *testing.T) {
 			id2 := idProvider.Derive(test.FactoryRandomByteSlice())
 			metadataKind := test.FactoryRandomString()
 			unique := ulid.New().Get()
-			match := envelope.New(
+			match := annotation.New(
 				unique,
 				id1,
 				nil,
@@ -67,11 +67,11 @@ func TestFilter_Do(t *testing.T) {
 
 			return testCase{
 				name: "single match",
-				compare: func(annotation *envelope.Annotations) bool {
+				compare: func(annotation *annotation.Instance) bool {
 					return annotation.MetadataKind == metadataKind
 				},
-				annotations: []*envelope.Annotations{
-					envelope.New(
+				annotations: []*annotation.Instance{
+					annotation.New(
 						unique,
 						id2,
 						id1,
@@ -80,7 +80,7 @@ func TestFilter_Do(t *testing.T) {
 					),
 					match,
 				},
-				expectedResult: []*envelope.Annotations{
+				expectedResult: []*annotation.Instance{
 					match,
 				},
 			}
@@ -92,14 +92,14 @@ func TestFilter_Do(t *testing.T) {
 			id3 := idProvider.Derive(test.FactoryRandomByteSlice())
 			metadataKind := test.FactoryRandomString()
 			unique := ulid.New().Get()
-			match1 := envelope.New(
+			match1 := annotation.New(
 				unique,
 				id1,
 				nil,
 				metadataKind,
 				test.FactoryRandomString(),
 			)
-			match2 := envelope.New(
+			match2 := annotation.New(
 				unique,
 				id2,
 				id1,
@@ -109,12 +109,12 @@ func TestFilter_Do(t *testing.T) {
 
 			return testCase{
 				name: "multiple matches",
-				compare: func(annotation *envelope.Annotations) bool {
+				compare: func(annotation *annotation.Instance) bool {
 					return annotation.MetadataKind == metadataKind
 				},
-				annotations: []*envelope.Annotations{
+				annotations: []*annotation.Instance{
 					match2,
-					envelope.New(
+					annotation.New(
 						unique,
 						id3,
 						id2,
@@ -123,7 +123,7 @@ func TestFilter_Do(t *testing.T) {
 					),
 					match1,
 				},
-				expectedResult: []*envelope.Annotations{
+				expectedResult: []*annotation.Instance{
 					match2,
 					match1,
 				},

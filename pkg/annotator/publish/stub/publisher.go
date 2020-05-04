@@ -15,7 +15,7 @@
 package stub
 
 import (
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 )
 
@@ -46,7 +46,7 @@ func (p *publisher) TearDown() {
 }
 
 // Assess accepts data and returns associated assessments.
-func (p *publisher) Publish([]*envelope.Annotations) published.Contract {
+func (p *publisher) Publish([]*annotation.Instance) published.Contract {
 	return p.published
 }
 

@@ -18,7 +18,7 @@ import (
 	"testing"
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/identity"
 	identityHash "github.com/project-alvarium/go-sdk/pkg/identity/hash"
@@ -40,7 +40,7 @@ func TestStore_FindByIdentity(t *testing.T) {
 		name                string
 		identity            identity.Contract
 		preCondition        func(t *testing.T, sut *Persistence)
-		expectedAnnotations []*envelope.Annotations
+		expectedAnnotations []*annotation.Instance
 		expectedStatus      status.Value
 	}
 
@@ -49,12 +49,12 @@ func TestStore_FindByIdentity(t *testing.T) {
 			name:                "does not exist",
 			identity:            identityHash.New(test.FactoryRandomByteSlice()),
 			preCondition:        func(_ *testing.T, _ *Persistence) {},
-			expectedAnnotations: []*envelope.Annotations{},
+			expectedAnnotations: []*annotation.Instance{},
 			expectedStatus:      status.NotFound,
 		},
 		func() testCase {
 			id := identityHash.New(test.FactoryRandomByteSlice())
-			m := envelope.New(
+			m := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -74,7 +74,7 @@ func TestStore_FindByIdentity(t *testing.T) {
 				preCondition: func(t *testing.T, sut *Persistence) {
 					assert.Equal(t, status.Success, sut.Create(id, m))
 				},
-				expectedAnnotations: []*envelope.Annotations{m},
+				expectedAnnotations: []*annotation.Instance{m},
 				expectedStatus:      status.Success,
 			}
 		}(),
@@ -101,15 +101,15 @@ func TestStore_Create(t *testing.T) {
 	type testCase struct {
 		name                string
 		identity            identity.Contract
-		m                   *envelope.Annotations
+		m                   *annotation.Instance
 		postCondition       func(t *testing.T, sut *Persistence)
-		expectedAnnotations []*envelope.Annotations
+		expectedAnnotations []*annotation.Instance
 	}
 
 	cases := []testCase{
 		func() testCase {
 			id := identityHash.New(test.FactoryRandomByteSlice())
-			m := envelope.New(
+			m := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -128,12 +128,12 @@ func TestStore_Create(t *testing.T) {
 				identity:            id,
 				m:                   m,
 				postCondition:       func(_ *testing.T, _ *Persistence) {},
-				expectedAnnotations: []*envelope.Annotations{m},
+				expectedAnnotations: []*annotation.Instance{m},
 			}
 		}(),
 		func() testCase {
 			id := identityHash.New(test.FactoryRandomByteSlice())
-			m1 := envelope.New(
+			m1 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -147,7 +147,7 @@ func TestStore_Create(t *testing.T) {
 					test.FactoryEmptyInterface(),
 				),
 			)
-			m2 := envelope.New(
+			m2 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -168,7 +168,7 @@ func TestStore_Create(t *testing.T) {
 				postCondition: func(t *testing.T, sut *Persistence) {
 					assert.Equal(t, status.Exists, sut.Create(id, m2))
 				},
-				expectedAnnotations: []*envelope.Annotations{m1},
+				expectedAnnotations: []*annotation.Instance{m1},
 			}
 		}(),
 	}
@@ -199,16 +199,16 @@ func TestStore_Append(t *testing.T) {
 	type testCase struct {
 		name                string
 		identity            identity.Contract
-		m                   *envelope.Annotations
+		m                   *annotation.Instance
 		preCondition        func(t *testing.T, sut *Persistence)
 		postCondition       func(t *testing.T, sut *Persistence)
-		expectedAnnotations []*envelope.Annotations
+		expectedAnnotations []*annotation.Instance
 	}
 
 	cases := []testCase{
 		func() testCase {
 			id := identityHash.New(test.FactoryRandomByteSlice())
-			m1 := envelope.New(
+			m1 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -222,7 +222,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryEmptyInterface(),
 				),
 			)
-			m2 := envelope.New(
+			m2 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -244,12 +244,12 @@ func TestStore_Append(t *testing.T) {
 					assert.Equal(t, status.Success, sut.Create(id, m1))
 				},
 				postCondition:       func(_ *testing.T, _ *Persistence) {},
-				expectedAnnotations: []*envelope.Annotations{m1, m2},
+				expectedAnnotations: []*annotation.Instance{m1, m2},
 			}
 		}(),
 		func() testCase {
 			id := identityHash.New(test.FactoryRandomByteSlice())
-			m1 := envelope.New(
+			m1 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -263,7 +263,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryEmptyInterface(),
 				),
 			)
-			m2 := envelope.New(
+			m2 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -277,7 +277,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryEmptyInterface(),
 				),
 			)
-			m3 := envelope.New(
+			m3 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -301,12 +301,12 @@ func TestStore_Append(t *testing.T) {
 				postCondition: func(t *testing.T, sut *Persistence) {
 					assert.Equal(t, status.Success, sut.Append(id, m3))
 				},
-				expectedAnnotations: []*envelope.Annotations{m1, m2, m3},
+				expectedAnnotations: []*annotation.Instance{m1, m2, m3},
 			}
 		}(),
 		func() testCase {
 			id := identityHash.New(test.FactoryRandomByteSlice())
-			m1 := envelope.New(
+			m1 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -320,7 +320,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryEmptyInterface(),
 				),
 			)
-			m2 := envelope.New(
+			m2 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -334,7 +334,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryEmptyInterface(),
 				),
 			)
-			m3 := envelope.New(
+			m3 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -348,7 +348,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryEmptyInterface(),
 				),
 			)
-			m4 := envelope.New(
+			m4 := annotation.New(
 				test.FactoryRandomString(),
 				id,
 				nil,
@@ -373,7 +373,7 @@ func TestStore_Append(t *testing.T) {
 					assert.Equal(t, status.Success, sut.Append(id, m3))
 					assert.Equal(t, status.Success, sut.Append(id, m4))
 				},
-				expectedAnnotations: []*envelope.Annotations{m1, m2, m3, m4},
+				expectedAnnotations: []*annotation.Instance{m1, m2, m3, m4},
 			}
 		}(),
 	}

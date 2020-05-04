@@ -15,7 +15,7 @@
 package store
 
 import (
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/identity"
 	"github.com/project-alvarium/go-sdk/pkg/status"
 )
@@ -23,11 +23,11 @@ import (
 // Contract defines the pki/store abstraction.
 type Contract interface {
 	// FindByIdentity returns annotations and status corresponding to identity.
-	FindByIdentity(id identity.Contract) ([]*envelope.Annotations, status.Value)
+	FindByIdentity(id identity.Contract) ([]*annotation.Instance, status.Value)
 
 	// Create stores annotations corresponding to a new identity and returns status.
-	Create(id identity.Contract, m *envelope.Annotations) status.Value
+	Create(id identity.Contract, m *annotation.Instance) status.Value
 
 	// Append stores annotations corresponding to identity and returns status.
-	Append(id identity.Contract, m *envelope.Annotations) status.Value
+	Append(id identity.Contract, m *annotation.Instance) status.Value
 }

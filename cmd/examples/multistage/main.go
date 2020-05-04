@@ -22,7 +22,7 @@ import (
 	"os"
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
-	envelope "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator"
@@ -252,7 +252,7 @@ func main() {
 				persistence,
 				iota.New(testInternal.FactoryRandomSeedString(), iotaDepth, iotaMWM, newClient(iotaURL)),
 				filterFactory.New(
-					func(annotation *envelope.Annotations) bool {
+					func(annotation *annotation.Instance) bool {
 						t, ok := annotation.Metadata.(*publishMetadata.Annotations)
 						return ok && t.PublisherKind == ipfs.Kind()
 					},
