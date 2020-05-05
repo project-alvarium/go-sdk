@@ -126,7 +126,7 @@ func TestSigner_PublicKey(t *testing.T) {
 // TestSigner_Metadata tests signtpmv2.Metadata.
 func TestSigner_Metadata(t *testing.T) {
 	assertCapabilityPropertiesHas := func(t *testing.T, result interface{}, name string) {
-		actual := result.(*metadata.Annotations)
+		actual := result.(*metadata.Success)
 		if assert.NotNil(t, actual) {
 			if assert.NotNil(t, actual) {
 				_, exists := actual.CapabilityProperties[name]

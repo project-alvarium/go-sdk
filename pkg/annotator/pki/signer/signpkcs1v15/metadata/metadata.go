@@ -14,24 +14,26 @@
 
 package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotator"
+import (
+	"crypto"
 
-// CapabilityProperties defines type to contain the TPM capability properties.
-type CapabilityProperties map[string]string
+	"github.com/project-alvarium/go-sdk/pkg/annotator"
+	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/hash"
+)
 
-// Annotations is the metadata specific to this signer implementation that results from an annotator event.
-type Annotations struct {
-	Kind                 string               `json:"type"`
-	ReducerHash          string               `json:"reducerHash"`
-	CapabilityProperties CapabilityProperties `json:"capabilityProperties"`
+// Success is the metadata specific to this signer implementation that results from an annotator event.
+type Success struct {
+	Kind        string `json:"type"`
+	SignerHash  string `json:"signerHash"`
+	ReducerHash string `json:"reducerHash"`
 }
 
-// New is a factory function that returns an initialized Annotations.
-func New(reducerHash string, capabilityProperties CapabilityProperties) *Annotations {
-	return &Annotations{
-		Kind:                 annotator.SuccessKind,
-		ReducerHash:          reducerHash,
-		CapabilityProperties: capabilityProperties,
+// New is a factory function that returns an initialized Success.
+func New(signerHash crypto.Hash, reducerHash string) *Success {
+	return &Success{
+		Kind:        annotator.SuccessKind,
+		SignerHash:  hash.FromSigner(signerHash),
+		ReducerHash: reducerHash,
 	}
 }
 

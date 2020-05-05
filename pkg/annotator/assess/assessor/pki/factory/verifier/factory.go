@@ -82,11 +82,11 @@ func (f *Factory) Factory(signer string, implementation interface{}) verifier.Co
 
 	switch signer {
 	case signpkcs1v15.Name:
-		if m, ok := implementation.(*pkcs.Annotations); ok {
+		if m, ok := implementation.(*pkcs.Success); ok {
 			return f.SignPKCS1v15Verifier(m.SignerHash, m.ReducerHash)
 		}
 	case signtpmv2.Name:
-		if m, ok := implementation.(*tpm.Annotations); ok {
+		if m, ok := implementation.(*tpm.Success); ok {
 			return f.SignTPMv2Verifier(m.ReducerHash)
 		}
 	}
