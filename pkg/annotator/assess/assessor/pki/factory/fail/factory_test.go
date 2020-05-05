@@ -30,8 +30,8 @@ func newSUT() *Factory {
 	return New()
 }
 
-// TestFactory_Factory tests verifier.Factory.
-func TestFactory_Factory(t *testing.T) {
+// TestFactory_Create tests verifier.Create.
+func TestFactory_Create(t *testing.T) {
 	type testCase struct {
 		name string
 		test func(t *testing.T)
@@ -44,7 +44,7 @@ func TestFactory_Factory(t *testing.T) {
 				for _, h := range hash.SupportedSigner() {
 					sut := newSUT()
 
-					result := sut.Factory(metadata.NewSuccess(signpkcs1v15.Name, h, sha256.New().Name()))
+					result := sut.Create(metadata.NewSuccess(signpkcs1v15.Name, h, sha256.New().Name()))
 
 					assert.Nil(t, result)
 				}

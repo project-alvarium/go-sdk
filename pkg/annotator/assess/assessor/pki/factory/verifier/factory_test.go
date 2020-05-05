@@ -35,8 +35,8 @@ func newSUT() *Factory {
 	return New()
 }
 
-// TestFactory_Factory tests verifier.Factory.
-func TestFactory_Factory(t *testing.T) {
+// TestFactory_Create tests verifier.Create.
+func TestFactory_Create(t *testing.T) {
 	type testCase struct {
 		name string
 		test func(t *testing.T)
@@ -48,7 +48,7 @@ func TestFactory_Factory(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Factory(metadataStub.New("invalid", nil))
+				result := sut.Create(metadataStub.New("invalid", nil))
 
 				assert.Nil(t, result)
 			},
@@ -58,7 +58,7 @@ func TestFactory_Factory(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Factory(pkcsMetadata.NewSuccess(signpkcs1v15.Name, 0, sha256.New().Name()))
+				result := sut.Create(pkcsMetadata.NewSuccess(signpkcs1v15.Name, 0, sha256.New().Name()))
 
 				assert.Nil(t, result)
 			},
@@ -68,7 +68,7 @@ func TestFactory_Factory(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Factory(pkcsMetadata.NewSuccess(signpkcs1v15.Name, crypto.SHA256, "unknown"))
+				result := sut.Create(pkcsMetadata.NewSuccess(signpkcs1v15.Name, crypto.SHA256, "unknown"))
 
 				assert.Nil(t, result)
 			},
@@ -80,7 +80,7 @@ func TestFactory_Factory(t *testing.T) {
 					for _, reducerHash := range reducer.Supported() {
 						sut := newSUT()
 
-						result := sut.Factory(
+						result := sut.Create(
 							pkcsMetadata.NewSuccess(signpkcs1v15.Name, signerHash, reducerHash.Name()),
 						)
 
@@ -88,7 +88,7 @@ func TestFactory_Factory(t *testing.T) {
 						assert.Equal(
 							t,
 							result,
-							sut.Factory(pkcsMetadata.NewSuccess(signpkcs1v15.Name, signerHash, reducerHash.Name())),
+							sut.Create(pkcsMetadata.NewSuccess(signpkcs1v15.Name, signerHash, reducerHash.Name())),
 						)
 					}
 				}
@@ -99,7 +99,7 @@ func TestFactory_Factory(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Factory(tpmMetadata.NewSuccess(signtpmv2.Name, "unknown", nil))
+				result := sut.Create(tpmMetadata.NewSuccess(signtpmv2.Name, "unknown", nil))
 
 				assert.Nil(t, result)
 			},
@@ -110,10 +110,10 @@ func TestFactory_Factory(t *testing.T) {
 				for _, reducerHash := range reducer.Supported() {
 					sut := newSUT()
 
-					result := sut.Factory(tpmMetadata.NewSuccess(signtpmv2.Name, reducerHash.Name(), nil))
+					result := sut.Create(tpmMetadata.NewSuccess(signtpmv2.Name, reducerHash.Name(), nil))
 
 					assert.NotNil(t, result)
-					assert.Equal(t, result, sut.Factory(
+					assert.Equal(t, result, sut.Create(
 						tpmMetadata.NewSuccess(signtpmv2.Name, reducerHash.Name(), nil)),
 					)
 				}

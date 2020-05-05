@@ -21,6 +21,6 @@ import (
 
 // Contract defines the factory abstraction.
 type Contract interface {
-	// Factory returns a contract implementation based on the provided metadata.
-	Factory(m metadata.Contract) verifier.Contract
+	// Create returns a contract implementation based on the provided metadata.
+	Create(m metadata.Contract) verifier.Contract
 }

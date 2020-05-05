@@ -76,8 +76,8 @@ func (f *Factory) SignTPMv2Verifier(reducerHash string) verifier.Contract {
 	return f.instances[instanceName]
 }
 
-// Factory returns a contract implementation based on the provided metadata.
-func (f *Factory) Factory(m metadata.Contract) verifier.Contract {
+// Create returns a contract implementation based on the provided metadata.
+func (f *Factory) Create(m metadata.Contract) verifier.Contract {
 	f.m.Lock()
 	defer f.m.Unlock()
 

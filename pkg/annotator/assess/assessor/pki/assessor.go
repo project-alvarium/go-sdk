@@ -51,7 +51,7 @@ func (a *assessor) Assess(annotations []*annotation.Instance) assessment.Contrac
 		}
 
 		m := annotations[i].Metadata.(*pkiAnnotatorMetadata.Instance)
-		v := a.factory.Factory(m.SignerMetadata)
+		v := a.factory.Create(m.SignerMetadata)
 		if v == nil || v.VerifyIdentity(annotations[i].CurrentIdentity.Binary(), m.IdentitySignature, m.PublicKey) == false {
 			return pkiAssessorMetadata.New(false, []string{annotations[i].Unique})
 		}

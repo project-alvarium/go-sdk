@@ -27,7 +27,7 @@ func New() *Factory {
 	return &Factory{}
 }
 
-// Factory returns a contract implementation based on the provided metadata.
-func (f *Factory) Factory(_ metadata.Contract) verifier.Contract {
+// Create returns a contract implementation based on the provided metadata.
+func (f *Factory) Create(_ metadata.Contract) verifier.Contract {
 	return nil
 }
