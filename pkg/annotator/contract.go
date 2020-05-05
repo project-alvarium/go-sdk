@@ -17,8 +17,8 @@ package annotator
 import "github.com/project-alvarium/go-sdk/pkg/status"
 
 const (
-	SuccessKind = "Success"
-	FailureKind = "Failure"
+	SuccessKind = "success"
+	FailureKind = "failure"
 )
 
 // Contract defines the annotator abstraction.

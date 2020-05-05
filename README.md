@@ -215,7 +215,7 @@ Executing this code results in JSON output resembling the following:
     },
     "identityPreviousType": "hash",
     "identityPrevious": null,
-    "metadataType": "PKI",
+    "metadataType": "pki",
     "metadata": {
       "provenance": {
         "Node": "origin"
@@ -223,11 +223,11 @@ Executing this code results in JSON output resembling the following:
       "identitySignature": "tFohwFE4I1AXi4JLkrir5GkJzts+JJzicHgpL71AMuDvEWiG6edmsk2VE46lX9mnBfV1ja56+kKhHFISQFESgyvB9H/dwoUngMxrGKKwII6SoHqXpKjGrZ6qfV8R+sjgogDQ0IKcNbB6ouGaK1+0pMAsht1vorlYGWVC9qnWpzIEHAHjyC0T6VUzoiY4TcCS2SIiIdTGFdkgxd+gGyFAmJ2pd4kSUJrnRZbWr22tsVNMkgDC/Yqca4OLYDQv0ulNHBZK10M3QP9pK7yIutFyHjo0YTzoiNZGjDxKmurwaO10+lduo1qIiEqG2U4pTdUfL4d7V0h81OZqYus/azJpPQ==",
       "dataSignature": "30oRl1lXT2nASM9X9LYkKqQL0FWpjN8dm95H9czDya4OIsru7wwVb3PFiOgTBtAMT+V//XrXBSkr1Hhqes1K41Q03Qv3AJGYUBeImyOV60dGj0+DxKZEbNhvH1ElyzVhhDWNz2994WPbpQ5XbEzK76XGlCCBR/AIiRMKPjb1zr8DNdwlUyLz7yI5Pqt8eZxpBN4TbI/y1eCwRgRbMxIgr1bht0B38rw5mdhfy0I854HztbDmvxiQqahL4oooGWDHFrh7w0rtWHGBf3ZrtQPR16fxqu0QvRQ0N/tS7q+mqjGtkG3AlWzBJD32M11amGj9JXb/JP3vriY4t/rh1HnJ/Q==",
       "publicKey": "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUErQ2wrYVByWFlybUJMUGo3TWZsVgpTbkMwQ25iKzA4QzgrVXlReC9sbFdiZHpic09wcFVpeDJndk1lVUllcWJyRGdndTFhYzhvZ3dqUnVSZGlBTDBzCnlnQ3V0Q01ENGpCLzJkMHgyRkVndktiUmR1ZkQydGJPUTJQbmlxb0pyOUliWUhNSllXQUtES1dyQ1hjVitnNUoKay9oS1NDdG1Ecmd2R04zZ21iYXJndFdtRkdMYklHY0o5SHFmQWVMYzR0dUNaOTFpL0kxY3ZLVWFxZmRBSmtKZQpFYnJIdzBQdUdEeXdwcWZQbERDY2xKWCtjT09QVzRqQ0dXZDREYjQydmxTakNCZnE0WjBNQlgrK3U0UDh1eXg2ClNDMkxybEVkUk80M3lCL3J5QlIxN0lpb0NTeHVraGF2ZlpIYllQRXdyTFRZYXJ4OEZZNjJGVWdjZmZ6Y3NtaHgKWndJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==",
-      "signerType": "x509.ParsePKCS1",
+      "signerType": "x509.pkcsv1",
       "signerMetadata": {
-        "result": "Success",
-        "signerHash": "SHA256",
-        "reducerHash": "SHA256"
+        "result": "success",
+        "signerHash": "sha256",
+        "reducerHash": "sha256"
       }
     }
   },
@@ -245,9 +245,9 @@ Executing this code results in JSON output resembling the following:
       "provenance": {
         "Node": "evaluation"
       },
-      "assessorType": "x509.ParsePKCS1",
+      "assessorType": "x509.pkcsv1",
       "assessorMetadata": {
-        "result": "Success",
+        "result": "success",
         "validSignature": true,
         "unique": [
           "01E7JQF86JMQJHBF4QX1EFD6Y3"

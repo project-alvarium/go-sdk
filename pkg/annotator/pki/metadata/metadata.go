@@ -19,7 +19,7 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
 )
 
-const kind = "PKI"
+const kind = "pki"
 
 // Instance is the annotator-specific metadata.
 type Instance struct {

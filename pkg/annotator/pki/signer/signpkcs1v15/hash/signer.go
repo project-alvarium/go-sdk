@@ -20,43 +20,43 @@ import "crypto"
 func FromSigner(hash crypto.Hash) (name string) {
 	switch hash {
 	case crypto.MD4:
-		name = "MD4"
+		name = "md4"
 	case crypto.MD5:
-		name = "MD5"
+		name = "md5"
 	case crypto.SHA1:
-		name = "SHA1"
+		name = "sha1"
 	case crypto.SHA224:
-		name = "SHA224"
+		name = "sha224"
 	case crypto.SHA256:
-		name = "SHA256"
+		name = "sha256"
 	case crypto.SHA384:
-		name = "SHA384"
+		name = "sha384"
 	case crypto.SHA512:
-		name = "SHA512"
+		name = "sha512"
 	case crypto.MD5SHA1:
-		name = "MD5SHA1"
+		name = "md5sha1"
 	case crypto.RIPEMD160:
-		name = "RIPEMD160"
+		name = "ripemd160"
 	case crypto.SHA3_224:
-		name = "SHA3_224"
+		name = "sha3_224"
 	case crypto.SHA3_256:
-		name = "SHA3_256"
+		name = "sha3_256"
 	case crypto.SHA3_384:
-		name = "SHA3_384"
+		name = "sha3_384"
 	case crypto.SHA3_512:
-		name = "SHA3_512"
+		name = "sha3_512"
 	case crypto.SHA512_224:
-		name = "SHA512_224"
+		name = "sha512_224"
 	case crypto.SHA512_256:
-		name = "SHA512_256"
+		name = "sha512_256"
 	case crypto.BLAKE2s_256:
-		name = "BLAKE2s_256"
+		name = "blake2s_256"
 	case crypto.BLAKE2b_256:
-		name = "BLAKE2b_256"
+		name = "blake2b_256"
 	case crypto.BLAKE2b_384:
-		name = "BLAKE2b_384"
+		name = "blake2b_384"
 	case crypto.BLAKE2b_512:
-		name = "BLAKE2b_512"
+		name = "blake2b_512"
 	default:
 		name = "unknown"
 	}
@@ -66,43 +66,43 @@ func FromSigner(hash crypto.Hash) (name string) {
 // ToSigner converts a string representation to a crypto.Hash (or nil if unable to do so).
 func ToSigner(name string) (hash crypto.Hash) {
 	switch name {
-	case "MD4":
+	case "md4":
 		hash = crypto.MD4
-	case "MD5":
+	case "md5":
 		hash = crypto.MD5
-	case "SHA1":
+	case "sha1":
 		hash = crypto.SHA1
-	case "SHA224":
+	case "sha224":
 		hash = crypto.SHA224
-	case "SHA256":
+	case "sha256":
 		hash = crypto.SHA256
-	case "SHA384":
+	case "sha384":
 		hash = crypto.SHA384
-	case "SHA512":
+	case "sha512":
 		hash = crypto.SHA512
-	case "MD5SHA1":
+	case "md5sha1":
 		hash = crypto.MD5SHA1
-	case "RIPEMD160":
+	case "ripemd160":
 		hash = crypto.RIPEMD160
-	case "SHA3_224":
+	case "sha3_224":
 		hash = crypto.SHA3_224
-	case "SHA3_256":
+	case "sha3_256":
 		hash = crypto.SHA3_256
-	case "SHA3_384":
+	case "sha3_384":
 		hash = crypto.SHA3_384
-	case "SHA3_512":
+	case "sha3_512":
 		hash = crypto.SHA3_512
-	case "SHA512_224":
+	case "sha512_224":
 		hash = crypto.SHA512_224
-	case "SHA512_256":
+	case "sha512_256":
 		hash = crypto.SHA512_256
-	case "BLAKE2s_256":
+	case "blake2s_256":
 		hash = crypto.BLAKE2s_256
-	case "BLAKE2b_256":
+	case "blake2b_256":
 		hash = crypto.BLAKE2b_256
-	case "BLAKE2b_384":
+	case "blake2b_384":
 		hash = crypto.BLAKE2b_384
-	case "BLAKE2b_512":
+	case "blake2b_512":
 		hash = crypto.BLAKE2b_512
 	default:
 		hash = 0

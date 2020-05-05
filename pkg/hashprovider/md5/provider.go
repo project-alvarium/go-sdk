@@ -14,11 +14,9 @@
 
 package md5
 
-import (
-	crypto "crypto/md5"
-)
+import crypto "crypto/md5"
 
-const name = "MD5"
+const name = "md5"
 
 // provider is a receiver that encapsulates required dependencies.
 type provider struct{}

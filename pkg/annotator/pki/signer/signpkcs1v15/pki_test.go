@@ -175,7 +175,7 @@ func TestSigner_Metadata(t *testing.T) {
 
 	cases := []testCase{
 		{
-			name: "success",
+			name: "Success",
 			test: func(t *testing.T) {
 				signerHash := crypto.SHA256
 				reducerHash := sha256.New()
@@ -187,7 +187,7 @@ func TestSigner_Metadata(t *testing.T) {
 			},
 		},
 		{
-			name: "failure",
+			name: "Failure",
 			test: func(t *testing.T) {
 				sut := newSUT(
 					crypto.SHA256,

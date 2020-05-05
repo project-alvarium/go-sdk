@@ -27,7 +27,7 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider"
 )
 
-const Name = "x509.ParsePKCS1"
+const Name = "x509.pkcsv1"
 
 // signer is a receiver that encapsulates required dependencies.
 type signer struct {

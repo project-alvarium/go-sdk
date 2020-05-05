@@ -18,7 +18,7 @@ import (
 	crypto "crypto/sha256"
 )
 
-const name = "SHA256"
+const name = "sha256"
 
 // provider is a receiver that encapsulates required dependencies.
 type provider struct{}
