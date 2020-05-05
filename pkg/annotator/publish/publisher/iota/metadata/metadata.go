@@ -14,26 +14,29 @@
 
 package metadata
 
-import (
-	"testing"
+import "github.com/project-alvarium/go-sdk/pkg/annotator"
 
-	"github.com/project-alvarium/go-sdk/pkg/test"
-
-	"github.com/stretchr/testify/assert"
-)
-
-// TestInstance_Kind tests instance.Kind.
-func TestInstance_Kind(t *testing.T) {
-	sut := New(
-		test.FactoryRandomByteSlice(),
-		test.FactoryRandomString(),
-		test.FactoryRandomByteSlice(),
-	)
-
-	assert.Equal(t, kind, sut.Kind())
+// Instance defines the structure that encapsulates this publisher's result.
+type Instance struct {
+	kind    string
+	Result  string `json:"result"`
+	Address string `json:"address"`
+	Hash    string `json:"hash"`
+	Tag     string `json:"tag"`
 }
 
-// TestKind tests Kind.
-func TestKind(t *testing.T) {
-	assert.Equal(t, kind, Kind())
+// New is a factory function that returns an initialized Instance.
+func New(kind string, address, hash, tag string) *Instance {
+	return &Instance{
+		kind:    kind,
+		Result:  annotator.SuccessKind,
+		Address: address,
+		Hash:    hash,
+		Tag:     tag,
+	}
+}
+
+// Kind returns the type of concrete implementation.
+func (i *Instance) Kind() string {
+	return i.kind
 }

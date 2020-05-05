@@ -19,8 +19,8 @@ import (
 	"io"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/status"
 )
 
@@ -51,11 +51,11 @@ func (p *publisher) Format(s interface{}) []byte {
 }
 
 // Publish retrieves and "publishes" annotations.
-func (p *publisher) Publish(annotations []*annotation.Instance) published.Contract {
+func (p *publisher) Publish(annotations []*annotation.Instance) metadata.Contract {
 	if _, err := p.writer.Write(p.Format(annotations)); err != nil {
-		return metadata.New(status.PublisherError)
+		return publisherMetadata.New(name, status.PublisherError)
 	}
-	return metadata.New(status.Success)
+	return publisherMetadata.New(name, status.Success)
 }
 
 // Kind returns an implementation mnemonic.

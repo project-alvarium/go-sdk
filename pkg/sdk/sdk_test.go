@@ -17,6 +17,7 @@ package sdk
 import (
 	"testing"
 
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator"
@@ -78,7 +79,7 @@ func TestInstance_SetUpCalled(t *testing.T) {
 			name: "SetUp called (annotator - stub publisher)",
 			test: func(t *testing.T) {
 				s := store.New(memory.New())
-				p := publishStub.New(test.FactoryRandomString(), test.FactoryRandomString())
+				p := publishStub.New(test.FactoryRandomString(), metadataStub.NewNullObject())
 				a := publish.New(
 					test.FactoryRandomString(),
 					ulid.New(),

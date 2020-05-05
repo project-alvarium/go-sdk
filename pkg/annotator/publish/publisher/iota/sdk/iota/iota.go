@@ -17,9 +17,9 @@ package iota
 import (
 	"fmt"
 
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
+	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk/iota/client"
 
 	iotaAPI "github.com/iotaledger/iota.go/api"
@@ -30,12 +30,14 @@ import (
 
 // instance is a receiver that encapsulates required dependencies.
 type instance struct {
+	kind   string
 	client client.Contract
 }
 
 // New is a factory function that returns an initialized instance.
-func New(client client.Contract) *instance {
+func New(kind string, client client.Contract) *instance {
 	return &instance{
+		kind:   kind,
 		client: client,
 	}
 }
@@ -50,32 +52,32 @@ func (*instance) createTransfer(address trinary.Hash, message trinary.Trytes) bu
 }
 
 // composeAPIError returns annotations for failure case; separated to facilitate unit testing.
-func (*instance) composeAPIError(message string) *publishMetadata.PublishedFailure {
-	return publishMetadata.NewFailure(fmt.Sprintf("iotaAPI.ComposeApi() returned \"%s\"", message))
+func (i *instance) composeAPIError(message string) *publishMetadata.Failure {
+	return publishMetadata.NewFailure(i.kind, fmt.Sprintf("iotaAPI.ComposeApi() returned \"%s\"", message))
 }
 
 // convertToTrytesError returns annotations for failure case; separated to facilitate unit testing.
-func (*instance) convertToTrytesError(message string) *publishMetadata.PublishedFailure {
-	return publishMetadata.NewFailure(fmt.Sprintf("converter.ASCIIToTrytes() returned \"%s\"", message))
+func (i *instance) convertToTrytesError(message string) *publishMetadata.Failure {
+	return publishMetadata.NewFailure(i.kind, fmt.Sprintf("converter.ASCIIToTrytes() returned \"%s\"", message))
 }
 
 // getNewAddressError returns annotations for failure case; separated to facilitate unit testing.
-func (*instance) getNewAddressError(message string) *publishMetadata.PublishedFailure {
-	return publishMetadata.NewFailure(fmt.Sprintf("iotaAPI.GetNewAddress() returned \"%s\"", message))
+func (i *instance) getNewAddressError(message string) *publishMetadata.Failure {
+	return publishMetadata.NewFailure(i.kind, fmt.Sprintf("iotaAPI.GetNewAddress() returned \"%s\"", message))
 }
 
 // sendTransferError returns annotations for failure case; separated to facilitate unit testing.
-func (*instance) sendTransferError(message string) *publishMetadata.PublishedFailure {
-	return publishMetadata.NewFailure(fmt.Sprintf("iotaAPI.sendTransfer() returned \"%s\"", message))
+func (i *instance) sendTransferError(message string) *publishMetadata.Failure {
+	return publishMetadata.NewFailure(i.kind, fmt.Sprintf("iotaAPI.sendTransfer() returned \"%s\"", message))
 }
 
 // invalidResultSetError returns annotations for failure case; separated to facilitate unit testing.
-func (i *instance) invalidResultSetError() *publishMetadata.PublishedFailure {
+func (i *instance) invalidResultSetError() *publishMetadata.Failure {
 	return i.sendTransferError("Expected result Bundle to contain size of 1")
 }
 
 // Send is called to send annotations to an IOTA Tangle.
-func (i *instance) Send(seed string, depth uint64, mwm uint64, annotations []byte) published.Contract {
+func (i *instance) Send(seed string, depth uint64, mwm uint64, annotations []byte) metadata.Contract {
 	addr, err := i.client.GetNewAddress(seed, iotaAPI.GetNewAddressOptions{})
 	if err != nil {
 		return i.getNewAddressError(err.Error())
@@ -99,5 +101,5 @@ func (i *instance) Send(seed string, depth uint64, mwm uint64, annotations []byt
 	if len(res) != 1 {
 		return i.invalidResultSetError()
 	}
-	return metadata.New(res[0].Address, res[0].Hash, res[0].Tag)
+	return publisherMetadata.New(i.kind, res[0].Address, res[0].Hash, res[0].Tag)
 }

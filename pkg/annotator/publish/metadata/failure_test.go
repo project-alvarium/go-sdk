@@ -12,23 +12,20 @@
  * the License.
  *******************************************************************************/
 
-package stub
+package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+import (
+	"testing"
 
-// instance is a receiver that encapsulates required dependencies.
-type instance struct {
-	result metadata.Contract
-}
+	"github.com/project-alvarium/go-sdk/pkg/test"
 
-// New is a factory function which returns an initialized instance.
-func New(result metadata.Contract) *instance {
-	return &instance{
-		result: result,
-	}
-}
+	"github.com/stretchr/testify/assert"
+)
 
-// Send is called to send annotations to an IOTA Tangle.
-func (i *instance) Send(_ string, _ uint64, _ uint64, _ []byte) metadata.Contract {
-	return i.result
+// TestFailure_Kind tests failure.Kind.
+func TestFailure_Kind(t *testing.T) {
+	kind := test.FactoryRandomString()
+	sut := NewFailure(kind, test.FactoryRandomString())
+
+	assert.Equal(t, kind, sut.Kind())
 }

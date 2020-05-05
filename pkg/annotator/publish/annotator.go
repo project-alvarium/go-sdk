@@ -19,12 +19,12 @@ import (
 	"fmt"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/filter"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
 	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher"
 	"github.com/project-alvarium/go-sdk/pkg/identityprovider"
 	"github.com/project-alvarium/go-sdk/pkg/status"
@@ -70,13 +70,13 @@ func (a *annotator) TearDown() {
 }
 
 // failureFindByIdentity returns annotations for failure case; separated to facilitate unit testing.
-func (*annotator) failureFindByIdentity(result status.Value) *publishMetadata.PublishedFailure {
-	return publishMetadata.NewFailure(fmt.Sprintf("FindByIdentity returned %d", result))
+func (a *annotator) failureFindByIdentity(result status.Value) *publishMetadata.Failure {
+	return publishMetadata.NewFailure(a.publisher.Kind(), fmt.Sprintf("FindByIdentity returned %d", result))
 }
 
 // publish delegates to publisher's publish method, stores publish result as annotation, and returns status.
 func (a *annotator) publish(data []byte) *status.Contract {
-	var publishResult published.Contract
+	var publishResult metadata.Contract
 
 	id := a.identityProvider.Derive(data)
 	annotations, result := a.store.FindByIdentity(id)
@@ -87,12 +87,7 @@ func (a *annotator) publish(data []byte) *status.Contract {
 		publishResult = a.failureFindByIdentity(result)
 	}
 
-	m := annotation.New(
-		a.uniqueProvider.Get(),
-		id,
-		nil,
-		publishMetadata.New(a.provenance, a.publisher.Kind(), publishResult),
-	)
+	m := annotation.New(a.uniqueProvider.Get(), id, nil, publishMetadata.NewSuccess(a.provenance, publishResult))
 	result = a.store.Append(id, m)
 	if result == status.NotFound {
 		result = a.store.Create(id, m)

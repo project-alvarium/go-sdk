@@ -19,9 +19,9 @@ import (
 	"fmt"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
+	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/sdk"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/sdk/ipfs"
 )
@@ -54,19 +54,19 @@ func (p *publisher) SetUp() {}
 func (p *publisher) TearDown() {}
 
 // failureAdd returns annotations for failure case; separated to facilitate unit testing.
-func (*publisher) failureAdd(message string) *publishMetadata.PublishedFailure {
-	return publishMetadata.NewFailure(fmt.Sprintf("Add returned \"%s\"", message))
+func (p *publisher) failureAdd(message string) *publishMetadata.Failure {
+	return publishMetadata.NewFailure(p.Kind(), fmt.Sprintf("Add returned \"%s\"", message))
 }
 
 // Publish retrieves and "publishes" annotations.
-func (p *publisher) Publish(annotations []*annotation.Instance) published.Contract {
+func (p *publisher) Publish(annotations []*annotation.Instance) metadata.Contract {
 	marshaledAnnotations, _ := json.Marshal(annotations)
 	cid, err := p.sdk.Add(p.url, marshaledAnnotations)
 	if err != nil {
 		return p.failureAdd(err.Error())
 	}
 
-	return metadata.New(cid)
+	return publisherMetadata.New(name, cid)
 }
 
 // Kind returns an implementation mnemonic.

@@ -14,10 +14,10 @@
 
 package sdk
 
-import "github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
+import "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 
 // Contract defines the contract used to encapsulate the IOTA SDK and enable unit testing.
 type Contract interface {
 	// Send is called to send annotations to an IOTA Tangle.
-	Send(seed string, depth uint64, mwm uint64, annotations []byte) published.Contract
+	Send(seed string, depth uint64, mwm uint64, annotations []byte) metadata.Contract
 }

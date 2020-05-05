@@ -15,20 +15,17 @@
 package metadata
 
 import (
-	"github.com/project-alvarium/go-sdk/pkg/annotator"
-	"github.com/project-alvarium/go-sdk/pkg/status"
+	"testing"
+
+	"github.com/project-alvarium/go-sdk/pkg/test"
+
+	"github.com/stretchr/testify/assert"
 )
 
-// Published defines the structure that encapsulates this publisher's result.
-type Published struct {
-	Kind   string       `json:"type"`
-	Result status.Value `json:"result"`
-}
+// TestInstance_Kind tests instance.Kind.
+func TestInstance_Kind(t *testing.T) {
+	kind := test.FactoryRandomString()
+	sut := New(kind, test.FactoryRandomString())
 
-// New is a factory function that returns an initialized Assessment.
-func New(result status.Value) *Published {
-	return &Published{
-		Kind:   annotator.SuccessKind,
-		Result: result,
-	}
+	assert.Equal(t, kind, sut.Kind())
 }

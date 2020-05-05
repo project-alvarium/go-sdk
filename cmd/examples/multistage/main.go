@@ -253,7 +253,7 @@ func main() {
 				iota.New(testInternal.FactoryRandomSeedString(), iotaDepth, iotaMWM, newClient(iotaURL)),
 				filterFactory.New(
 					func(annotation *annotation.Instance) bool {
-						t, ok := annotation.Metadata.(*publishMetadata.Instance)
+						t, ok := annotation.Metadata.(*publishMetadata.Success)
 						return ok && t.PublisherKind == ipfs.Kind()
 					},
 				),

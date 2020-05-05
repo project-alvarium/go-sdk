@@ -16,16 +16,23 @@ package metadata
 
 import "github.com/project-alvarium/go-sdk/pkg/annotator"
 
-// PublishedFailure defines the structure that encapsulates this publisher's result.
-type PublishedFailure struct {
-	Kind         string `json:"type"`
+// Failure defines the structure that encapsulates this publisher's result.
+type Failure struct {
+	kind         string
+	Result       string `json:"result"`
 	ErrorMessage string `json:"errorMessage"`
 }
 
-// NewFailure is a factory function that returns an initialized Assessment.
-func NewFailure(errorMessage string) *PublishedFailure {
-	return &PublishedFailure{
-		Kind:         annotator.FailureKind,
+// NewFailure is a factory function that returns an initialized Failure.
+func NewFailure(kind string, errorMessage string) *Failure {
+	return &Failure{
+		kind:         kind,
+		Result:       annotator.FailureKind,
 		ErrorMessage: errorMessage,
 	}
+}
+
+// Kind returns the type of concrete implementation.
+func (f *Failure) Kind() string {
+	return f.kind
 }

@@ -21,9 +21,9 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
+	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/sdk"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/sdk/stub"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
@@ -70,7 +70,7 @@ func TestPublisher_Publish(t *testing.T) {
 		name           string
 		sdk            sdk.Contract
 		annotations    []*annotation.Instance
-		expectedResult func(sut *publisher) published.Contract
+		expectedResult func(sut *publisher) metadata.Contract
 	}
 
 	cases := []testCase{
@@ -87,7 +87,7 @@ func TestPublisher_Publish(t *testing.T) {
 						metadataStub.New(test.FactoryRandomString(), test.FactoryRandomString()),
 					),
 				},
-				expectedResult: func(sut *publisher) published.Contract {
+				expectedResult: func(sut *publisher) metadata.Contract {
 					return sut.failureAdd(message)
 				},
 			}
@@ -105,8 +105,8 @@ func TestPublisher_Publish(t *testing.T) {
 						metadataStub.New(test.FactoryRandomString(), test.FactoryRandomString()),
 					),
 				},
-				expectedResult: func(sut *publisher) published.Contract {
-					return metadata.New(cid)
+				expectedResult: func(sut *publisher) metadata.Contract {
+					return publisherMetadata.New(name, cid)
 				},
 			}
 		}(),
@@ -132,8 +132,8 @@ func TestPublisher_Publish(t *testing.T) {
 						),
 					),
 				},
-				expectedResult: func(sut *publisher) published.Contract {
-					return metadata.New(cid)
+				expectedResult: func(sut *publisher) metadata.Contract {
+					return publisherMetadata.New(name, cid)
 				},
 			}
 		}(),
@@ -161,8 +161,8 @@ func TestPublisher_Publish(t *testing.T) {
 						metadataStub.New(kind, test.FactoryRandomString()),
 					),
 				},
-				expectedResult: func(sut *publisher) published.Contract {
-					return metadata.New(cid)
+				expectedResult: func(sut *publisher) metadata.Contract {
+					return publisherMetadata.New(name, cid)
 				},
 			}
 		}(),

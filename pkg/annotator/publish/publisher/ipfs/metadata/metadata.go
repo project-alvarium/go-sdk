@@ -12,23 +12,27 @@
  * the License.
  *******************************************************************************/
 
-package stub
+package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+import "github.com/project-alvarium/go-sdk/pkg/annotator"
 
-// instance is a receiver that encapsulates required dependencies.
-type instance struct {
-	result metadata.Contract
+// Instance defines the structure that encapsulates this publisher's result.
+type Instance struct {
+	kind   string
+	Result string `json:"result"`
+	CID    string `json:"cid"`
 }
 
-// New is a factory function which returns an initialized instance.
-func New(result metadata.Contract) *instance {
-	return &instance{
-		result: result,
+// New is a factory function that returns an initialized Instance.
+func New(kind string, cid string) *Instance {
+	return &Instance{
+		kind:   kind,
+		Result: annotator.SuccessKind,
+		CID:    cid,
 	}
 }
 
-// Send is called to send annotations to an IOTA Tangle.
-func (i *instance) Send(_ string, _ uint64, _ uint64, _ []byte) metadata.Contract {
-	return i.result
+// Kind returns the type of concrete implementation.
+func (i *Instance) Kind() string {
+	return i.kind
 }

@@ -14,22 +14,18 @@
 
 package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotator"
+import (
+	"testing"
 
-// Annotations defines the structure that encapsulates this publisher's result.
-type Annotations struct {
-	Kind    string `json:"type"`
-	Address string `json:"address"`
-	Hash    string `json:"hash"`
-	Tag     string `json:"tag"`
-}
+	"github.com/project-alvarium/go-sdk/pkg/test"
 
-// New is a factory function that returns an initialized Assessment.
-func New(address, hash, tag string) *Annotations {
-	return &Annotations{
-		Kind:    annotator.SuccessKind,
-		Address: address,
-		Hash:    hash,
-		Tag:     tag,
-	}
+	"github.com/stretchr/testify/assert"
+)
+
+// TestInstance_Kind tests instance.Kind.
+func TestInstance_Kind(t *testing.T) {
+	kind := test.FactoryRandomString()
+	sut := New(kind, test.FactoryRandomString(), test.FactoryRandomString(), test.FactoryRandomString())
+
+	assert.Equal(t, kind, sut.Kind())
 }

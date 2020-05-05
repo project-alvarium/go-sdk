@@ -12,7 +12,27 @@
  * the License.
  *******************************************************************************/
 
-package published
+package metadata
 
-// Contract defines a type that encapsulates a published result.
-type Contract interface{}
+import (
+	"github.com/project-alvarium/go-sdk/pkg/status"
+)
+
+// Instance defines the structure that encapsulates this publisher's result.
+type Instance struct {
+	kind   string
+	Result status.Value `json:"result"`
+}
+
+// New is a factory function that returns an initialized Instance.
+func New(kind string, result status.Value) *Instance {
+	return &Instance{
+		kind:   kind,
+		Result: result,
+	}
+}
+
+// Kind returns the type of concrete implementation.
+func (i *Instance) Kind() string {
+	return i.kind
+}

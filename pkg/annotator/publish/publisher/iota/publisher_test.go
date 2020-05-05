@@ -1,3 +1,17 @@
+/*******************************************************************************
+ * Copyright 2020 Dell Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *******************************************************************************/
+
 package iota
 
 import (
@@ -5,9 +19,9 @@ import (
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
+	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk/iota"
 	clientStub "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk/iota/client/stub"
@@ -78,7 +92,7 @@ func TestPublisher_Publish(t *testing.T) {
 		name           string
 		annotations    []*annotation.Instance
 		sdk            sdk.Contract
-		expectedResult func(sut *publisher) published.Contract
+		expectedResult func(sut *publisher) metadata.Contract
 	}
 
 	cases := []testCase{
@@ -86,15 +100,15 @@ func TestPublisher_Publish(t *testing.T) {
 			return testCase{
 				name:        "no annotations",
 				annotations: []*annotation.Instance{},
-				sdk:         iota.New(clientStub.New(nil, nil, nil, nil)),
-				expectedResult: func(sut *publisher) published.Contract {
+				sdk:         iota.New(name, clientStub.New(nil, nil, nil, nil)),
+				expectedResult: func(sut *publisher) metadata.Contract {
 					return sut.failureNoAnnotations()
 				},
 			}
 		}(),
 		func() testCase {
 			resultTx := testInternal.FactoryRandomFixedSizeBundle(1)[0]
-			result := metadata.New(resultTx.Address, resultTx.Hash, resultTx.Tag)
+			result := publisherMetadata.New(name, resultTx.Address, resultTx.Hash, resultTx.Tag)
 			return testCase{
 				name: "single annotation",
 				annotations: []*annotation.Instance{
@@ -106,14 +120,14 @@ func TestPublisher_Publish(t *testing.T) {
 					),
 				},
 				sdk: stub.New(result),
-				expectedResult: func(sut *publisher) published.Contract {
+				expectedResult: func(sut *publisher) metadata.Contract {
 					return result
 				},
 			}
 		}(),
 		func() testCase {
 			resultTx := testInternal.FactoryRandomFixedSizeBundle(1)[0]
-			result := metadata.New(resultTx.Address, resultTx.Hash, resultTx.Tag)
+			result := publisherMetadata.New(name, resultTx.Address, resultTx.Hash, resultTx.Tag)
 			return testCase{
 				name: "single annotation as structure",
 				annotations: []*annotation.Instance{
@@ -134,14 +148,14 @@ func TestPublisher_Publish(t *testing.T) {
 					),
 				},
 				sdk: stub.New(result),
-				expectedResult: func(sut *publisher) published.Contract {
+				expectedResult: func(sut *publisher) metadata.Contract {
 					return result
 				},
 			}
 		}(),
 		func() testCase {
 			resultTx := testInternal.FactoryRandomFixedSizeBundle(1)[0]
-			result := metadata.New(resultTx.Address, resultTx.Hash, resultTx.Tag)
+			result := publisherMetadata.New(name, resultTx.Address, resultTx.Hash, resultTx.Tag)
 			idProvider := identityProvider.New(sha256.New())
 			data := test.FactoryRandomByteSlice()
 			id1 := idProvider.Derive(test.FactoryRandomByteSlice())
@@ -164,7 +178,7 @@ func TestPublisher_Publish(t *testing.T) {
 					),
 				},
 				sdk: stub.New(result),
-				expectedResult: func(sut *publisher) published.Contract {
+				expectedResult: func(sut *publisher) metadata.Contract {
 					return result
 				},
 			}

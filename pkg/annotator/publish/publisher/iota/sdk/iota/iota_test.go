@@ -19,8 +19,8 @@ import (
 	"testing"
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk/iota/client"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk/iota/client/stub"
 	"github.com/project-alvarium/go-sdk/pkg/test"
@@ -32,8 +32,8 @@ import (
 )
 
 // newSUT returns a new system under test.
-func newSUT(client client.Contract) *instance {
-	return New(client)
+func newSUT(kind string, client client.Contract) *instance {
+	return New(kind, client)
 }
 
 // TestInstance_Send tests instance.Send.
@@ -53,20 +53,23 @@ func TestInstance_Send(t *testing.T) {
 
 	type testCase struct {
 		name           string
+		kind           string
 		client         client.Contract
 		annotations    []byte
-		expectedResult func(sut *instance) published.Contract
+		expectedResult func(sut *instance) metadata.Contract
 	}
 
 	cases := []testCase{
 		func() testCase {
+			kind := test.FactoryRandomString()
 			res := testInternal.FactoryRandomFixedSizeBundle(1)
 			return testCase{
 				name:        "send transfer",
+				kind:        kind,
 				client:      newClient(nil, res, nil),
 				annotations: test.FactoryRandomByteSlice(),
-				expectedResult: func(_ *instance) published.Contract {
-					return metadata.New(res[0].Address, res[0].Hash, res[0].Tag)
+				expectedResult: func(_ *instance) metadata.Contract {
+					return publisherMetadata.New(kind, res[0].Address, res[0].Hash, res[0].Tag)
 				},
 			}
 		}(),
@@ -74,9 +77,10 @@ func TestInstance_Send(t *testing.T) {
 			errMessage := test.FactoryRandomString()
 			return testCase{
 				name:        "get new address error",
+				kind:        test.FactoryRandomString(),
 				client:      newClient(errors.New(errMessage), testInternal.FactoryRandomFixedSizeBundle(1), nil),
 				annotations: test.FactoryRandomByteSlice(),
-				expectedResult: func(sut *instance) published.Contract {
+				expectedResult: func(sut *instance) metadata.Contract {
 					return sut.getNewAddressError(errMessage)
 				},
 			}
@@ -84,9 +88,10 @@ func TestInstance_Send(t *testing.T) {
 		func() testCase {
 			return testCase{
 				name:        "convert message to trytes error",
+				kind:        test.FactoryRandomString(),
 				client:      newClient(nil, testInternal.FactoryRandomFixedSizeBundle(1), nil),
 				annotations: []byte("\u2000"),
-				expectedResult: func(sut *instance) published.Contract {
+				expectedResult: func(sut *instance) metadata.Contract {
 					return sut.convertToTrytesError(consts.ErrInvalidASCIIInput.Error())
 				},
 			}
@@ -95,9 +100,10 @@ func TestInstance_Send(t *testing.T) {
 			errMessage := test.FactoryRandomString()
 			return testCase{
 				name:        "send transfer error",
+				kind:        test.FactoryRandomString(),
 				client:      newClient(nil, testInternal.FactoryRandomFixedSizeBundle(1), errors.New(errMessage)),
 				annotations: test.FactoryRandomByteSlice(),
-				expectedResult: func(sut *instance) published.Contract {
+				expectedResult: func(sut *instance) metadata.Contract {
 					return sut.sendTransferError(errMessage)
 				},
 			}
@@ -105,9 +111,10 @@ func TestInstance_Send(t *testing.T) {
 		func() testCase {
 			return testCase{
 				name:        "send transfer success no results",
+				kind:        test.FactoryRandomString(),
 				client:      newClient(nil, bundle.Bundle{}, nil),
 				annotations: test.FactoryRandomByteSlice(),
-				expectedResult: func(sut *instance) published.Contract {
+				expectedResult: func(sut *instance) metadata.Contract {
 					return sut.invalidResultSetError()
 				},
 			}
@@ -115,9 +122,10 @@ func TestInstance_Send(t *testing.T) {
 		func() testCase {
 			return testCase{
 				name:        "send transfer success multiple results",
+				kind:        test.FactoryRandomString(),
 				client:      newClient(nil, testInternal.FactoryRandomFixedSizeBundle(test.FactoryRandomInt()), nil),
 				annotations: test.FactoryRandomByteSlice(),
-				expectedResult: func(sut *instance) published.Contract {
+				expectedResult: func(sut *instance) metadata.Contract {
 					return sut.invalidResultSetError()
 				},
 			}
@@ -126,7 +134,7 @@ func TestInstance_Send(t *testing.T) {
 
 	for i := range cases {
 		t.Run(cases[i].name, func(t *testing.T) {
-			sut := newSUT(cases[i].client)
+			sut := newSUT(cases[i].kind, cases[i].client)
 
 			result := sut.Send(
 				testInternal.FactoryRandomSeedString(),

@@ -19,9 +19,9 @@ import (
 	"testing"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/published"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/metadata"
+	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/writer"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/writer/failwriter"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/writer/testwriter"
@@ -72,7 +72,7 @@ func TestPublisher_Publish(t *testing.T) {
 		name           string
 		writer         writer.Contract
 		annotations    []*annotation.Instance
-		expectedResult published.Contract
+		expectedResult metadata.Contract
 		expectedGet    []*annotation.Instance
 	}
 
@@ -92,7 +92,7 @@ func TestPublisher_Publish(t *testing.T) {
 						metadataStub.New(test.FactoryRandomString(), test.FactoryRandomString()),
 					),
 				},
-				expectedResult: metadata.New(status.PublisherError),
+				expectedResult: publisherMetadata.New(name, status.PublisherError),
 				expectedGet:    nil,
 			}
 		}(),
@@ -108,7 +108,7 @@ func TestPublisher_Publish(t *testing.T) {
 				name:           "single annotation as string",
 				writer:         testwriter.New(),
 				annotations:    annotations,
-				expectedResult: metadata.New(status.Success),
+				expectedResult: publisherMetadata.New(name, status.Success),
 				expectedGet:    annotations,
 			}
 		}(),
@@ -138,7 +138,7 @@ func TestPublisher_Publish(t *testing.T) {
 				name:           "single annotation as structure",
 				writer:         testwriter.New(),
 				annotations:    annotations,
-				expectedResult: metadata.New(status.Success),
+				expectedResult: publisherMetadata.New(name, status.Success),
 				expectedGet:    annotations,
 			}
 		}(),
@@ -166,7 +166,7 @@ func TestPublisher_Publish(t *testing.T) {
 				name:           "two annotations",
 				writer:         testwriter.New(),
 				annotations:    annotations,
-				expectedResult: metadata.New(status.Success),
+				expectedResult: publisherMetadata.New(name, status.Success),
 				expectedGet:    annotations,
 			}
 		}(),
