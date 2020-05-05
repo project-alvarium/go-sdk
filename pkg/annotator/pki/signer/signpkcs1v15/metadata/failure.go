@@ -14,9 +14,12 @@
 
 package metadata
 
+import "github.com/project-alvarium/go-sdk/pkg/annotator"
+
 // Failure defines the structure that encapsulates this signer's result.
 type Failure struct {
 	kind         string
+	Result       string `json:"result"`
 	ErrorMessage string `json:"errorMessage"`
 }
 
@@ -24,6 +27,7 @@ type Failure struct {
 func NewFailure(kind string, errorMessage string) *Failure {
 	return &Failure{
 		kind:         kind,
+		Result:       annotator.FailureKind,
 		ErrorMessage: errorMessage,
 	}
 }

@@ -17,12 +17,14 @@ package metadata
 import (
 	"crypto"
 
+	"github.com/project-alvarium/go-sdk/pkg/annotator"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/hash"
 )
 
 // Success is the metadata specific to this signer implementation that results from an annotator event.
 type Success struct {
 	kind        string
+	Result      string `json:"result"`
 	SignerHash  string `json:"signerHash"`
 	ReducerHash string `json:"reducerHash"`
 }
@@ -31,6 +33,7 @@ type Success struct {
 func NewSuccess(kind string, signerHash crypto.Hash, reducerHash string) *Success {
 	return &Success{
 		kind:        kind,
+		Result:      annotator.SuccessKind,
 		SignerHash:  hash.FromSigner(signerHash),
 		ReducerHash: reducerHash,
 	}
