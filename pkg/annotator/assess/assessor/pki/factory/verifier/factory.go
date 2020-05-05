@@ -17,6 +17,7 @@ package verifier
 import (
 	"sync"
 
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier/verifypkcs1v15"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier/verifytpm2"
@@ -76,17 +77,17 @@ func (f *Factory) SignTPMv2Verifier(reducerHash string) verifier.Contract {
 }
 
 // Factory returns a contract implementation based on the provided metadata.
-func (f *Factory) Factory(signer string, implementation interface{}) verifier.Contract {
+func (f *Factory) Factory(m metadata.Contract) verifier.Contract {
 	f.m.Lock()
 	defer f.m.Unlock()
 
-	switch signer {
+	switch m.Kind() {
 	case signpkcs1v15.Name:
-		if m, ok := implementation.(*pkcs.Success); ok {
+		if m, ok := m.(*pkcs.Success); ok {
 			return f.SignPKCS1v15Verifier(m.SignerHash, m.ReducerHash)
 		}
 	case signtpmv2.Name:
-		if m, ok := implementation.(*tpm.Success); ok {
+		if m, ok := m.(*tpm.Success); ok {
 			return f.SignTPMv2Verifier(m.ReducerHash)
 		}
 	}

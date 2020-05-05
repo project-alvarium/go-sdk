@@ -19,6 +19,7 @@ import (
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/identity"
 	identityHash "github.com/project-alvarium/go-sdk/pkg/identity/hash"
@@ -63,8 +64,7 @@ func TestStore_FindByIdentity(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			return testCase{
@@ -117,8 +117,7 @@ func TestStore_Create(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			return testCase{
@@ -140,8 +139,7 @@ func TestStore_Create(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			m2 := annotation.New(
@@ -153,8 +151,7 @@ func TestStore_Create(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			return testCase{
@@ -213,8 +210,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			m2 := annotation.New(
@@ -226,8 +222,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			return testCase{
@@ -252,8 +247,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			m2 := annotation.New(
@@ -265,8 +259,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			m3 := annotation.New(
@@ -278,8 +271,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			return testCase{
@@ -306,8 +298,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			m2 := annotation.New(
@@ -319,8 +310,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			m3 := annotation.New(
@@ -332,8 +322,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			m4 := annotation.New(
@@ -345,8 +334,7 @@ func TestStore_Append(t *testing.T) {
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
 					test.FactoryRandomByteSlice(),
-					test.FactoryRandomString(),
-					test.FactoryEmptyInterface(),
+					metadataStub.NewNullObject(),
 				),
 			)
 			return testCase{

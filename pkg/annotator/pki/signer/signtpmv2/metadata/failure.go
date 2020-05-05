@@ -12,29 +12,23 @@
  * the License.
  *******************************************************************************/
 
-package signer
+package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+// Failure defines the structure that encapsulates this signer's result.
+type Failure struct {
+	kind         string
+	ErrorMessage string `json:"errorMessage"`
+}
 
-const (
-	PublicKeyType     = "PUBLIC KEY"
-	RSAPrivateKeyType = "RSA PRIVATE KEY"
-)
+// NewFailure is a factory function that returns an initialized Failure.
+func NewFailure(kind string, errorMessage string) *Failure {
+	return &Failure{
+		kind:         kind,
+		ErrorMessage: errorMessage,
+	}
+}
 
-// Contract defines the signer abstraction.
-type Contract interface {
-	// SetUp is called once when the signer is instantiated.
-	SetUp()
-
-	// TearDown is called once when signer is terminated.
-	TearDown()
-
-	// PublicKey returns the associated public key.
-	PublicKey() []byte
-
-	// Sign returns a signature for the given identity and data.
-	Sign(identity, data []byte) (identitySignature, dataSignature []byte)
-
-	// Metadata returns implementation-specific metadata.
-	Metadata() metadata.Contract
+// Kind returns the type of concrete implementation.
+func (f *Failure) Kind() string {
+	return f.kind
 }

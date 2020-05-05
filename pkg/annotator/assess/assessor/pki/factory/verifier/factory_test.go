@@ -18,6 +18,7 @@ import (
 	"crypto"
 	"testing"
 
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/reducer"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
 	pkcsHash "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/hash"
@@ -47,7 +48,7 @@ func TestFactory_Factory(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Factory("invalid", nil)
+				result := sut.Factory(metadataStub.New("invalid", nil))
 
 				assert.Nil(t, result)
 			},
@@ -57,7 +58,7 @@ func TestFactory_Factory(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Factory(signpkcs1v15.Name, pkcsMetadata.New(0, sha256.New().Name()))
+				result := sut.Factory(pkcsMetadata.NewSuccess(signpkcs1v15.Name, 0, sha256.New().Name()))
 
 				assert.Nil(t, result)
 			},
@@ -67,7 +68,7 @@ func TestFactory_Factory(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Factory(signpkcs1v15.Name, pkcsMetadata.New(crypto.SHA256, "unknown"))
+				result := sut.Factory(pkcsMetadata.NewSuccess(signpkcs1v15.Name, crypto.SHA256, "unknown"))
 
 				assert.Nil(t, result)
 			},
@@ -79,13 +80,15 @@ func TestFactory_Factory(t *testing.T) {
 					for _, reducerHash := range reducer.Supported() {
 						sut := newSUT()
 
-						result := sut.Factory(signpkcs1v15.Name, pkcsMetadata.New(signerHash, reducerHash.Name()))
+						result := sut.Factory(
+							pkcsMetadata.NewSuccess(signpkcs1v15.Name, signerHash, reducerHash.Name()),
+						)
 
 						assert.NotNil(t, result)
 						assert.Equal(
 							t,
 							result,
-							sut.Factory(signpkcs1v15.Name, pkcsMetadata.New(signerHash, reducerHash.Name())),
+							sut.Factory(pkcsMetadata.NewSuccess(signpkcs1v15.Name, signerHash, reducerHash.Name())),
 						)
 					}
 				}
@@ -96,7 +99,7 @@ func TestFactory_Factory(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Factory(signtpmv2.Name, tpmMetadata.New("unknown", nil))
+				result := sut.Factory(tpmMetadata.NewSuccess(signtpmv2.Name, "unknown", nil))
 
 				assert.Nil(t, result)
 			},
@@ -107,10 +110,12 @@ func TestFactory_Factory(t *testing.T) {
 				for _, reducerHash := range reducer.Supported() {
 					sut := newSUT()
 
-					result := sut.Factory(signtpmv2.Name, tpmMetadata.New(reducerHash.Name(), nil))
+					result := sut.Factory(tpmMetadata.NewSuccess(signtpmv2.Name, reducerHash.Name(), nil))
 
 					assert.NotNil(t, result)
-					assert.Equal(t, result, sut.Factory(signtpmv2.Name, tpmMetadata.New(reducerHash.Name(), nil)))
+					assert.Equal(t, result, sut.Factory(
+						tpmMetadata.NewSuccess(signtpmv2.Name, reducerHash.Name(), nil)),
+					)
 				}
 			},
 		},

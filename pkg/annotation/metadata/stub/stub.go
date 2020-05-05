@@ -14,6 +14,8 @@
 
 package stub
 
+import "github.com/project-alvarium/go-sdk/pkg/test"
+
 // instance is a receiver that encapsulates required dependencies.
 type instance struct {
 	kind  string
@@ -26,6 +28,11 @@ func New(kind string, value interface{}) *instance {
 		kind:  kind,
 		value: value,
 	}
+}
+
+// NewNullObject is a factory function that returns an initialized instance.
+func NewNullObject() *instance {
+	return New(test.FactoryRandomString(), test.FactoryRandomByteSlice())
 }
 
 // Kind returns the type of concrete implementation.

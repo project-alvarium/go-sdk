@@ -166,17 +166,6 @@ func TestSigner_PublicKey(t *testing.T) {
 	assert.Equal(t, publicKey, sut.PublicKey())
 }
 
-// TestSigner_Kind tests signpkcs1v15.Kind.
-func TestSigner_Kind(t *testing.T) {
-	sut := newSUT(crypto.SHA256, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, sha256.New())
-	assert.Equal(t, Name, sut.Kind())
-}
-
-// TestKind tests Kind.
-func TestKind(t *testing.T) {
-	assert.Equal(t, Name, Kind())
-}
-
 // TestSigner_Metadata tests signpkcs1v15.Metadata.
 func TestSigner_Metadata(t *testing.T) {
 	type testCase struct {
@@ -194,7 +183,7 @@ func TestSigner_Metadata(t *testing.T) {
 
 				result := sut.Metadata()
 
-				assert.Equal(t, metadata.New(signerHash, reducerHash.Name()), result)
+				assert.Equal(t, metadata.NewSuccess(Name, signerHash, reducerHash.Name()), result)
 			},
 		},
 		{
@@ -216,7 +205,7 @@ func TestSigner_Metadata(t *testing.T) {
 
 				assert.Equal(
 					t,
-					testInternal.Marshal(t, metadata.NewFailure("crypto/rsa: input must be hashed message")),
+					testInternal.Marshal(t, metadata.NewFailure(Name, "crypto/rsa: input must be hashed message")),
 					testInternal.Marshal(t, result),
 				)
 			},

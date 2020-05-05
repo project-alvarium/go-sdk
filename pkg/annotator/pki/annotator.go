@@ -71,7 +71,6 @@ func (a *annotator) metadata(
 			identitySignature,
 			dataSignature,
 			a.signer.PublicKey(),
-			a.signer.Kind(),
 			a.signer.Metadata(),
 		),
 	)

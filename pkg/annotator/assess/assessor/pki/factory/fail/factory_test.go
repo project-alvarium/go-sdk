@@ -41,10 +41,10 @@ func TestFactory_Factory(t *testing.T) {
 		{
 			name: "returns nil (pkcs1)",
 			test: func(t *testing.T) {
-				for _, hash := range hash.SupportedSigner() {
+				for _, h := range hash.SupportedSigner() {
 					sut := newSUT()
 
-					result := sut.Factory(signpkcs1v15.Name, metadata.New(hash, sha256.New().Name()))
+					result := sut.Factory(metadata.NewSuccess(signpkcs1v15.Name, h, sha256.New().Name()))
 
 					assert.Nil(t, result)
 				}

@@ -14,10 +14,13 @@
 
 package factory
 
-import "github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier"
+import (
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier"
+)
 
 // Contract defines the factory abstraction.
 type Contract interface {
 	// Factory returns a contract implementation based on the provided metadata.
-	Factory(signer string, implementation interface{}) verifier.Contract
+	Factory(m metadata.Contract) verifier.Contract
 }

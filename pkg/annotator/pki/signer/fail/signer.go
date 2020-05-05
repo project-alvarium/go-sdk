@@ -14,9 +14,10 @@
 
 package fail
 
-import "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/fail/metadata"
-
-const name = "fail"
+import (
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	failMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/fail/metadata"
+)
 
 // signer is a receiver that encapsulates required dependencies.
 type signer struct {
@@ -52,17 +53,7 @@ func (*signer) Sign(_, _ []byte) (identitySignature, dataSignature []byte) {
 	return nil, nil
 }
 
-// Kind returns an implementation mnemonic; used in assessor when evaluating metadata from multiple implementations.
-func (*signer) Kind() string {
-	return Kind()
-}
-
-// Kind returns an implementation mnemonic; used in assessor when evaluating metadata from multiple implementations.
-func Kind() string {
-	return name
-}
-
 // Metadata returns implementation-specific metadata.
-func (*signer) Metadata() interface{} {
-	return metadata.New()
+func (*signer) Metadata() metadata.Contract {
+	return failMetadata.New()
 }

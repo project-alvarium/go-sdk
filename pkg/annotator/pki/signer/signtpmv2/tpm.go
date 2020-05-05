@@ -19,8 +19,9 @@ import (
 	"io"
 	"sync"
 
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/factory"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/metadata"
+	tpmMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/provisioner"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider"
 
@@ -42,7 +43,7 @@ type signer struct {
 	scheme                        *tpm2.SigScheme
 	path                          string
 	RequestedCapabilityProperties RequestedCapabilityProperties
-	capabilityProperties          metadata.CapabilityProperties
+	capabilityProperties          tpmMetadata.CapabilityProperties
 	m                             sync.Mutex
 	signerError                   error
 }
@@ -84,7 +85,7 @@ func New(
 }
 
 // getCapabilityProperties returns initialized TpmContext.
-func (s *signer) getCapabilityProperties() metadata.CapabilityProperties {
+func (s *signer) getCapabilityProperties() tpmMetadata.CapabilityProperties {
 	getProperty := func(requestedProperty tpm2.TPMProp) string {
 		var data []interface{}
 		var err error
@@ -101,7 +102,7 @@ func (s *signer) getCapabilityProperties() metadata.CapabilityProperties {
 		return string(bytes.Trim(b, "\x00"))
 	}
 
-	contexts := make(metadata.CapabilityProperties)
+	contexts := make(tpmMetadata.CapabilityProperties)
 	for i := range s.RequestedCapabilityProperties {
 		contexts[i] = getProperty(s.RequestedCapabilityProperties[i])
 	}
@@ -149,20 +150,10 @@ func (s *signer) Sign(identity, data []byte) (identitySignature, dataSignature [
 	return s.sign(s.hashProvider.Derive(identity)), s.sign(s.hashProvider.Derive(data))
 }
 
-// Kind returns an implementation mnemonic; used in assessor when evaluating metadata from multiple implementations.
-func (*signer) Kind() string {
-	return Kind()
-}
-
-// Kind returns an implementation mnemonic; used in assessor when evaluating metadata from multiple implementations.
-func Kind() string {
-	return Name
-}
-
 // Metadata returns implementation-specific metadata.
-func (s *signer) Metadata() interface{} {
+func (s *signer) Metadata() metadata.Contract {
 	if s.signerError != nil {
-		return metadata.NewFailure(s.signerError.Error())
+		return tpmMetadata.NewFailure(Name, s.signerError.Error())
 	}
-	return metadata.New(s.hashProvider.Name(), s.capabilityProperties)
+	return tpmMetadata.NewSuccess(Name, s.hashProvider.Name(), s.capabilityProperties)
 }

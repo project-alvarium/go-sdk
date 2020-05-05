@@ -21,8 +21,9 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	pkiSigner "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
+	pkiMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider"
 )
 
@@ -79,20 +80,10 @@ func (s *signer) Sign(identity, data []byte) (identitySignature, dataSignature [
 	return s.sign(s.hashProvider.Derive(identity)), s.sign(s.hashProvider.Derive(data))
 }
 
-// Kind returns an implementation mnemonic; used in assessor when evaluating metadata from multiple implementations.
-func (*signer) Kind() string {
-	return Kind()
-}
-
-// Kind returns an implementation mnemonic; used in assessor when evaluating metadata from multiple implementations.
-func Kind() string {
-	return Name
-}
-
 // Metadata returns implementation-specific metadata.
-func (s *signer) Metadata() interface{} {
+func (s *signer) Metadata() metadata.Contract {
 	if s.signerError != nil {
-		return metadata.NewFailure(s.signerError.Error())
+		return pkiMetadata.NewFailure(Name, s.signerError.Error())
 	}
-	return metadata.New(s.hash, s.hashProvider.Name())
+	return pkiMetadata.NewSuccess(Name, s.hash, s.hashProvider.Name())
 }

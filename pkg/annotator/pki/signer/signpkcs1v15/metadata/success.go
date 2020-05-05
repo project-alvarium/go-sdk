@@ -12,29 +12,31 @@
  * the License.
  *******************************************************************************/
 
-package signer
+package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+import (
+	"crypto"
 
-const (
-	PublicKeyType     = "PUBLIC KEY"
-	RSAPrivateKeyType = "RSA PRIVATE KEY"
+	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/hash"
 )
 
-// Contract defines the signer abstraction.
-type Contract interface {
-	// SetUp is called once when the signer is instantiated.
-	SetUp()
+// Success is the metadata specific to this signer implementation that results from an annotator event.
+type Success struct {
+	kind        string
+	SignerHash  string `json:"signerHash"`
+	ReducerHash string `json:"reducerHash"`
+}
 
-	// TearDown is called once when signer is terminated.
-	TearDown()
+// NewSuccess is a factory function that returns an initialized Success.
+func NewSuccess(kind string, signerHash crypto.Hash, reducerHash string) *Success {
+	return &Success{
+		kind:        kind,
+		SignerHash:  hash.FromSigner(signerHash),
+		ReducerHash: reducerHash,
+	}
+}
 
-	// PublicKey returns the associated public key.
-	PublicKey() []byte
-
-	// Sign returns a signature for the given identity and data.
-	Sign(identity, data []byte) (identitySignature, dataSignature []byte)
-
-	// Metadata returns implementation-specific metadata.
-	Metadata() metadata.Contract
+// Kind returns the type of concrete implementation.
+func (s *Success) Kind() string {
+	return s.kind
 }

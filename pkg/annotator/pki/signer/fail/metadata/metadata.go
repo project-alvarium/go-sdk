@@ -16,14 +16,17 @@ package metadata
 
 import "github.com/project-alvarium/go-sdk/pkg/annotator"
 
+const kind = annotator.FailureKind
+
 // Instance is the metadata specific to this signer implementation that results from an annotator event.
-type Instance struct {
-	Kind string `json:"type"`
-}
+type Instance struct{}
 
 // New is a factory function that returns an initialized Instance.
 func New() *Instance {
-	return &Instance{
-		Kind: annotator.FailureKind,
-	}
+	return &Instance{}
+}
+
+// Kind returns the type of concrete implementation.
+func (*Instance) Kind() string {
+	return kind
 }

@@ -14,39 +14,26 @@
 
 package metadata
 
-import (
-	"crypto"
-
-	"github.com/project-alvarium/go-sdk/pkg/annotator"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/hash"
-)
+// CapabilityProperties defines type to contain the TPM capability properties.
+type CapabilityProperties map[string]string
 
 // Success is the metadata specific to this signer implementation that results from an annotator event.
 type Success struct {
-	Kind        string `json:"type"`
-	SignerHash  string `json:"signerHash"`
-	ReducerHash string `json:"reducerHash"`
+	kind                 string
+	ReducerHash          string               `json:"reducerHash"`
+	CapabilityProperties CapabilityProperties `json:"capabilityProperties"`
 }
 
-// New is a factory function that returns an initialized Success.
-func New(signerHash crypto.Hash, reducerHash string) *Success {
+// NewSuccess is a factory function that returns an initialized Success.
+func NewSuccess(kind string, reducerHash string, capabilityProperties CapabilityProperties) *Success {
 	return &Success{
-		Kind:        annotator.SuccessKind,
-		SignerHash:  hash.FromSigner(signerHash),
-		ReducerHash: reducerHash,
+		kind:                 kind,
+		ReducerHash:          reducerHash,
+		CapabilityProperties: capabilityProperties,
 	}
 }
 
-// Failure defines the structure that encapsulates this signer's result.
-type Failure struct {
-	Kind         string `json:"type"`
-	ErrorMessage string `json:"errorMessage"`
-}
-
-// NewFailure is a factory function that returns an initialized Failure.
-func NewFailure(errorMessage string) *Failure {
-	return &Failure{
-		Kind:         annotator.FailureKind,
-		ErrorMessage: errorMessage,
-	}
+// Kind returns the type of concrete implementation.
+func (s *Success) Kind() string {
+	return s.kind
 }

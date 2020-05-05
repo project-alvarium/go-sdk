@@ -98,21 +98,6 @@ func TestSigner_TearDown(t *testing.T) {
 	}
 }
 
-// TestSigner_Kind tests signtpmv2.Kind.
-func TestSigner_Kind(t *testing.T) {
-	if path, handle, publicKey, rwc, ok := isTPMAvailable(t, provisioner.Path); ok {
-		defer provisioner.FlushAndClose(rwc, handle)
-		sut := newSUT(sha256.New(), publicKey, handle, path, RequestedCapabilityProperties{}, rwc)
-
-		assert.Equal(t, Name, sut.Kind())
-	}
-}
-
-// TestKind tests Kind.
-func TestKind(t *testing.T) {
-	assert.Equal(t, Name, Kind())
-}
-
 // TestSigner_PublicKey tests signtpmv2.PublicKey.
 func TestSigner_PublicKey(t *testing.T) {
 	if path, handle, publicKey, rwc, ok := isTPMAvailable(t, provisioner.Path); ok {
@@ -154,7 +139,10 @@ func TestSigner_Metadata(t *testing.T) {
 
 					assert.Equal(
 						t,
-						testInternal.Marshal(t, metadata.New(reducerHash.Name(), metadata.CapabilityProperties{})),
+						testInternal.Marshal(
+							t,
+							metadata.NewSuccess(Name, reducerHash.Name(), metadata.CapabilityProperties{}),
+						),
 						testInternal.Marshal(t, result),
 					)
 				},
@@ -178,7 +166,10 @@ func TestSigner_Metadata(t *testing.T) {
 
 					assert.Equal(
 						t,
-						testInternal.Marshal(t, metadata.New(reducerHash.Name(), expectedCapabilityProperties)),
+						testInternal.Marshal(
+							t,
+							metadata.NewSuccess(Name, reducerHash.Name(), expectedCapabilityProperties),
+						),
 						testInternal.Marshal(t, result),
 					)
 					assertCapabilityPropertiesHas(t, result, name)
@@ -203,7 +194,10 @@ func TestSigner_Metadata(t *testing.T) {
 
 					assert.Equal(
 						t,
-						testInternal.Marshal(t, metadata.New(reducerHash.Name(), expectedCapabilityProperties)),
+						testInternal.Marshal(
+							t,
+							metadata.NewSuccess(Name, reducerHash.Name(), expectedCapabilityProperties),
+						),
 						testInternal.Marshal(t, result),
 					)
 					assertCapabilityPropertiesHas(t, result, name)
@@ -222,7 +216,7 @@ func TestSigner_Metadata(t *testing.T) {
 
 					assert.Equal(
 						t,
-						testInternal.Marshal(t, metadata.NewFailure("nil TPM handle")),
+						testInternal.Marshal(t, metadata.NewFailure(Name, "nil TPM handle")),
 						testInternal.Marshal(t, result),
 					)
 				},

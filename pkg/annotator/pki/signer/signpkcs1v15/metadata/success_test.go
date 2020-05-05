@@ -12,29 +12,22 @@
  * the License.
  *******************************************************************************/
 
-package signer
+package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+import (
+	"crypto"
+	"testing"
 
-const (
-	PublicKeyType     = "PUBLIC KEY"
-	RSAPrivateKeyType = "RSA PRIVATE KEY"
+	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
+	"github.com/project-alvarium/go-sdk/pkg/test"
+
+	"github.com/stretchr/testify/assert"
 )
 
-// Contract defines the signer abstraction.
-type Contract interface {
-	// SetUp is called once when the signer is instantiated.
-	SetUp()
+// TestSuccess_Kind tests success.Kind.
+func TestSuccess_Kind(t *testing.T) {
+	kind := test.FactoryRandomString()
+	sut := NewSuccess(kind, crypto.SHA256, sha256.New().Name())
 
-	// TearDown is called once when signer is terminated.
-	TearDown()
-
-	// PublicKey returns the associated public key.
-	PublicKey() []byte
-
-	// Sign returns a signature for the given identity and data.
-	Sign(identity, data []byte) (identitySignature, dataSignature []byte)
-
-	// Metadata returns implementation-specific metadata.
-	Metadata() metadata.Contract
+	assert.Equal(t, kind, sut.Kind())
 }

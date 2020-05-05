@@ -14,7 +14,10 @@
 
 package fail
 
-import "github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier"
+import (
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier"
+)
 
 // Factory is a receiver that encapsulates required dependencies.
 type Factory struct{}
@@ -25,6 +28,6 @@ func New() *Factory {
 }
 
 // Factory returns a contract implementation based on the provided metadata.
-func (f *Factory) Factory(signer string, implementation interface{}) verifier.Contract {
+func (f *Factory) Factory(_ metadata.Contract) verifier.Contract {
 	return nil
 }

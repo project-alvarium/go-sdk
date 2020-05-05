@@ -14,7 +14,10 @@
 
 package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
+import (
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
+)
 
 const kind = "PKI"
 
@@ -25,7 +28,7 @@ type Instance struct {
 	DataSignature     []byte              `json:"dataSignature"`
 	PublicKey         []byte              `json:"publicKey"`
 	SignerKind        string              `json:"signerType"`
-	SignerMetadata    interface{}         `json:"signerMetadata"`
+	SignerMetadata    metadata.Contract   `json:"signerMetadata"`
 }
 
 // New is a factory function that returns an initialized Instance.
@@ -34,15 +37,14 @@ func New(
 	identitySignature []byte,
 	dataSignature []byte,
 	publicKey []byte,
-	signerKind string,
-	signerMetadata interface{}) *Instance {
+	signerMetadata metadata.Contract) *Instance {
 
 	return &Instance{
 		Provenance:        provenance,
 		IdentitySignature: identitySignature,
 		DataSignature:     dataSignature,
 		PublicKey:         publicKey,
-		SignerKind:        signerKind,
+		SignerKind:        signerMetadata.Kind(),
 		SignerMetadata:    signerMetadata,
 	}
 }

@@ -56,18 +56,6 @@ func TestSigner_PublicKey(t *testing.T) {
 	assert.Nil(t, sut.PublicKey())
 }
 
-// TestSigner_Kind tests fail.Kind.
-func TestSigner_Kind(t *testing.T) {
-	sut := New()
-
-	assert.Equal(t, name, sut.Kind())
-}
-
-// TestKind tests Kind.
-func TestKind(t *testing.T) {
-	assert.Equal(t, name, Kind())
-}
-
 // TestSigner_Metadata tests fail.Metadata.
 func TestSigner_Metadata(t *testing.T) {
 	sut := New()

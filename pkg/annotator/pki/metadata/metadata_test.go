@@ -17,6 +17,7 @@ package metadata
 import (
 	"testing"
 
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/stretchr/testify/assert"
@@ -29,8 +30,7 @@ func TestInstance_Kind(t *testing.T) {
 		test.FactoryRandomByteSlice(),
 		test.FactoryRandomByteSlice(),
 		test.FactoryRandomByteSlice(),
-		test.FactoryRandomString(),
-		test.FactoryRandomByteSlice(),
+		metadataStub.NewNullObject(),
 	)
 
 	assert.Equal(t, kind, sut.Kind())
