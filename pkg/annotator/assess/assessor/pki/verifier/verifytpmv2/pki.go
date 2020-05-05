@@ -12,7 +12,7 @@
  * the License.
  *******************************************************************************/
 
-package verifytpm2
+package verifytpmv2
 
 import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier"

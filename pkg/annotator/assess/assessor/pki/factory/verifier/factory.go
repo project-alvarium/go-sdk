@@ -20,7 +20,7 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier/verifypkcs1v15"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier/verifytpm2"
+	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier/verifytpmv2"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/reducer"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/hash"
@@ -71,7 +71,7 @@ func (f *Factory) SignTPMv2Verifier(reducerHash string) verifier.Contract {
 		if reducerHash == nil {
 			return nil
 		}
-		f.instances[instanceName] = verifytpm2.New(reducerHash)
+		f.instances[instanceName] = verifytpmv2.New(reducerHash)
 	}
 	return f.instances[instanceName]
 }
