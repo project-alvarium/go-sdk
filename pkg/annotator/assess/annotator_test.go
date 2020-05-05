@@ -22,7 +22,6 @@ import (
 	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessment"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/metadata"
 	assessStub "github.com/project-alvarium/go-sdk/pkg/annotator/assess/stub"
@@ -50,7 +49,7 @@ func newSUT(
 
 // TestAnnotator_SetUp tests annotator.SetUp.
 func TestAnnotator_SetUp(t *testing.T) {
-	a := assessStub.New(test.FactoryRandomString(), assessment.Contract(struct{}{}))
+	a := assessStub.New(test.FactoryRandomString(), metadataStub.NewNullObject())
 	sut := newSUT(test.FactoryRandomString(), identityProvider.New(sha256.New()), store.New(memory.New()), a)
 
 	sut.SetUp()
@@ -60,7 +59,7 @@ func TestAnnotator_SetUp(t *testing.T) {
 
 // TestAnnotator_TearDown tests annotator.TearDown.
 func TestAnnotator_TearDown(t *testing.T) {
-	a := assessStub.New(test.FactoryRandomString(), assessment.Contract(struct{}{}))
+	a := assessStub.New(test.FactoryRandomString(), metadataStub.NewNullObject())
 	sut := newSUT(test.FactoryRandomString(), identityProvider.New(sha256.New()), store.New(memory.New()), a)
 
 	sut.TearDown()
@@ -82,10 +81,14 @@ func TestAnnotator_Create(t *testing.T) {
 				prov := test.FactoryRandomString()
 				idProvider := identityProvider.New(sha256.New())
 				s := store.New(memory.New())
-				kind := test.FactoryRandomString()
 				data := test.FactoryRandomByteSlice()
 				id := idProvider.Derive(data)
-				sut := newSUT(prov, idProvider, s, assessStub.New(kind, nil))
+				sut := newSUT(
+					prov,
+					idProvider,
+					s,
+					assessStub.New(test.FactoryRandomString(), metadataStub.NewNullObject()),
+				)
 
 				result := sut.Create(data)
 
@@ -97,7 +100,7 @@ func TestAnnotator_Create(t *testing.T) {
 							test.FactoryRandomString(),
 							id,
 							nil,
-							metadata.New(prov, kind, sut.failureFindByIdentity(status.NotFound)),
+							metadata.NewSuccess(prov, sut.failureFindByIdentity(status.NotFound)),
 						),
 					},
 					id,
@@ -114,10 +117,10 @@ func TestAnnotator_Create(t *testing.T) {
 				kind := test.FactoryRandomString()
 				data := test.FactoryRandomByteSlice()
 				id := idProvider.Derive(data)
-				m := test.FactoryRandomString()
+				m := metadataStub.New(kind, test.FactoryRandomString())
 				a := annotation.New(test.FactoryRandomString(), id, nil, metadataStub.New(kind, m))
 				assert.Equal(t, status.Success, s.Create(id, a))
-				sut := newSUT(prov, idProvider, s, assessStub.New(kind, m))
+				sut := newSUT(prov, idProvider, s, assessStub.New(test.FactoryRandomString(), m))
 
 				result := sut.Create(data)
 
@@ -126,7 +129,7 @@ func TestAnnotator_Create(t *testing.T) {
 					t,
 					[]*annotation.Instance{
 						a,
-						annotation.New(test.FactoryRandomString(), id, nil, metadata.New(prov, kind, m)),
+						annotation.New(test.FactoryRandomString(), id, nil, metadata.NewSuccess(prov, m)),
 					},
 					id,
 					s,
@@ -154,10 +157,9 @@ func TestAnnotator_Mutate(t *testing.T) {
 				prov := test.FactoryRandomString()
 				idProvider := identityProvider.New(sha256.New())
 				s := store.New(memory.New())
-				kind := test.FactoryRandomString()
 				data := test.FactoryRandomByteSlice()
 				id := idProvider.Derive(data)
-				sut := newSUT(prov, idProvider, s, assessStub.New(kind, nil))
+				sut := newSUT(prov, idProvider, s, assessStub.New(test.FactoryRandomString(), nil))
 
 				result := sut.Mutate(data, data)
 
@@ -169,7 +171,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 							test.FactoryRandomString(),
 							id,
 							nil,
-							metadata.New(prov, kind, sut.failureFindByIdentity(status.NotFound)),
+							metadata.NewSuccess(prov, sut.failureFindByIdentity(status.NotFound)),
 						),
 					},
 					id,
@@ -186,10 +188,10 @@ func TestAnnotator_Mutate(t *testing.T) {
 				kind := test.FactoryRandomString()
 				data := test.FactoryRandomByteSlice()
 				id := idProvider.Derive(data)
-				m := test.FactoryRandomString()
+				m := metadataStub.New(kind, test.FactoryRandomString())
 				a := annotation.New(test.FactoryRandomString(), id, nil, metadataStub.New(kind, m))
 				assert.Equal(t, status.Success, s.Create(id, a))
-				sut := newSUT(prov, idProvider, s, assessStub.New(kind, m))
+				sut := newSUT(prov, idProvider, s, assessStub.New(test.FactoryRandomString(), m))
 
 				result := sut.Mutate(data, data)
 
@@ -198,7 +200,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 					t,
 					[]*annotation.Instance{
 						a,
-						annotation.New(test.FactoryRandomString(), id, nil, metadata.New(prov, kind, m)),
+						annotation.New(test.FactoryRandomString(), id, nil, metadata.NewSuccess(prov, m)),
 					},
 					id,
 					s,

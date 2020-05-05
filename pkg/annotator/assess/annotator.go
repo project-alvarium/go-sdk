@@ -19,11 +19,11 @@ import (
 	"fmt"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessment"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/metadata"
+	assessMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/assess/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/filter"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
 	"github.com/project-alvarium/go-sdk/pkg/identityprovider"
@@ -70,13 +70,13 @@ func (a *annotator) TearDown() {
 }
 
 // failureFindByIdentity returns annotations for failure case; separated to facilitate unit testing.
-func (*annotator) failureFindByIdentity(result status.Value) *metadata.AssessFailure {
-	return metadata.NewFailure(fmt.Sprintf("FindByIdentity returned %d", result))
+func (a *annotator) failureFindByIdentity(result status.Value) *assessMetadata.Failure {
+	return assessMetadata.NewFailure(a.assessor.Kind(), fmt.Sprintf("FindByIdentity returned %d", result))
 }
 
 // assess delegates to assessor's assess method, stores resulting assessment as annotation, and returns status.
 func (a *annotator) assess(newData []byte) *status.Contract {
-	var assessResult assessment.Contract
+	var assessResult metadata.Contract
 
 	id := a.identityProvider.Derive(newData)
 	annotations, result := a.store.FindByIdentity(id)
@@ -87,12 +87,7 @@ func (a *annotator) assess(newData []byte) *status.Contract {
 		assessResult = a.failureFindByIdentity(result)
 	}
 
-	m := annotation.New(
-		a.uniqueProvider.Get(),
-		id,
-		nil,
-		metadata.New(a.provenance, a.assessor.Kind(), assessResult),
-	)
+	m := annotation.New(a.uniqueProvider.Get(), id, nil, assessMetadata.NewSuccess(a.provenance, assessResult))
 	result = a.store.Append(id, m)
 	if result == status.NotFound {
 		result = a.store.Create(id, m)

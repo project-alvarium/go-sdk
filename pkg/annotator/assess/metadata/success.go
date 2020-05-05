@@ -15,38 +15,29 @@
 package metadata
 
 import (
-	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessment"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
 )
 
-const kind = "assess"
+const name = "assessment"
 
 // Instance is the annotator-specific metadata.
-type Instance struct {
+type Success struct {
 	Provenance       provenance.Contract `json:"provenance"`
 	AssessorKind     string              `json:"assessorType"`
-	AssessorMetadata assessment.Contract `json:"assessorMetadata"`
+	AssessorMetadata metadata.Contract   `json:"assessorMetadata"`
 }
 
-// New is a factory function that returns an initialized Instance.
-func New(
-	provenance provenance.Contract,
-	assessorKind string,
-	assessorMetadata assessment.Contract) *Instance {
-
-	return &Instance{
+// NewSuccess is a factory function that returns an initialized Success.
+func NewSuccess(provenance provenance.Contract, assessorMetadata metadata.Contract) *Success {
+	return &Success{
 		Provenance:       provenance,
-		AssessorKind:     assessorKind,
+		AssessorKind:     assessorMetadata.Kind(),
 		AssessorMetadata: assessorMetadata,
 	}
 }
 
 // Kind returns the type of concrete implementation.
-func (*Instance) Kind() string {
-	return Kind()
-}
-
-// Kind returns the type of concrete implementation.
-func Kind() string {
-	return kind
+func (*Success) Kind() string {
+	return name
 }

@@ -14,20 +14,18 @@
 
 package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotator"
+import (
+	"testing"
 
-// Assessment defines the structure that encapsulates this verifier's assessment.
-type Assessment struct {
-	Kind           string   `json:"type"`
-	ValidSignature bool     `json:"validSignature"`
-	Unique         []string `json:"unique"`
-}
+	"github.com/project-alvarium/go-sdk/pkg/test"
 
-// New is a factory function that returns an initialized Assessment.
-func New(validSignature bool, unique []string) *Assessment {
-	return &Assessment{
-		Kind:           annotator.SuccessKind,
-		ValidSignature: validSignature,
-		Unique:         unique,
-	}
+	"github.com/stretchr/testify/assert"
+)
+
+// TestInstance_Kind tests instance.Kind.
+func TestInstance_Kind(t *testing.T) {
+	kind := test.FactoryRandomString()
+	sut := New(kind, true, []string{})
+
+	assert.Equal(t, kind, sut.Kind())
 }

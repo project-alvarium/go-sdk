@@ -14,25 +14,18 @@
 
 package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotator"
+import (
+	"testing"
 
-// Failure defines the structure that encapsulates this assessor's result.
-type Failure struct {
-	kind         string
-	Result       string `json:"result"`
-	ErrorMessage string `json:"errorMessage"`
-}
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
+	"github.com/project-alvarium/go-sdk/pkg/test"
 
-// NewFailure is a factory function that returns an initialized Failure.
-func NewFailure(kind string, errorMessage string) *Failure {
-	return &Failure{
-		kind:         kind,
-		Result:       annotator.FailureKind,
-		ErrorMessage: errorMessage,
-	}
-}
+	"github.com/stretchr/testify/assert"
+)
 
-// Kind returns the type of concrete implementation.
-func (f *Failure) Kind() string {
-	return f.kind
+// TestSuccess_Kind tests succcess.Kind.
+func TestSuccess_Kind(t *testing.T) {
+	sut := NewSuccess(test.FactoryRandomByteSlice(), metadataStub.NewNullObject())
+
+	assert.Equal(t, name, sut.Kind())
 }

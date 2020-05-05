@@ -16,13 +16,14 @@ package pki
 
 import (
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessment"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory"
 	pkiAssessorMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/metadata"
 	pkiAnnotatorMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
 )
 
-const name = "verifier"
+const name = signpkcs1v15.Name
 
 // assessor is a receiver that encapsulates required dependencies.
 type assessor struct {
@@ -43,7 +44,7 @@ func (*assessor) SetUp() {}
 func (*assessor) TearDown() {}
 
 // Assess accepts data and returns associated assessments.
-func (a *assessor) Assess(annotations []*annotation.Instance) assessment.Contract {
+func (a *assessor) Assess(annotations []*annotation.Instance) metadata.Contract {
 	uniques := make([]string, 0)
 	for i := range annotations {
 		if annotations[i].MetadataKind != pkiAnnotatorMetadata.Kind() {
@@ -53,11 +54,11 @@ func (a *assessor) Assess(annotations []*annotation.Instance) assessment.Contrac
 		m := annotations[i].Metadata.(*pkiAnnotatorMetadata.Instance)
 		v := a.factory.Create(m.SignerMetadata)
 		if v == nil || v.VerifyIdentity(annotations[i].CurrentIdentity.Binary(), m.IdentitySignature, m.PublicKey) == false {
-			return pkiAssessorMetadata.New(false, []string{annotations[i].Unique})
+			return pkiAssessorMetadata.New(a.Kind(), false, []string{annotations[i].Unique})
 		}
 		uniques = append(uniques, annotations[i].Unique)
 	}
-	return pkiAssessorMetadata.New(true, uniques)
+	return pkiAssessorMetadata.New(a.Kind(), true, uniques)
 }
 
 // Kind returns an implementation mnemonic.

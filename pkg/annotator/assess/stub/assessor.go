@@ -16,19 +16,19 @@ package stub
 
 import (
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessment"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 )
 
 // annotator is a receiver that encapsulates required dependencies.
 type annotator struct {
 	kind           string
-	assessment     assessment.Contract
+	assessment     metadata.Contract
 	SetUpCalled    bool
 	TearDownCalled bool
 }
 
 // New is a factory function that returns an initialized annotator.
-func New(kind string, assessment assessment.Contract) *annotator {
+func New(kind string, assessment metadata.Contract) *annotator {
 	return &annotator{
 		kind:       kind,
 		assessment: assessment,
@@ -46,7 +46,7 @@ func (a *annotator) TearDown() {
 }
 
 // Assess accepts data and returns associated assessments.
-func (a *annotator) Assess(_ []*annotation.Instance) assessment.Contract {
+func (a *annotator) Assess(_ []*annotation.Instance) metadata.Contract {
 	return a.assessment
 }
 

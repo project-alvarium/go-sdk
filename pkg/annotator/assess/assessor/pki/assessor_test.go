@@ -66,7 +66,7 @@ func TestAssessor_Assess(t *testing.T) {
 		h                  crypto.Hash
 		verifier           factory.Contract
 		preCondition       func(t *testing.T, sut *assessor) []*annotation.Instance
-		expectedAssessment func() *metadata.Assessment
+		expectedAssessment func() *metadata.Instance
 	}
 
 	cases := []testCase{
@@ -102,12 +102,12 @@ func TestAssessor_Assess(t *testing.T) {
 					assert.NotNil(t, annotations)
 					return annotations
 				},
-				expectedAssessment: func() *metadata.Assessment {
+				expectedAssessment: func() *metadata.Instance {
 					var uniques []string
 					for i := range annotations {
 						uniques = append(uniques, annotations[i].Unique)
 					}
-					return metadata.New(true, uniques)
+					return metadata.New(name, true, uniques)
 				},
 			}
 		}(),
@@ -149,12 +149,12 @@ func TestAssessor_Assess(t *testing.T) {
 					assert.NotNil(t, annotations)
 					return annotations
 				},
-				expectedAssessment: func() *metadata.Assessment {
+				expectedAssessment: func() *metadata.Instance {
 					var uniques []string
 					for i := range annotations {
 						uniques = append(uniques, annotations[i].Unique)
 					}
-					return metadata.New(true, uniques)
+					return metadata.New(name, true, uniques)
 				},
 			}
 		}(),
@@ -177,8 +177,8 @@ func TestAssessor_Assess(t *testing.T) {
 					assert.NotNil(t, annotations)
 					return annotations
 				},
-				expectedAssessment: func() *metadata.Assessment {
-					return metadata.New(true, []string{})
+				expectedAssessment: func() *metadata.Instance {
+					return metadata.New(name, true, []string{})
 				},
 			}
 		}(),
@@ -215,12 +215,12 @@ func TestAssessor_Assess(t *testing.T) {
 					assert.NotNil(t, annotations)
 					return annotations
 				},
-				expectedAssessment: func() *metadata.Assessment {
+				expectedAssessment: func() *metadata.Instance {
 					var uniques []string
 					for i := range annotations {
 						uniques = append(uniques, annotations[i].Unique)
 					}
-					return metadata.New(false, uniques)
+					return metadata.New(name, false, uniques)
 				},
 			}
 		}(),

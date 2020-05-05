@@ -16,7 +16,7 @@ package assessor
 
 import (
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessment"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 )
 
 // Contract defines the assessor abstraction.
@@ -28,7 +28,7 @@ type Contract interface {
 	TearDown()
 
 	// Assess accepts data and returns associated assessments.
-	Assess(annotations []*annotation.Instance) assessment.Contract
+	Assess(annotations []*annotation.Instance) metadata.Contract
 
 	// Kind returns an implementation mnemonic.
 	Kind() string
