@@ -66,11 +66,6 @@ func FactoryRandomInt() int {
 	return rand.Intn(maxInt)
 }
 
-// FactoryEmptyInterface returns an empty structure.
-func FactoryEmptyInterface() interface{} {
-	return struct{}{}
-}
-
 // FactoryRandomUint64 returns a uint64 with a random value.
 func FactoryRandomUint64() uint64 {
 	return rand.Uint64()

@@ -307,29 +307,6 @@ func TestFactoryRandomInt(t *testing.T) {
 	}
 }
 
-// TestFactoryEmptyImplementation tests FactoryEmptyInterface
-func TestFactoryEmptyImplementation(t *testing.T) {
-	type testCase struct {
-		name string
-		test func(t *testing.T)
-	}
-
-	cases := []testCase{
-		{
-			name: "returns empty struct",
-			test: func(t *testing.T) {
-				result := FactoryEmptyInterface()
-
-				assert.Equal(t, struct{}{}, result)
-			},
-		},
-	}
-
-	for i := range cases {
-		t.Run(cases[i].name, cases[i].test)
-	}
-}
-
 // TestFactoryRandomUint64 tests FactoryRandomUint64
 func TestFactoryRandomUint64(t *testing.T) {
 	type testCase struct {
