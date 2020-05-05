@@ -20,7 +20,7 @@ import (
 	"fmt"
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
-	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess"
@@ -35,7 +35,6 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/sdk"
-	"github.com/project-alvarium/go-sdk/pkg/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 )
 
@@ -44,7 +43,7 @@ func main() {
 	hashProvider := sha256.New()
 	uniqueProvider := ulid.New()
 	idProvider := identityProvider.New(hashProvider)
-	persistence := store.New(memory.New())
+	persistence := memory.New()
 	filter := passthrough.New()
 
 	// create SDK instance for annotation.

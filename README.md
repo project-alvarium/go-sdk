@@ -147,7 +147,7 @@ Simple example that uses the SDK's PKI annotator, PKI verifier, and example publ
 hashProvider := sha256.New()
 uniqueProvider := ulid.New()
 idProvider := identityProvider.New(hashProvider)
-persistence := store.New(memory.New())
+persistence := memory.New()
 filter := passthrough.New()
 
 // create SDK instance for annotation.
@@ -288,6 +288,7 @@ pkg/
         metadata/                        Common annotation definitions
         store/                           Annotation store implementation
             contract.go                  Annotation store abstraction
+            memory/                      In-process in-memory store implementation
         uniqueprovider/                  Unique provider
             contract.go                  Unique provider abstraction
             ulid/                        ULID-based implementation
@@ -319,8 +320,4 @@ pkg/
 
     status/
         contract.go                      Return value abstraction
-
-    store/                               Generic store 
-        contract.go                      Store abstraction
-        memory/                          In-process in-memory store implementation
 ```

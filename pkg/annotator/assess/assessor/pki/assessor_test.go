@@ -21,7 +21,7 @@ import (
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
-	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory/fail"
@@ -32,7 +32,6 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/status"
-	"github.com/project-alvarium/go-sdk/pkg/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/stretchr/testify/assert"
@@ -75,12 +74,12 @@ func TestAssessor_Assess(t *testing.T) {
 			h := crypto.SHA256
 			hashProvider := sha256.New()
 			idProvider := identityProvider.New(hashProvider)
-			s := store.New(memory.New())
+			persistence := memory.New()
 			a := pki.New(
 				p,
 				ulid.New(),
 				idProvider,
-				s,
+				persistence,
 				signer.New(h, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider),
 			)
 			data := test.FactoryRandomByteSlice()
@@ -97,7 +96,7 @@ func TestAssessor_Assess(t *testing.T) {
 					)
 
 					var result status.Value
-					annotations, result = s.FindByIdentity(idProvider.Derive(data))
+					annotations, result = persistence.FindByIdentity(idProvider.Derive(data))
 					assert.Equal(t, status.Success, result)
 					assert.NotNil(t, annotations)
 					return annotations
@@ -116,12 +115,12 @@ func TestAssessor_Assess(t *testing.T) {
 			h := crypto.SHA256
 			hashProvider := sha256.New()
 			idProvider := identityProvider.New(hashProvider)
-			s := store.New(memory.New())
+			persistence := memory.New()
 			a := pki.New(
 				p,
 				ulid.New(),
 				idProvider,
-				s,
+				persistence,
 				signer.New(h, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider),
 			)
 			data1 := test.FactoryRandomByteSlice()
@@ -144,7 +143,7 @@ func TestAssessor_Assess(t *testing.T) {
 					)
 
 					var result status.Value
-					annotations, result = s.FindByIdentity(idProvider.Derive(data2))
+					annotations, result = persistence.FindByIdentity(idProvider.Derive(data2))
 					assert.Equal(t, status.Success, result)
 					assert.NotNil(t, annotations)
 					return annotations
@@ -161,7 +160,7 @@ func TestAssessor_Assess(t *testing.T) {
 		func() testCase {
 			h := crypto.SHA256
 			idProvider := identityProvider.New(sha256.New())
-			s := store.New(memory.New())
+			persistence := memory.New()
 			data := test.FactoryRandomByteSlice()
 			id := idProvider.Derive(data)
 			return testCase{
@@ -170,9 +169,9 @@ func TestAssessor_Assess(t *testing.T) {
 				verifier: fail.New(),
 				preCondition: func(t *testing.T, sut *assessor) []*annotation.Instance {
 					a := annotation.New(ulid.New().Get(), id, nil, metadataStub.New("otherType", nil))
-					assert.Equal(t, status.Success, s.Create(id, a))
+					assert.Equal(t, status.Success, persistence.Create(id, a))
 
-					annotations, result := s.FindByIdentity(id)
+					annotations, result := persistence.FindByIdentity(id)
 					assert.Equal(t, status.Success, result)
 					assert.NotNil(t, annotations)
 					return annotations
@@ -186,7 +185,7 @@ func TestAssessor_Assess(t *testing.T) {
 			h := crypto.SHA256
 			hashProvider := sha256.New()
 			idProvider := identityProvider.New(hashProvider)
-			s := store.New(memory.New())
+			persistence := memory.New()
 			data := test.FactoryRandomByteSlice()
 			var annotations []*annotation.Instance
 			return testCase{
@@ -199,7 +198,7 @@ func TestAssessor_Assess(t *testing.T) {
 						p,
 						ulid.New(),
 						idProvider,
-						s,
+						persistence,
 						signer.New(h, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider),
 					)
 
@@ -210,7 +209,7 @@ func TestAssessor_Assess(t *testing.T) {
 					)
 
 					var result status.Value
-					annotations, result = s.FindByIdentity(idProvider.Derive(data))
+					annotations, result = persistence.FindByIdentity(idProvider.Derive(data))
 					assert.Equal(t, status.Success, result)
 					assert.NotNil(t, annotations)
 					return annotations

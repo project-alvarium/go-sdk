@@ -21,7 +21,7 @@ import (
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	testMetadata "github.com/project-alvarium/go-sdk/internal/pkg/test/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
-	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki"
@@ -32,7 +32,6 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/status"
-	"github.com/project-alvarium/go-sdk/pkg/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/stretchr/testify/assert"
@@ -72,7 +71,7 @@ func TestInstance_Mutate(t *testing.T) {
 		}(),
 		func() testCase {
 			prov := test.FactoryRandomString()
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			h := sha256.New()
 			idProvider := identityProvider.New(h)
 			data := test.FactoryRandomByteSlice()
@@ -119,7 +118,7 @@ func TestInstance_Mutate(t *testing.T) {
 		}(),
 		func() testCase {
 			prov := test.FactoryRandomString()
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			h := sha256.New()
 			idProvider := identityProvider.New(h)
 			data1 := test.FactoryRandomByteSlice()
@@ -183,7 +182,7 @@ func TestInstance_Mutate(t *testing.T) {
 		}(),
 		func() testCase {
 			prov := test.FactoryRandomString()
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			h := sha256.New()
 			idProvider := identityProvider.New(h)
 			data1 := test.FactoryRandomByteSlice()

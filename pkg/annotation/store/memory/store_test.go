@@ -12,7 +12,7 @@
  * the License.
  *******************************************************************************/
 
-package store
+package memory
 
 import (
 	"testing"
@@ -24,15 +24,14 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/identity"
 	identityHash "github.com/project-alvarium/go-sdk/pkg/identity/hash"
 	"github.com/project-alvarium/go-sdk/pkg/status"
-	"github.com/project-alvarium/go-sdk/pkg/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/stretchr/testify/assert"
 )
 
 // newSUT returns a new system under test.
-func newSUT() *Persistence {
-	return New(memory.New())
+func newSUT() *instance {
+	return New()
 }
 
 // TestStore_FindByIdentity tests store.FindByIdentity.
@@ -40,7 +39,7 @@ func TestStore_FindByIdentity(t *testing.T) {
 	type testCase struct {
 		name                string
 		identity            identity.Contract
-		preCondition        func(t *testing.T, sut *Persistence)
+		preCondition        func(t *testing.T, sut *instance)
 		expectedAnnotations []*annotation.Instance
 		expectedStatus      status.Value
 	}
@@ -49,7 +48,7 @@ func TestStore_FindByIdentity(t *testing.T) {
 		{
 			name:                "does not exist",
 			identity:            identityHash.New(test.FactoryRandomByteSlice()),
-			preCondition:        func(_ *testing.T, _ *Persistence) {},
+			preCondition:        func(_ *testing.T, _ *instance) {},
 			expectedAnnotations: []*annotation.Instance{},
 			expectedStatus:      status.NotFound,
 		},
@@ -70,7 +69,7 @@ func TestStore_FindByIdentity(t *testing.T) {
 			return testCase{
 				name:     "exists",
 				identity: id,
-				preCondition: func(t *testing.T, sut *Persistence) {
+				preCondition: func(t *testing.T, sut *instance) {
 					assert.Equal(t, status.Success, sut.Create(id, m))
 				},
 				expectedAnnotations: []*annotation.Instance{m},
@@ -101,7 +100,7 @@ func TestStore_Create(t *testing.T) {
 		name                string
 		identity            identity.Contract
 		m                   *annotation.Instance
-		postCondition       func(t *testing.T, sut *Persistence)
+		postCondition       func(t *testing.T, sut *instance)
 		expectedAnnotations []*annotation.Instance
 	}
 
@@ -124,7 +123,7 @@ func TestStore_Create(t *testing.T) {
 				name:                "create once",
 				identity:            id,
 				m:                   m,
-				postCondition:       func(_ *testing.T, _ *Persistence) {},
+				postCondition:       func(_ *testing.T, _ *instance) {},
 				expectedAnnotations: []*annotation.Instance{m},
 			}
 		}(),
@@ -158,7 +157,7 @@ func TestStore_Create(t *testing.T) {
 				name:     "create twice",
 				identity: id,
 				m:        m1,
-				postCondition: func(t *testing.T, sut *Persistence) {
+				postCondition: func(t *testing.T, sut *instance) {
 					assert.Equal(t, status.Exists, sut.Create(id, m2))
 				},
 				expectedAnnotations: []*annotation.Instance{m1},
@@ -193,8 +192,8 @@ func TestStore_Append(t *testing.T) {
 		name                string
 		identity            identity.Contract
 		m                   *annotation.Instance
-		preCondition        func(t *testing.T, sut *Persistence)
-		postCondition       func(t *testing.T, sut *Persistence)
+		preCondition        func(t *testing.T, sut *instance)
+		postCondition       func(t *testing.T, sut *instance)
 		expectedAnnotations []*annotation.Instance
 	}
 
@@ -229,10 +228,10 @@ func TestStore_Append(t *testing.T) {
 				name:     "append once",
 				identity: id,
 				m:        m2,
-				preCondition: func(t *testing.T, sut *Persistence) {
+				preCondition: func(t *testing.T, sut *instance) {
 					assert.Equal(t, status.Success, sut.Create(id, m1))
 				},
-				postCondition:       func(_ *testing.T, _ *Persistence) {},
+				postCondition:       func(_ *testing.T, _ *instance) {},
 				expectedAnnotations: []*annotation.Instance{m1, m2},
 			}
 		}(),
@@ -278,10 +277,10 @@ func TestStore_Append(t *testing.T) {
 				name:     "append twice",
 				identity: id,
 				m:        m2,
-				preCondition: func(t *testing.T, sut *Persistence) {
+				preCondition: func(t *testing.T, sut *instance) {
 					assert.Equal(t, status.Success, sut.Create(id, m1))
 				},
-				postCondition: func(t *testing.T, sut *Persistence) {
+				postCondition: func(t *testing.T, sut *instance) {
 					assert.Equal(t, status.Success, sut.Append(id, m3))
 				},
 				expectedAnnotations: []*annotation.Instance{m1, m2, m3},
@@ -341,10 +340,10 @@ func TestStore_Append(t *testing.T) {
 				name:     "append thrice",
 				identity: id,
 				m:        m2,
-				preCondition: func(t *testing.T, sut *Persistence) {
+				preCondition: func(t *testing.T, sut *instance) {
 					assert.Equal(t, status.Success, sut.Create(id, m1))
 				},
-				postCondition: func(t *testing.T, sut *Persistence) {
+				postCondition: func(t *testing.T, sut *instance) {
 					assert.Equal(t, status.Success, sut.Append(id, m3))
 					assert.Equal(t, status.Success, sut.Append(id, m4))
 				},

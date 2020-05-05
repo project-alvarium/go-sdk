@@ -21,7 +21,7 @@ import (
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	testMetadata "github.com/project-alvarium/go-sdk/internal/pkg/test/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
-	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki"
@@ -32,7 +32,6 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/status"
-	"github.com/project-alvarium/go-sdk/pkg/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/stretchr/testify/assert"
@@ -73,7 +72,7 @@ func TestInstance_Create(t *testing.T) {
 			data := test.FactoryRandomByteSlice()
 			id := idProvider.Derive(data)
 			publicKey := testInternal.ValidPublicKey
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			s := signpkcs1v15.New(crypto.SHA256, testInternal.ValidPrivateKey, publicKey, h)
 			a := pki.New(prov, ulid.New(), idProvider, persistence, s)
 			idSignature, dataSignature := s.Sign(id.Binary(), data)
@@ -107,7 +106,7 @@ func TestInstance_Create(t *testing.T) {
 			data := test.FactoryRandomByteSlice()
 			id := idProvider.Derive(data)
 			publicKey := testInternal.ValidPublicKey
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			s := signpkcs1v15.New(crypto.SHA256, testInternal.ValidPrivateKey, publicKey, h)
 			a := pki.New(prov, ulid.New(), idProvider, persistence, s)
 			idSignature, dataSignature := s.Sign(id.Binary(), data)

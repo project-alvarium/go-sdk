@@ -22,6 +22,7 @@ import (
 	testMetadata "github.com/project-alvarium/go-sdk/internal/pkg/test/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer"
@@ -33,7 +34,6 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/identityprovider"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/status"
-	"github.com/project-alvarium/go-sdk/pkg/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/stretchr/testify/assert"
@@ -53,7 +53,7 @@ func newSUT(
 func TestAnnotator_SetUp(t *testing.T) {
 	hashProvider := sha256.New()
 	s := fail.New()
-	sut := newSUT(test.FactoryRandomString(), identityProvider.New(hashProvider), store.New(memory.New()), s)
+	sut := newSUT(test.FactoryRandomString(), identityProvider.New(hashProvider), memory.New(), s)
 
 	sut.SetUp()
 
@@ -64,7 +64,7 @@ func TestAnnotator_SetUp(t *testing.T) {
 func TestAnnotator_TearDown(t *testing.T) {
 	hashProvider := sha256.New()
 	s := fail.New()
-	sut := newSUT(test.FactoryRandomString(), identityProvider.New(hashProvider), store.New(memory.New()), s)
+	sut := newSUT(test.FactoryRandomString(), identityProvider.New(hashProvider), memory.New(), s)
 
 	sut.TearDown()
 
@@ -86,7 +86,7 @@ func TestAnnotator_Create(t *testing.T) {
 	cases := []testCase{
 		func() testCase {
 			p := test.FactoryRandomString()
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			hashProvider := sha256.New()
 			idProvider := identityProvider.New(hashProvider)
 			s := signpkcs1v15.New(
@@ -131,7 +131,7 @@ func TestAnnotator_Create(t *testing.T) {
 		}(),
 		func() testCase {
 			p := test.FactoryRandomString()
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			hashProvider := sha256.New()
 			idProvider := identityProvider.New(hashProvider)
 			s := signpkcs1v15.New(
@@ -182,7 +182,7 @@ func TestAnnotator_Create(t *testing.T) {
 		}(),
 		func() testCase {
 			p := test.FactoryRandomString()
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			idProvider := identityProvider.New(sha256.New())
 			s := fail.New()
 			data := test.FactoryRandomByteSlice()
@@ -260,7 +260,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 	cases := []testCase{
 		func() testCase {
 			p := test.FactoryRandomString()
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			hashProvider := sha256.New()
 			idProvider := identityProvider.New(hashProvider)
 			s := signpkcs1v15.New(
@@ -325,7 +325,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 		}(),
 		func() testCase {
 			p := test.FactoryRandomString()
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			hashProvider := sha256.New()
 			idProvider := identityProvider.New(hashProvider)
 			s := signpkcs1v15.New(
@@ -393,7 +393,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 		}(),
 		func() testCase {
 			p := test.FactoryRandomString()
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			hashProvider := sha256.New()
 			idProvider := identityProvider.New(hashProvider)
 			s := signpkcs1v15.New(
@@ -482,7 +482,7 @@ func TestAnnotator_Mutate(t *testing.T) {
 		}(),
 		func() testCase {
 			p := test.FactoryRandomString()
-			persistence := store.New(memory.New())
+			persistence := memory.New()
 			hashProvider := sha256.New()
 			idProvider := identityProvider.New(hashProvider)
 			s := fail.New()

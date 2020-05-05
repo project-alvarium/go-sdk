@@ -18,7 +18,7 @@ import (
 	"testing"
 
 	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
-	"github.com/project-alvarium/go-sdk/pkg/annotation/store"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/filter/passthrough"
@@ -29,7 +29,6 @@ import (
 	annotatorStub "github.com/project-alvarium/go-sdk/pkg/annotator/stub"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
-	"github.com/project-alvarium/go-sdk/pkg/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/stretchr/testify/assert"
@@ -66,7 +65,7 @@ func TestInstance_SetUpCalled(t *testing.T) {
 					test.FactoryRandomString(),
 					ulid.New(),
 					identityProvider.New(sha256.New()),
-					store.New(memory.New()),
+					memory.New(),
 					s,
 				)
 				sut := newSUT([]annotator.Contract{a})
@@ -78,13 +77,12 @@ func TestInstance_SetUpCalled(t *testing.T) {
 		{
 			name: "SetUp called (annotator - stub publisher)",
 			test: func(t *testing.T) {
-				s := store.New(memory.New())
 				p := publishStub.New(test.FactoryRandomString(), metadataStub.NewNullObject())
 				a := publish.New(
 					test.FactoryRandomString(),
 					ulid.New(),
 					identityProvider.New(sha256.New()),
-					s,
+					memory.New(),
 					p,
 					passthrough.New(),
 				)
