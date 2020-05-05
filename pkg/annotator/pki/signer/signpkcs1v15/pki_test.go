@@ -193,7 +193,7 @@ func TestSigner_Metadata(t *testing.T) {
 					crypto.SHA256,
 					testInternal.ValidPrivateKey,
 					testInternal.ValidPublicKey,
-					passthrough.New(),
+					passthrough.New(test.FactoryRandomString()),
 				)
 				identitySignature, dataSignature := sut.Sign(
 					test.FactoryRandomFixedLengthByteSlice(1024, test.AlphanumericCharset),

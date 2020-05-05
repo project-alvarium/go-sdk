@@ -14,14 +14,16 @@
 
 package passthrough
 
-const name = "stub"
-
 // provider is a receiver that encapsulates required dependencies.
-type provider struct{}
+type provider struct {
+	name string
+}
 
 // New is a factory function that returns an initialized provider.
-func New() *provider {
-	return &provider{}
+func New(name string) *provider {
+	return &provider{
+		name: name,
+	}
 }
 
 // Derive converts data to an identity value.
@@ -30,11 +32,6 @@ func (*provider) Derive(data []byte) []byte {
 }
 
 // Name returns an implementation mnemonic.
-func (*provider) Name() string {
-	return Name()
-}
-
-// Name returns an implementation mnemonic.
-func Name() string {
-	return name
+func (p *provider) Name() string {
+	return p.name
 }

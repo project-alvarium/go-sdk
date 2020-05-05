@@ -23,8 +23,8 @@ import (
 )
 
 // newSUT returns a new system under test.
-func newSUT() *provider {
-	return New()
+func newSUT(name string) *provider {
+	return New(name)
 }
 
 // TestProvider_Derive tests provider.Derive.
@@ -34,7 +34,7 @@ func TestProvider_Derive(t *testing.T) {
 			"variation "+string(i),
 			func(t *testing.T) {
 				data := test.FactoryRandomByteSlice()
-				sut := newSUT()
+				sut := newSUT(test.FactoryRandomString())
 
 				result := sut.Derive(data)
 
@@ -46,11 +46,7 @@ func TestProvider_Derive(t *testing.T) {
 
 // TestProvider_Name tests provider.Name.
 func TestProvider_Name(t *testing.T) {
-	sut := newSUT()
+	name := test.FactoryRandomString()
+	sut := newSUT(name)
 	assert.Equal(t, name, sut.Name())
-}
-
-// TestName tests Name.
-func TestName(t *testing.T) {
-	assert.Equal(t, name, Name())
 }
