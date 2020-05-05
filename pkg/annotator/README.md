@@ -175,8 +175,6 @@ README.assets/                           Images and assets included in README.md
 contract.go                              Annotator abstraction
 
 assess/                                  Assessor annotator
-    assessment/
-        contract.go                      Assessment abstraction
     assessor/
         contract.go                      Assessor abstraction
         pki/                             Public key infrastructure (PKI) assessor
@@ -188,12 +186,14 @@ assess/                                  Assessor annotator
             verifier/                    PKI-related verifiers
                 contract.go              PKI verifier abstraction
                 verifypkcs1v15/          PKCS1v15 verifier implementation
-        metadata/                        Common assessor-annotator annotation definitions
-        stub/                            Assessor stub for testing
-        annotator.go                     Assessor annotator implementation
+                verifytpmv2/             TPMv2 verifier implementation
+    metadata/                            Common assessor-annotator annotation definitions
+    stub/                                Assessor stub for testing
+    annotator.go                         Assessor annotator implementation
 
 filter/                                  Annotation filter implementation
     contract.go                          Annotation filter abstraction
+    matching/                            Annotation filter implementation
     passthrough/                         Annotation filter passthrough implementation
 
 pki/                                     Public key infrastrcuture (PKI) Annotator
@@ -215,7 +215,6 @@ provenance/                              Annotator's provenance abstraction
 
 publish/                                 Publisher annotator
     metadata/                            Publisher-specific annotation definitions
-    published/                           Published abstraction
     publisher/
         contract.go                      Publisher abstraction
         example/                         Example publisher (used for testing)

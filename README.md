@@ -148,23 +148,24 @@ hashProvider := sha256.New()
 uniqueProvider := ulid.New()
 idProvider := identityProvider.New(hashProvider)
 persistence := store.New(memory.New())
+filter := passthrough.New()
 
 // create SDK instance for annotation.
 sdkInstance := sdk.New(
-	[]annotator.Contract{
-		pkiAnnotator.New(
-			struct{ Node string }{Node: "origin"},
-			uniqueProvider,
-			idProvider,
-			persistence,
-			signpkcs1v15.New(
-				crypto.SHA256,
-				test.ValidPrivateKey,
-				test.ValidPublicKey,
-				hashProvider,
-			),
-		),
-	},
+    []annotator.Contract{
+        pkiAnnotator.New(
+            struct{ Node string }{Node: "origin"},
+            uniqueProvider,
+            idProvider,
+            persistence,
+            signpkcs1v15.New(
+                crypto.SHA256,
+                testInternal.ValidPrivateKey,
+                testInternal.ValidPublicKey,
+                hashProvider,
+            ),
+        ),
+    },
 )
 
 // register data creation.
@@ -178,22 +179,17 @@ sdkInstance.Close()
 p := struct{ Node string }{Node: "evaluation"}
 w := testwriter.New()
 sdkInstance = sdk.New(
-	[]annotator.Contract{
-		assess.New(
-			p,
-			uniqueProvider,
-			idProvider,
-			persistence,
-			pkiAssessor.New(idProvider, persistence, verifier.New()),
-		),
-		publish.New(
-			p,
-			uniqueProvider,
-			idProvider,
-			persistence,
-			example.New(idProvider, persistence, w),
-		),
-	},
+    []annotator.Contract{
+        assess.New(
+            p,
+            uniqueProvider,
+            idProvider,
+            persistence,
+            pkiAssessor.New(verifier.New()),
+            filter,
+        ),
+        publish.New(p, uniqueProvider, idProvider, persistence, example.New(w), filter),
+    },
 )
 
 // assess and publish result.
@@ -211,46 +207,50 @@ Executing this code results in JSON output resembling the following:
 ```json
 [
   {
-    "unique": "01E58DEYE0MQJHBF4QX1EFD6Y3",
-    "identityType": "hash",
+    "unique": "01E7JQF86JMQJHBF4QX1EFD6Y3",
+    "created": "2020-05-05T15:32:34.6429938Z",
+    "identityCurrentType": "hash",
     "identityCurrent": {
-      "hash": "dAJJMYBKjswKL66H6t5N8lG155YZjJIH/IqqU2z2jYo="
+      "hash": "Vc1WRGhjPV5SoXMDfRBazQMrAcvUVzAJi0+9x+hnjbE="
     },
+    "identityPreviousType": "hash",
     "identityPrevious": null,
-    "created": "2020-04-06T18:53:50.9120813Z",
     "metadataType": "PKI",
     "metadata": {
       "provenance": {
         "Node": "origin"
       },
-      "identitySignature": "gQsGquX3Vvdck+E6zQn4npFYmN2fpdxFsoBUMRthRqYXaMojhs1oMlsj+lmVQT9oNQvojnzHg7m6X6/XPjUbvz7ODhDR+Q6bB4+ymtUQQFnPlIQChYzZYO2wyFO52Ambzk8ufyq7foUFStRXvnTmlwQk7Uo3YeWImFxPNPh9x6yFelX4lDAKsqvAEFDQ9cEArccw1WRF0x4G4Hl4bftitFY0+kl4yElVOj0P+lr2E8H1QGUF+HQc/TW6ce39mqT15s55hj2HeLl1CgO/t/E1+cdjCEyqTHF2Ug5AkxvHAr0yZ8OdAaV2PPlnTZkqgenERTMcp/dgXnfG9nCZYTwNnQ==",
-      "dataSignature": "PxpeXaO+DfIukc2zI6WgT6uJkbPASGmFMwzCDnpDIEMh8jKcwz1U26AhjgupY3PU6XjBEYAP+3s67MrqBlIElCzsiec1Jl5WWiWdZKvtdBmwGuc3WoKARhwtbNraews/P2dFSlPFZBHeLX8CKMyOuZqfH3MDGDpEP6rcmZNHN+wshVd3Pb915EYIAuw3l7PIVe5IBu9v8wrjvpRvB4sjlm2peCVBXBPT2M3S/PSzPeZurbNbUSq/rMp92BCbx/Xjj/vzgjDDEL0cgtPngpgHYrnqZiv0qOc/TrcsRiVzyP+8HKBl2LV/2XQwBNtJLl6h2ePW/nUnd8bQfWthTPi0wA==",
+      "identitySignature": "tFohwFE4I1AXi4JLkrir5GkJzts+JJzicHgpL71AMuDvEWiG6edmsk2VE46lX9mnBfV1ja56+kKhHFISQFESgyvB9H/dwoUngMxrGKKwII6SoHqXpKjGrZ6qfV8R+sjgogDQ0IKcNbB6ouGaK1+0pMAsht1vorlYGWVC9qnWpzIEHAHjyC0T6VUzoiY4TcCS2SIiIdTGFdkgxd+gGyFAmJ2pd4kSUJrnRZbWr22tsVNMkgDC/Yqca4OLYDQv0ulNHBZK10M3QP9pK7yIutFyHjo0YTzoiNZGjDxKmurwaO10+lduo1qIiEqG2U4pTdUfL4d7V0h81OZqYus/azJpPQ==",
+      "dataSignature": "30oRl1lXT2nASM9X9LYkKqQL0FWpjN8dm95H9czDya4OIsru7wwVb3PFiOgTBtAMT+V//XrXBSkr1Hhqes1K41Q03Qv3AJGYUBeImyOV60dGj0+DxKZEbNhvH1ElyzVhhDWNz2994WPbpQ5XbEzK76XGlCCBR/AIiRMKPjb1zr8DNdwlUyLz7yI5Pqt8eZxpBN4TbI/y1eCwRgRbMxIgr1bht0B38rw5mdhfy0I854HztbDmvxiQqahL4oooGWDHFrh7w0rtWHGBf3ZrtQPR16fxqu0QvRQ0N/tS7q+mqjGtkG3AlWzBJD32M11amGj9JXb/JP3vriY4t/rh1HnJ/Q==",
       "publicKey": "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUErQ2wrYVByWFlybUJMUGo3TWZsVgpTbkMwQ25iKzA4QzgrVXlReC9sbFdiZHpic09wcFVpeDJndk1lVUllcWJyRGdndTFhYzhvZ3dqUnVSZGlBTDBzCnlnQ3V0Q01ENGpCLzJkMHgyRkVndktiUmR1ZkQydGJPUTJQbmlxb0pyOUliWUhNSllXQUtES1dyQ1hjVitnNUoKay9oS1NDdG1Ecmd2R04zZ21iYXJndFdtRkdMYklHY0o5SHFmQWVMYzR0dUNaOTFpL0kxY3ZLVWFxZmRBSmtKZQpFYnJIdzBQdUdEeXdwcWZQbERDY2xKWCtjT09QVzRqQ0dXZDREYjQydmxTakNCZnE0WjBNQlgrK3U0UDh1eXg2ClNDMkxybEVkUk80M3lCL3J5QlIxN0lpb0NTeHVraGF2ZlpIYllQRXdyTFRZYXJ4OEZZNjJGVWdjZmZ6Y3NtaHgKWndJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==",
       "signerType": "x509.ParsePKCS1",
       "signerMetadata": {
+        "result": "Success",
         "signerHash": "SHA256",
         "reducerHash": "SHA256"
       }
     }
   },
   {
-    "unique": "01E58DEYE0MQJHBF4QX3A9X93K",
-    "identityType": "hash",
+    "unique": "01E7JQF86JMQJHBF4QX3A9X93K",
+    "created": "2020-05-05T15:32:34.6429938Z",
+    "identityCurrentType": "hash",
     "identityCurrent": {
-      "hash": "dAJJMYBKjswKL66H6t5N8lG155YZjJIH/IqqU2z2jYo="
+      "hash": "Vc1WRGhjPV5SoXMDfRBazQMrAcvUVzAJi0+9x+hnjbE="
     },
+    "identityPreviousType": "hash",
     "identityPrevious": null,
-    "created": "2020-04-06T18:53:50.9120813Z",
-    "metadataType": "assess",
+    "metadataType": "assessment",
     "metadata": {
       "provenance": {
         "Node": "evaluation"
       },
-      "assessorType": "verifier",
+      "assessorType": "x509.ParsePKCS1",
       "assessorMetadata": {
+        "result": "Success",
         "validSignature": true,
         "unique": [
-          "01E58DEYE0MQJHBF4QX1EFD6Y3"
+          "01E7JQF86JMQJHBF4QX1EFD6Y3"
         ]
       }
     }
@@ -300,8 +300,8 @@ pkg/
     hashprovider/                        Hash Provider (reduce data to unique hash)
         contract.go                      Hash provider abstraction
         md5/                             MD5-based implementation
+        passthrough/                     passthrough implementation
         sha256/                          SHA256-based implementation
-        stub/                            hashprovider stub for testing
 
     identity/                            Identity
         contract.go                      Identity abstraction
