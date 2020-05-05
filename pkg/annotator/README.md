@@ -148,7 +148,7 @@ Annotations are created by annotators and persisted in an annotation store.
 
 ### Annotation Store
 
-The SDK defines an [annotation store abstraction](.../annotation/store/contract.go) and includes an [in-process, in-memory implementation](../annotation/store/memory/store.go) to facilitate the example code.
+The SDK defines an [annotation store abstraction](../annotation/store/contract.go) and includes an [in-process, in-memory implementation](../annotation/store/memory/store.go) to facilitate the example code.
 
 An annotation store persists annotations for retrieval by identity.  It understands the common annotation envelope and for a given identity will return annotations linked by its previous identity property.  This is recursive; all annotations for a given identity and its previous identities are returned.
 
