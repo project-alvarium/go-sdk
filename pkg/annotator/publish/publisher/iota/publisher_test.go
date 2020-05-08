@@ -100,7 +100,7 @@ func TestPublisher_Publish(t *testing.T) {
 			return testCase{
 				name:        "no annotations",
 				annotations: []*annotation.Instance{},
-				sdk:         iota.New(name, clientStub.New(nil, nil, nil, nil)),
+				sdk:         iota.New(Name, clientStub.New(nil, nil, nil, nil)),
 				expectedResult: func(sut *publisher) metadata.Contract {
 					return sut.failureNoAnnotations()
 				},
@@ -108,7 +108,7 @@ func TestPublisher_Publish(t *testing.T) {
 		}(),
 		func() testCase {
 			resultTx := testInternal.FactoryRandomFixedSizeBundle(1)[0]
-			result := publisherMetadata.New(name, resultTx.Address, resultTx.Hash, resultTx.Tag)
+			result := publisherMetadata.New(Name, resultTx.Address, resultTx.Hash, resultTx.Tag)
 			return testCase{
 				name: "single annotation",
 				annotations: []*annotation.Instance{
@@ -127,7 +127,7 @@ func TestPublisher_Publish(t *testing.T) {
 		}(),
 		func() testCase {
 			resultTx := testInternal.FactoryRandomFixedSizeBundle(1)[0]
-			result := publisherMetadata.New(name, resultTx.Address, resultTx.Hash, resultTx.Tag)
+			result := publisherMetadata.New(Name, resultTx.Address, resultTx.Hash, resultTx.Tag)
 			return testCase{
 				name: "single annotation as structure",
 				annotations: []*annotation.Instance{
@@ -155,7 +155,7 @@ func TestPublisher_Publish(t *testing.T) {
 		}(),
 		func() testCase {
 			resultTx := testInternal.FactoryRandomFixedSizeBundle(1)[0]
-			result := publisherMetadata.New(name, resultTx.Address, resultTx.Hash, resultTx.Tag)
+			result := publisherMetadata.New(Name, resultTx.Address, resultTx.Hash, resultTx.Tag)
 			idProvider := identityProvider.New(sha256.New())
 			data := test.FactoryRandomByteSlice()
 			id1 := idProvider.Derive(test.FactoryRandomByteSlice())
@@ -203,10 +203,10 @@ func TestPublisher_Kind(t *testing.T) {
 
 	result := sut.Kind()
 
-	assert.Equal(t, name, result)
+	assert.Equal(t, Name, result)
 }
 
 // TestKind tests Kind.
 func TestKind(t *testing.T) {
-	assert.Equal(t, name, Kind())
+	assert.Equal(t, Name, Kind())
 }

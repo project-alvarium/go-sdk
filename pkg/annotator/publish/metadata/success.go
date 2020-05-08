@@ -19,7 +19,10 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
 )
 
-const kind = "publish"
+const (
+	Kind = "publish"
+	PublisherMetadata = "publisherMetadata"
+)
 
 // Success is the annotator-specific metadata.
 type Success struct {
@@ -39,5 +42,5 @@ func NewSuccess(provenance provenance.Contract, publisherMetadata metadata.Contr
 
 // Kind returns the type of concrete implementation.
 func (*Success) Kind() string {
-	return kind
+	return Kind
 }

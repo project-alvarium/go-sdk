@@ -27,6 +27,7 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess"
+	iotaAssessor "github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/iota"
 	pkiAssessor "github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory/verifier"
 	filterFactory "github.com/project-alvarium/go-sdk/pkg/annotator/filter/matching"
@@ -257,6 +258,14 @@ func main() {
 						return ok && t.PublisherKind == ipfs.Kind()
 					},
 				),
+			),
+			assess.New(
+				p,
+				uniqueProvider,
+				idProvider,
+				persistence,
+				iotaAssessor.New(newClient(iotaURL)),
+				passthroughFilter,
 			),
 			publish.New(p, uniqueProvider, idProvider, persistence, example.New(w), passthroughFilter),
 		},

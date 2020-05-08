@@ -14,7 +14,11 @@
 
 package metadata
 
-import "github.com/project-alvarium/go-sdk/pkg/annotator"
+import (
+	"github.com/project-alvarium/go-sdk/pkg/annotator"
+)
+
+const kind = "ipfs"
 
 // Instance defines the structure that encapsulates this publisher's result.
 type Instance struct {
@@ -25,6 +29,7 @@ type Instance struct {
 
 // New is a factory function that returns an initialized Instance.
 func New(kind string, cid string) *Instance {
+	// TODO: Figure out what to do with kind
 	return &Instance{
 		kind:   kind,
 		Result: annotator.SuccessKind,
@@ -33,6 +38,11 @@ func New(kind string, cid string) *Instance {
 }
 
 // Kind returns the type of concrete implementation.
-func (i *Instance) Kind() string {
-	return i.kind
+func (*Instance) Kind() string {
+	return Kind()
+}
+
+// Kind returns the type of concrete implementation.
+func Kind() string {
+	return kind
 }
