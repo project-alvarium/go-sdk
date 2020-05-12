@@ -19,6 +19,6 @@ type Contract interface {
 	// Derive converts data to an hash value.
 	Derive(data []byte) []byte
 
-	// Name returns an implementation mnemonic.
-	Name() string
+	// Kind returns an implementation mnemonic.
+	Kind() string
 }

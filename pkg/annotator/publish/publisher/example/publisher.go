@@ -20,11 +20,8 @@ import (
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
-	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/status"
+	examplePublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/metadata"
 )
-
-const name = "example"
 
 // publisher is a receiver that encapsulates required dependencies.
 type publisher struct {
@@ -53,17 +50,17 @@ func (p *publisher) Format(s interface{}) []byte {
 // Publish retrieves and "publishes" annotations.
 func (p *publisher) Publish(annotations []*annotation.Instance) metadata.Contract {
 	if _, err := p.writer.Write(p.Format(annotations)); err != nil {
-		return publisherMetadata.New(name, status.PublisherError)
+		return examplePublisherMetadata.NewFailure(err.Error())
 	}
-	return publisherMetadata.New(name, status.Success)
+	return examplePublisherMetadata.NewSuccess()
+}
+
+// Failure creates a publisher-specific failure annotation.
+func (p *publisher) Failure(errorMessage string) metadata.Contract {
+	return examplePublisherMetadata.NewFailure(errorMessage)
 }
 
 // Kind returns an implementation mnemonic.
 func (*publisher) Kind() string {
-	return Kind()
-}
-
-// Kind returns an implementation mnemonic.
-func Kind() string {
-	return name
+	return examplePublisherMetadata.Kind
 }

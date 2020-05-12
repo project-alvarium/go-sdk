@@ -30,6 +30,9 @@ type Contract interface {
 	// Publish retrieves and "publishes" annotations.
 	Publish(annotations []*annotation.Instance) metadata.Contract
 
+	// Failure creates a publisher-specific failure annotation.
+	Failure(errorMessage string) metadata.Contract
+
 	// Kind returns an implementation mnemonic.
 	Kind() string
 }

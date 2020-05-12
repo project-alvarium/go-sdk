@@ -24,8 +24,7 @@ import (
 
 // TestFailure_Kind tests failure.Kind.
 func TestFailure_Kind(t *testing.T) {
-	kind := test.FactoryRandomString()
-	sut := NewFailure(kind, test.FactoryRandomString())
+	sut := NewFailure(test.FactoryRandomString())
 
-	assert.Equal(t, kind, sut.Kind())
+	assert.Equal(t, Kind, sut.Kind())
 }

@@ -19,7 +19,7 @@ import (
 	"testing"
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
-	signer "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
+	pkcsSigner "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
@@ -52,7 +52,7 @@ func TestVerifier_VerifyIdentity(t *testing.T) {
 			publicKey := testInternal.ValidPublicKey
 			data := test.FactoryRandomByteSlice()
 			id := identityProvider.New(hashProvider).Derive(data)
-			s := signer.New(signerHash, testInternal.ValidPrivateKey, publicKey, hashProvider)
+			s := pkcsSigner.New(signerHash, testInternal.ValidPrivateKey, publicKey, hashProvider)
 			signature, _ := s.Sign(id.Binary(), data)
 			return testCase{
 				name:        "valid",
@@ -116,7 +116,7 @@ func TestVerifier_VerifyIdentity(t *testing.T) {
 			hashProvider := sha256.New()
 			data := test.FactoryRandomByteSlice()
 			id := identityProvider.New(hashProvider).Derive(data)
-			s := signer.New(signerHash, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider)
+			s := pkcsSigner.New(signerHash, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider)
 			signature, _ := s.Sign(id.Binary(), data)
 			return testCase{
 				name:        "invalid (nil public key)",
@@ -161,7 +161,7 @@ func TestVerifier_VerifyIdentity(t *testing.T) {
 			hashProvider := sha256.New()
 			data := test.FactoryRandomByteSlice()
 			id := identityProvider.New(hashProvider).Derive(data)
-			s := signer.New(signerHash, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider)
+			s := pkcsSigner.New(signerHash, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider)
 			signature, _ := s.Sign(id.Binary(), data)
 			return testCase{
 				name:        "invalid (invalid public key)",
@@ -207,7 +207,7 @@ func TestVerifier_VerifyData(t *testing.T) {
 			hashProvider := sha256.New()
 			publicKey := testInternal.ValidPublicKey
 			data := test.FactoryRandomByteSlice()
-			s := signer.New(signerHash, testInternal.ValidPrivateKey, publicKey, hashProvider)
+			s := pkcsSigner.New(signerHash, testInternal.ValidPrivateKey, publicKey, hashProvider)
 			_, signature := s.Sign(hashProvider.Derive(data), data)
 			return testCase{
 				name:        "valid",
@@ -267,7 +267,7 @@ func TestVerifier_VerifyData(t *testing.T) {
 			signerHash := crypto.SHA256
 			hashProvider := sha256.New()
 			data := test.FactoryRandomByteSlice()
-			s := signer.New(signerHash, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider)
+			s := pkcsSigner.New(signerHash, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider)
 			_, signature := s.Sign(hashProvider.Derive(data), data)
 			return testCase{
 				name:        "invalid (nil public key)",
@@ -305,7 +305,7 @@ func TestVerifier_VerifyData(t *testing.T) {
 			signerHash := crypto.SHA256
 			hashProvider := sha256.New()
 			data := test.FactoryRandomByteSlice()
-			s := signer.New(signerHash, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider)
+			s := pkcsSigner.New(signerHash, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider)
 			signature, _ := s.Sign(hashProvider.Derive(data), data)
 			return testCase{
 				name:        "invalid (invalid public key)",

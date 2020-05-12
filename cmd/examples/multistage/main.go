@@ -33,7 +33,7 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/filter/passthrough"
 	pkiAnnotator "github.com/project-alvarium/go-sdk/pkg/annotator/pki"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2"
+	tpmSigner "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/factory"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/provisioner"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
@@ -43,6 +43,7 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/writer/testwriter"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs"
+	ipfsPublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/sdk"
@@ -139,12 +140,12 @@ func main() {
 				uniqueProvider,
 				idProvider,
 				persistence,
-				signtpmv2.NewWithRWC(
+				tpmSigner.NewWithRWC(
 					hashProvider,
 					publicKey,
 					tpmHandle,
 					tpmPath,
-					signtpmv2.RequestedCapabilityProperties{
+					tpmSigner.RequestedCapabilityProperties{
 						"Version":      tpm2.FamilyIndicator,
 						"Manufacturer": tpm2.Manufacturer,
 					},
@@ -252,8 +253,8 @@ func main() {
 				iota.New(testInternal.FactoryRandomSeedString(), iotaDepth, iotaMWM, newClient(iotaURL)),
 				filterFactory.New(
 					func(annotation *annotation.Instance) bool {
-						t, ok := annotation.Metadata.(*publishMetadata.Success)
-						return ok && t.PublisherKind == ipfs.Kind()
+						t, ok := annotation.Metadata.(*publishMetadata.Instance)
+						return ok && t.PublisherKind == ipfsPublisherMetadata.Kind
 					},
 				),
 			),

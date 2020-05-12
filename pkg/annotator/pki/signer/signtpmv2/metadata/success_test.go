@@ -18,15 +18,13 @@ import (
 	"testing"
 
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
-	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/stretchr/testify/assert"
 )
 
 // TestSuccess_Kind tests success.Kind.
 func TestSuccess_Kind(t *testing.T) {
-	kind := test.FactoryRandomString()
-	sut := NewSuccess(kind, sha256.New().Name(), CapabilityProperties{})
+	sut := NewSuccess(sha256.Kind, CapabilityProperties{})
 
-	assert.Equal(t, kind, sut.Kind())
+	assert.Equal(t, Kind, sut.Kind())
 }

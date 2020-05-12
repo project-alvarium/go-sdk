@@ -26,9 +26,10 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory/fail"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory/verifier"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/metadata"
+	pkiAssessorMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki"
-	signer "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
+	pkcsSigner "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
+	pkcsSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/status"
@@ -65,7 +66,7 @@ func TestAssessor_Assess(t *testing.T) {
 		h                  crypto.Hash
 		verifier           factory.Contract
 		preCondition       func(t *testing.T, sut *assessor) []*annotation.Instance
-		expectedAssessment func() *metadata.Instance
+		expectedAssessment func() *pkiAssessorMetadata.Success
 	}
 
 	cases := []testCase{
@@ -80,7 +81,7 @@ func TestAssessor_Assess(t *testing.T) {
 				ulid.New(),
 				idProvider,
 				persistence,
-				signer.New(h, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider),
+				pkcsSigner.New(h, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider),
 			)
 			data := test.FactoryRandomByteSlice()
 			var annotations []*annotation.Instance
@@ -101,12 +102,12 @@ func TestAssessor_Assess(t *testing.T) {
 					assert.NotNil(t, annotations)
 					return annotations
 				},
-				expectedAssessment: func() *metadata.Instance {
+				expectedAssessment: func() *pkiAssessorMetadata.Success {
 					var uniques []string
 					for i := range annotations {
 						uniques = append(uniques, annotations[i].Unique)
 					}
-					return metadata.New(name, true, uniques)
+					return pkiAssessorMetadata.NewSuccess(true, uniques)
 				},
 			}
 		}(),
@@ -121,7 +122,7 @@ func TestAssessor_Assess(t *testing.T) {
 				ulid.New(),
 				idProvider,
 				persistence,
-				signer.New(h, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider),
+				pkcsSigner.New(h, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider),
 			)
 			data1 := test.FactoryRandomByteSlice()
 			data2 := test.FactoryRandomByteSlice()
@@ -148,12 +149,12 @@ func TestAssessor_Assess(t *testing.T) {
 					assert.NotNil(t, annotations)
 					return annotations
 				},
-				expectedAssessment: func() *metadata.Instance {
+				expectedAssessment: func() *pkiAssessorMetadata.Success {
 					var uniques []string
 					for i := range annotations {
 						uniques = append(uniques, annotations[i].Unique)
 					}
-					return metadata.New(name, true, uniques)
+					return pkiAssessorMetadata.NewSuccess(true, uniques)
 				},
 			}
 		}(),
@@ -176,8 +177,8 @@ func TestAssessor_Assess(t *testing.T) {
 					assert.NotNil(t, annotations)
 					return annotations
 				},
-				expectedAssessment: func() *metadata.Instance {
-					return metadata.New(name, true, []string{})
+				expectedAssessment: func() *pkiAssessorMetadata.Success {
+					return pkiAssessorMetadata.NewSuccess(true, []string{})
 				},
 			}
 		}(),
@@ -199,7 +200,7 @@ func TestAssessor_Assess(t *testing.T) {
 						ulid.New(),
 						idProvider,
 						persistence,
-						signer.New(h, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider),
+						pkcsSigner.New(h, testInternal.ValidPrivateKey, testInternal.ValidPublicKey, hashProvider),
 					)
 
 					assert.Equal(
@@ -214,12 +215,12 @@ func TestAssessor_Assess(t *testing.T) {
 					assert.NotNil(t, annotations)
 					return annotations
 				},
-				expectedAssessment: func() *metadata.Instance {
+				expectedAssessment: func() *pkiAssessorMetadata.Success {
 					var uniques []string
 					for i := range annotations {
 						uniques = append(uniques, annotations[i].Unique)
 					}
-					return metadata.New(name, false, uniques)
+					return pkiAssessorMetadata.NewSuccess(false, uniques)
 				},
 			}
 		}(),
@@ -243,5 +244,6 @@ func TestAssessor_Assess(t *testing.T) {
 // TestAssessor_Kind tests verifier.Kind.
 func TestAssessor_Kind(t *testing.T) {
 	sut := newSUT(verifier.New())
-	assert.Equal(t, name, sut.Kind())
+
+	assert.Equal(t, pkcsSignerMetadata.Kind, sut.Kind())
 }

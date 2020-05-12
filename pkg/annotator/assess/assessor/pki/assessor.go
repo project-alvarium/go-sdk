@@ -20,10 +20,8 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/factory"
 	pkiAssessorMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/metadata"
 	pkiAnnotatorMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
+	pkcsSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
 )
-
-const name = signpkcs1v15.Name
 
 // assessor is a receiver that encapsulates required dependencies.
 type assessor struct {
@@ -47,21 +45,27 @@ func (*assessor) TearDown() {}
 func (a *assessor) Assess(annotations []*annotation.Instance) metadata.Contract {
 	uniques := make([]string, 0)
 	for i := range annotations {
-		if annotations[i].MetadataKind != pkiAnnotatorMetadata.Kind() {
+		if annotations[i].MetadataKind != pkiAnnotatorMetadata.Kind {
 			continue
 		}
 
 		m := annotations[i].Metadata.(*pkiAnnotatorMetadata.Instance)
 		v := a.factory.Create(m.SignerMetadata)
-		if v == nil || v.VerifyIdentity(annotations[i].CurrentIdentity.Binary(), m.IdentitySignature, m.PublicKey) == false {
-			return pkiAssessorMetadata.New(a.Kind(), false, []string{annotations[i].Unique})
+		if v == nil ||
+			v.VerifyIdentity(annotations[i].CurrentIdentity.Binary(), m.IdentitySignature, m.PublicKey) == false {
+			return pkiAssessorMetadata.NewSuccess(false, []string{annotations[i].Unique})
 		}
 		uniques = append(uniques, annotations[i].Unique)
 	}
-	return pkiAssessorMetadata.New(a.Kind(), true, uniques)
+	return pkiAssessorMetadata.NewSuccess(true, uniques)
+}
+
+// Failure creates a publisher-specific failure annotation.
+func (a *assessor) Failure(errorMessage string) metadata.Contract {
+	return pkiAssessorMetadata.NewFailure(errorMessage)
 }
 
 // Kind returns an implementation mnemonic.
 func (*assessor) Kind() string {
-	return name
+	return pkcsSignerMetadata.Kind
 }

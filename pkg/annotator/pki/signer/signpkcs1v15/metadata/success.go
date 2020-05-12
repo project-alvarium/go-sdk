@@ -21,19 +21,19 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/hash"
 )
 
+const SuccessResult = annotator.SuccessKind
+
 // Success is the metadata specific to this signer implementation that results from an annotator event.
 type Success struct {
-	kind        string
 	Result      string `json:"result"`
 	SignerHash  string `json:"signerHash"`
 	ReducerHash string `json:"reducerHash"`
 }
 
 // NewSuccess is a factory function that returns an initialized Success.
-func NewSuccess(kind string, signerHash crypto.Hash, reducerHash string) *Success {
+func NewSuccess(signerHash crypto.Hash, reducerHash string) *Success {
 	return &Success{
-		kind:        kind,
-		Result:      annotator.SuccessKind,
+		Result:      SuccessResult,
 		SignerHash:  hash.FromSigner(signerHash),
 		ReducerHash: reducerHash,
 	}
@@ -41,5 +41,5 @@ func NewSuccess(kind string, signerHash crypto.Hash, reducerHash string) *Succes
 
 // Kind returns the type of concrete implementation.
 func (s *Success) Kind() string {
-	return s.kind
+	return Kind
 }

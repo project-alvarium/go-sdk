@@ -17,9 +17,8 @@ package fail
 import (
 	"testing"
 
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/hash"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
+	pkcsSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 
 	"github.com/stretchr/testify/assert"
@@ -44,7 +43,7 @@ func TestFactory_Create(t *testing.T) {
 				for _, h := range hash.SupportedSigner() {
 					sut := newSUT()
 
-					result := sut.Create(metadata.NewSuccess(signpkcs1v15.Name, h, sha256.New().Name()))
+					result := sut.Create(pkcsSignerMetadata.NewSuccess(h, sha256.Kind))
 
 					assert.Nil(t, result)
 				}

@@ -21,15 +21,13 @@ import (
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/factory"
-	tpmMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/metadata"
+	tpmSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/provisioner"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider"
 
 	"github.com/google/go-tpm/tpm2"
 	"github.com/google/go-tpm/tpmutil"
 )
-
-const Name = "tpm2.0"
 
 // RequestedCapabilityProperties identifies the TPM capability properties requested to be included in annotations.
 type RequestedCapabilityProperties map[string]tpm2.TPMProp
@@ -43,7 +41,7 @@ type signer struct {
 	scheme                        *tpm2.SigScheme
 	path                          string
 	RequestedCapabilityProperties RequestedCapabilityProperties
-	capabilityProperties          tpmMetadata.CapabilityProperties
+	capabilityProperties          tpmSignerMetadata.CapabilityProperties
 	m                             sync.Mutex
 	signerError                   error
 }
@@ -85,7 +83,7 @@ func New(
 }
 
 // getCapabilityProperties returns initialized TpmContext.
-func (s *signer) getCapabilityProperties() tpmMetadata.CapabilityProperties {
+func (s *signer) getCapabilityProperties() tpmSignerMetadata.CapabilityProperties {
 	getProperty := func(requestedProperty tpm2.TPMProp) string {
 		var data []interface{}
 		var err error
@@ -102,7 +100,7 @@ func (s *signer) getCapabilityProperties() tpmMetadata.CapabilityProperties {
 		return string(bytes.Trim(b, "\x00"))
 	}
 
-	contexts := make(tpmMetadata.CapabilityProperties)
+	contexts := make(tpmSignerMetadata.CapabilityProperties)
 	for i := range s.RequestedCapabilityProperties {
 		contexts[i] = getProperty(s.RequestedCapabilityProperties[i])
 	}
@@ -153,7 +151,7 @@ func (s *signer) Sign(identity, data []byte) (identitySignature, dataSignature [
 // Metadata returns implementation-specific metadata.
 func (s *signer) Metadata() metadata.Contract {
 	if s.signerError != nil {
-		return tpmMetadata.NewFailure(Name, s.signerError.Error())
+		return tpmSignerMetadata.NewFailure(s.signerError.Error())
 	}
-	return tpmMetadata.NewSuccess(Name, s.hashProvider.Name(), s.capabilityProperties)
+	return tpmSignerMetadata.NewSuccess(s.hashProvider.Kind(), s.capabilityProperties)
 }

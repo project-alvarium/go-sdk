@@ -16,22 +16,22 @@ package metadata
 
 import "github.com/project-alvarium/go-sdk/pkg/annotator"
 
+const SuccessResult = annotator.SuccessKind
+
 // CapabilityProperties defines type to contain the TPM capability properties.
 type CapabilityProperties map[string]string
 
 // Success is the metadata specific to this signer implementation that results from an annotator event.
 type Success struct {
-	kind                 string
 	Result               string               `json:"result"`
 	ReducerHash          string               `json:"reducerHash"`
 	CapabilityProperties CapabilityProperties `json:"capabilityProperties"`
 }
 
 // NewSuccess is a factory function that returns an initialized Success.
-func NewSuccess(kind string, reducerHash string, capabilityProperties CapabilityProperties) *Success {
+func NewSuccess(reducerHash string, capabilityProperties CapabilityProperties) *Success {
 	return &Success{
-		kind:                 kind,
-		Result:               annotator.SuccessKind,
+		Result:               SuccessResult,
 		ReducerHash:          reducerHash,
 		CapabilityProperties: capabilityProperties,
 	}
@@ -39,5 +39,5 @@ func NewSuccess(kind string, reducerHash string, capabilityProperties Capability
 
 // Kind returns the type of concrete implementation.
 func (s *Success) Kind() string {
-	return s.kind
+	return Kind
 }

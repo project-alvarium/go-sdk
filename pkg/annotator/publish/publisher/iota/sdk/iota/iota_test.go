@@ -20,7 +20,7 @@ import (
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
-	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
+	iotaPublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk/iota/client"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk/iota/client/stub"
 	"github.com/project-alvarium/go-sdk/pkg/test"
@@ -69,7 +69,7 @@ func TestInstance_Send(t *testing.T) {
 				client:      newClient(nil, res, nil),
 				annotations: test.FactoryRandomByteSlice(),
 				expectedResult: func(_ *instance) metadata.Contract {
-					return publisherMetadata.New(kind, res[0].Address, res[0].Hash, res[0].Tag)
+					return iotaPublisherMetadata.NewSuccess(res[0].Address, res[0].Hash, res[0].Tag)
 				},
 			}
 		}(),

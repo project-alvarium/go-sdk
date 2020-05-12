@@ -20,7 +20,7 @@ import (
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier/verifypkcs1v15"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
+	pkcsSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/passthrough"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
@@ -183,7 +183,7 @@ func TestSigner_Metadata(t *testing.T) {
 
 				result := sut.Metadata()
 
-				assert.Equal(t, metadata.NewSuccess(Name, signerHash, reducerHash.Name()), result)
+				assert.Equal(t, pkcsSignerMetadata.NewSuccess(signerHash, reducerHash.Kind()), result)
 			},
 		},
 		{
@@ -205,7 +205,7 @@ func TestSigner_Metadata(t *testing.T) {
 
 				assert.Equal(
 					t,
-					testInternal.Marshal(t, metadata.NewFailure(Name, "crypto/rsa: input must be hashed message")),
+					testInternal.Marshal(t, pkcsSignerMetadata.NewFailure("crypto/rsa: input must be hashed message")),
 					testInternal.Marshal(t, result),
 				)
 			},
