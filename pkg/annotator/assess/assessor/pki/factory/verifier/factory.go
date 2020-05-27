@@ -22,11 +22,9 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier/verifypkcs1v15"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier/verifytpmv2"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/reducer"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/hash"
-	pkcs "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2"
-	tpm "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/metadata"
+	pkcsSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
+	tpmSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/metadata"
 )
 
 // instances defines the map used to track verifier instances.
@@ -48,7 +46,7 @@ func New() *Factory {
 
 // SignPKCS1v15Verifier returns a verifier.
 func (f *Factory) SignPKCS1v15Verifier(signerHash, reducerHash string) verifier.Contract {
-	instanceName := signpkcs1v15.Name + signerHash + reducerHash
+	instanceName := pkcsSignerMetadata.Kind + signerHash + reducerHash
 	if _, ok := f.instances[instanceName]; !ok {
 		signerHash := hash.ToSigner(signerHash)
 		if signerHash == 0 {
@@ -65,7 +63,7 @@ func (f *Factory) SignPKCS1v15Verifier(signerHash, reducerHash string) verifier.
 
 // SignTPMv2Verifier returns a verifier.
 func (f *Factory) SignTPMv2Verifier(reducerHash string) verifier.Contract {
-	instanceName := signtpmv2.Name + reducerHash
+	instanceName := tpmSignerMetadata.Kind + reducerHash
 	if _, ok := f.instances[instanceName]; !ok {
 		reducerHash := reducer.To(reducerHash)
 		if reducerHash == nil {
@@ -82,12 +80,12 @@ func (f *Factory) Create(m metadata.Contract) verifier.Contract {
 	defer f.m.Unlock()
 
 	switch m.Kind() {
-	case signpkcs1v15.Name:
-		if m, ok := m.(*pkcs.Success); ok {
+	case pkcsSignerMetadata.Kind:
+		if m, ok := m.(*pkcsSignerMetadata.Success); ok {
 			return f.SignPKCS1v15Verifier(m.SignerHash, m.ReducerHash)
 		}
-	case signtpmv2.Name:
-		if m, ok := m.(*tpm.Success); ok {
+	case tpmSignerMetadata.Kind:
+		if m, ok := m.(*tpmSignerMetadata.Success); ok {
 			return f.SignTPMv2Verifier(m.ReducerHash)
 		}
 	}

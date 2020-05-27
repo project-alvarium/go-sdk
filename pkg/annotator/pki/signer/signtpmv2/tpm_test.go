@@ -21,7 +21,7 @@ import (
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/pki/verifier/verifypkcs1v15"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/factory"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/metadata"
+	tpmSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/provisioner"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
@@ -111,7 +111,7 @@ func TestSigner_PublicKey(t *testing.T) {
 // TestSigner_Metadata tests signtpmv2.Metadata.
 func TestSigner_Metadata(t *testing.T) {
 	assertCapabilityPropertiesHas := func(t *testing.T, result interface{}, name string) {
-		actual := result.(*metadata.Success)
+		actual := result.(*tpmSignerMetadata.Success)
 		if assert.NotNil(t, actual) {
 			if assert.NotNil(t, actual) {
 				_, exists := actual.CapabilityProperties[name]
@@ -141,7 +141,7 @@ func TestSigner_Metadata(t *testing.T) {
 						t,
 						testInternal.Marshal(
 							t,
-							metadata.NewSuccess(Name, reducerHash.Name(), metadata.CapabilityProperties{}),
+							tpmSignerMetadata.NewSuccess(reducerHash.Kind(), tpmSignerMetadata.CapabilityProperties{}),
 						),
 						testInternal.Marshal(t, result),
 					)
@@ -168,7 +168,7 @@ func TestSigner_Metadata(t *testing.T) {
 						t,
 						testInternal.Marshal(
 							t,
-							metadata.NewSuccess(Name, reducerHash.Name(), expectedCapabilityProperties),
+							tpmSignerMetadata.NewSuccess(reducerHash.Kind(), expectedCapabilityProperties),
 						),
 						testInternal.Marshal(t, result),
 					)
@@ -196,7 +196,7 @@ func TestSigner_Metadata(t *testing.T) {
 						t,
 						testInternal.Marshal(
 							t,
-							metadata.NewSuccess(Name, reducerHash.Name(), expectedCapabilityProperties),
+							tpmSignerMetadata.NewSuccess(reducerHash.Kind(), expectedCapabilityProperties),
 						),
 						testInternal.Marshal(t, result),
 					)
@@ -216,7 +216,7 @@ func TestSigner_Metadata(t *testing.T) {
 
 					assert.Equal(
 						t,
-						testInternal.Marshal(t, metadata.NewFailure(Name, "nil TPM handle")),
+						testInternal.Marshal(t, tpmSignerMetadata.NewFailure("nil TPM handle")),
 						testInternal.Marshal(t, result),
 					)
 				},

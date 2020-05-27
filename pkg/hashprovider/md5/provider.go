@@ -16,7 +16,7 @@ package md5
 
 import crypto "crypto/md5"
 
-const name = "md5"
+const Kind = "md5"
 
 // provider is a receiver that encapsulates required dependencies.
 type provider struct{}
@@ -32,12 +32,7 @@ func (*provider) Derive(data []byte) []byte {
 	return h[:]
 }
 
-// Name returns an implementation mnemonic.
-func (*provider) Name() string {
-	return Name()
-}
-
-// Name returns an implementation mnemonic.
-func Name() string {
-	return name
+// Kind returns an implementation mnemonic.
+func (*provider) Kind() string {
+	return Kind
 }

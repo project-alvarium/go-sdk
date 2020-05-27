@@ -21,13 +21,12 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
-	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/metadata"
+	examplePublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/writer"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/writer/failwriter"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/writer/testwriter"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
-	"github.com/project-alvarium/go-sdk/pkg/status"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/stretchr/testify/assert"
@@ -92,7 +91,7 @@ func TestPublisher_Publish(t *testing.T) {
 						metadataStub.New(test.FactoryRandomString(), test.FactoryRandomString()),
 					),
 				},
-				expectedResult: publisherMetadata.New(name, status.PublisherError),
+				expectedResult: examplePublisherMetadata.NewFailure(failwriter.WriteErrorMessage),
 				expectedGet:    nil,
 			}
 		}(),
@@ -108,7 +107,7 @@ func TestPublisher_Publish(t *testing.T) {
 				name:           "single annotation as string",
 				writer:         testwriter.New(),
 				annotations:    annotations,
-				expectedResult: publisherMetadata.New(name, status.Success),
+				expectedResult: examplePublisherMetadata.NewSuccess(),
 				expectedGet:    annotations,
 			}
 		}(),
@@ -138,7 +137,7 @@ func TestPublisher_Publish(t *testing.T) {
 				name:           "single annotation as structure",
 				writer:         testwriter.New(),
 				annotations:    annotations,
-				expectedResult: publisherMetadata.New(name, status.Success),
+				expectedResult: examplePublisherMetadata.NewSuccess(),
 				expectedGet:    annotations,
 			}
 		}(),
@@ -166,7 +165,7 @@ func TestPublisher_Publish(t *testing.T) {
 				name:           "two annotations",
 				writer:         testwriter.New(),
 				annotations:    annotations,
-				expectedResult: publisherMetadata.New(name, status.Success),
+				expectedResult: examplePublisherMetadata.NewSuccess(),
 				expectedGet:    annotations,
 			}
 		}(),
@@ -197,10 +196,5 @@ func TestPublisher_Kind(t *testing.T) {
 
 	result := sut.Kind()
 
-	assert.Equal(t, name, result)
-}
-
-// TestKind tests Kind.
-func TestKind(t *testing.T) {
-	assert.Equal(t, name, Kind())
+	assert.Equal(t, examplePublisherMetadata.Kind, result)
 }

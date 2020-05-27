@@ -23,7 +23,7 @@ import (
 )
 
 // newSUT returns a new system under test.
-func newSUT(hash []byte) *identity {
+func newSUT(hash []byte) *Identity {
 	return New(hash)
 }
 
@@ -53,5 +53,5 @@ func TestIdentity_Kind(t *testing.T) {
 
 	result := sut.Kind()
 
-	assert.Equal(t, name, result)
+	assert.Equal(t, Kind, result)
 }

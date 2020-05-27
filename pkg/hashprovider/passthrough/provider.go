@@ -16,13 +16,13 @@ package passthrough
 
 // provider is a receiver that encapsulates required dependencies.
 type provider struct {
-	name string
+	kind string
 }
 
 // New is a factory function that returns an initialized provider.
-func New(name string) *provider {
+func New(kind string) *provider {
 	return &provider{
-		name: name,
+		kind: kind,
 	}
 }
 
@@ -31,7 +31,7 @@ func (*provider) Derive(data []byte) []byte {
 	return data
 }
 
-// Name returns an implementation mnemonic.
-func (p *provider) Name() string {
-	return p.name
+// Kind returns an implementation mnemonic.
+func (p *provider) Kind() string {
+	return p.kind
 }

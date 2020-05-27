@@ -187,8 +187,8 @@ assess/                                  Assessor annotator
                 contract.go              PKI verifier abstraction
                 verifypkcs1v15/          PKCS1v15 verifier implementation
                 verifytpmv2/             TPMv2 verifier implementation
+        stub/                            Assessor stub for testing
     metadata/                            Common assessor-annotator annotation definitions
-    stub/                                Assessor stub for testing
     annotator.go                         Assessor annotator implementation
 
 filter/                                  Annotation filter implementation
@@ -232,7 +232,7 @@ publish/                                 Publisher annotator
                 contract.go              IPFS SDK contract
                 ipfs/                    IPFS SDK facade
                 stub/                    IPFS SDK stub for testing
-    stub/                                Publish stub for testing
+        stub/                            Publisher stub for testing
     annotator.go                         Publisher annotator implementation
 
 stub/                                    Annotator stub for testing

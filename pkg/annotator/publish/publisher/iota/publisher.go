@@ -19,13 +19,11 @@ import (
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
-	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
+	iotaPublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk/iota"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/sdk/iota/client"
 )
-
-const name = "iota"
 
 // publisher is a receiver that encapsulates required dependencies.
 type publisher struct {
@@ -47,7 +45,7 @@ func newWithIOTA(seed string, depth uint64, mwm uint64, sdk sdk.Contract) *publi
 
 // New is a factory function that returns an initialized publisher.
 func New(seed string, depth uint64, mwm uint64, client client.Contract) *publisher {
-	return newWithIOTA(seed, depth, mwm, iota.New(name, client))
+	return newWithIOTA(seed, depth, mwm, iota.New(iotaPublisherMetadata.Kind, client))
 }
 
 // SetUp is called once when the publisher is instantiated.
@@ -57,8 +55,8 @@ func (*publisher) SetUp() {}
 func (*publisher) TearDown() {}
 
 // failureNoAnnotations returns annotations for failure case; separated to facilitate unit testing.
-func (p *publisher) failureNoAnnotations() *publishMetadata.Failure {
-	return publishMetadata.NewFailure(p.Kind(), "IOTA Tangle publisher received 0 annotations")
+func (p *publisher) failureNoAnnotations() *iotaPublisherMetadata.Failure {
+	return iotaPublisherMetadata.NewFailure("IOTA Tangle publisher received 0 annotations")
 }
 
 // Publish retrieves and "publishes" annotations.
@@ -71,12 +69,12 @@ func (p *publisher) Publish(annotations []*annotation.Instance) metadata.Contrac
 	return p.sdk.Send(p.seed, p.depth, p.mwm, marshalledAnnotations)
 }
 
-// Kind returns an implementation mnemonic.
-func (*publisher) Kind() string {
-	return Kind()
+// Failure creates a publisher-specific failure annotation.
+func (p *publisher) Failure(errorMessage string) metadata.Contract {
+	return iotaPublisherMetadata.NewFailure(errorMessage)
 }
 
 // Kind returns an implementation mnemonic.
-func Kind() string {
-	return name
+func (*publisher) Kind() string {
+	return iotaPublisherMetadata.Kind
 }

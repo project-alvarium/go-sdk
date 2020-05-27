@@ -19,22 +19,22 @@ import (
 	"strings"
 )
 
-const name = "hash"
+const Kind = "hash"
 
-// identity is a receiver that encapsulates required dependencies.
-type identity struct {
+// Identity is a receiver that encapsulates required dependencies.
+type Identity struct {
 	Hash []byte `json:"hash"`
 }
 
-// New is a factory function that returns an initialized identity.
-func New(hash []byte) *identity {
-	return &identity{
+// New is a factory function that returns an initialized Identity.
+func New(hash []byte) *Identity {
+	return &Identity{
 		Hash: hash,
 	}
 }
 
 // Binary returns a unique key based on identity used within the SDK.
-func (i *identity) Binary() []byte {
+func (i *Identity) Binary() []byte {
 	return i.Hash
 }
 
@@ -45,11 +45,11 @@ func toPrintable(b []byte) string {
 }
 
 // Printable returns a unique key based on identity used within the SDK.
-func (i *identity) Printable() string {
+func (i *Identity) Printable() string {
 	return toPrintable(i.Hash)
 }
 
 // Kind returns the type of concrete implementation.
-func (*identity) Kind() string {
-	return name
+func (*Identity) Kind() string {
+	return Kind
 }

@@ -18,15 +18,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/project-alvarium/go-sdk/internal/pkg/ipfs/sdk"
+	"github.com/project-alvarium/go-sdk/internal/pkg/ipfs/sdk/ipfs"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
-	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
-	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/sdk"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/sdk/ipfs"
+	ipfsPublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
 )
-
-const name = "ipfs"
 
 // publisher is a receiver that encapsulates required dependencies.
 type publisher struct {
@@ -54,8 +51,8 @@ func (p *publisher) SetUp() {}
 func (p *publisher) TearDown() {}
 
 // failureAdd returns annotations for failure case; separated to facilitate unit testing.
-func (p *publisher) failureAdd(message string) *publishMetadata.Failure {
-	return publishMetadata.NewFailure(p.Kind(), fmt.Sprintf("Add returned \"%s\"", message))
+func (p *publisher) failureAdd(message string) *ipfsPublisherMetadata.Failure {
+	return ipfsPublisherMetadata.NewFailure(fmt.Sprintf("Add returned \"`%s\"", message))
 }
 
 // Publish retrieves and "publishes" annotations.
@@ -66,15 +63,15 @@ func (p *publisher) Publish(annotations []*annotation.Instance) metadata.Contrac
 		return p.failureAdd(err.Error())
 	}
 
-	return publisherMetadata.New(name, cid)
+	return ipfsPublisherMetadata.NewSuccess(cid)
+}
+
+// Failure creates a publisher-specific failure annotation.
+func (p *publisher) Failure(errorMessage string) metadata.Contract {
+	return ipfsPublisherMetadata.NewFailure(errorMessage)
 }
 
 // Kind returns an implementation mnemonic.
 func (*publisher) Kind() string {
-	return Kind()
-}
-
-// Kind returns an implementation mnemonic.
-func Kind() string {
-	return name
+	return ipfsPublisherMetadata.Kind
 }

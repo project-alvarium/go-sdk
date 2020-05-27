@@ -16,7 +16,7 @@ package metadata
 
 import "github.com/project-alvarium/go-sdk/pkg/annotator"
 
-const kind = annotator.FailureKind
+const Kind = annotator.FailureKind
 
 // Instance is the metadata specific to this signer implementation that results from an annotator event.
 type Instance struct{}
@@ -28,5 +28,5 @@ func New() *Instance {
 
 // Kind returns the type of concrete implementation.
 func (*Instance) Kind() string {
-	return kind
+	return Kind
 }

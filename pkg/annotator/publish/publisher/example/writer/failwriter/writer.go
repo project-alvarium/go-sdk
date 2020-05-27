@@ -16,6 +16,8 @@ package failwriter
 
 import "errors"
 
+const WriteErrorMessage = "failure"
+
 // instance is a receiver that encapsulates required dependencies.
 type instance struct{}
 
@@ -26,7 +28,7 @@ func New() *instance {
 
 // Write fulfills the io.Writer contract.
 func (i *instance) Write(p []byte) (n int, err error) {
-	return 0, errors.New("failure")
+	return 0, errors.New(WriteErrorMessage)
 }
 
 // Get returns the value written via Write().

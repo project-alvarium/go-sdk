@@ -70,8 +70,8 @@ func (a *annotator) TearDown() {
 }
 
 // failureFindByIdentity returns annotations for failure case; separated to facilitate unit testing.
-func (a *annotator) failureFindByIdentity(result status.Value) *assessMetadata.Failure {
-	return assessMetadata.NewFailure(a.assessor.Kind(), fmt.Sprintf("FindByIdentity returned %d", result))
+func (a *annotator) failureFindByIdentity(result status.Value) string {
+	return fmt.Sprintf("FindByIdentity returned %d", result)
 }
 
 // assess delegates to assessor's assess method, stores resulting assessment as annotation, and returns status.
@@ -84,10 +84,10 @@ func (a *annotator) assess(newData []byte) *status.Contract {
 	case status.Success:
 		assessResult = a.assessor.Assess(a.filter.Do(annotations))
 	default:
-		assessResult = a.failureFindByIdentity(result)
+		assessResult = a.assessor.Failure(a.failureFindByIdentity(result))
 	}
 
-	m := annotation.New(a.uniqueProvider.Get(), id, nil, assessMetadata.NewSuccess(a.provenance, assessResult))
+	m := annotation.New(a.uniqueProvider.Get(), id, nil, assessMetadata.New(a.provenance, assessResult))
 	result = a.store.Append(id, m)
 	if result == status.NotFound {
 		result = a.store.Create(id, m)

@@ -24,5 +24,5 @@ import (
 func TestInstance_Kind(t *testing.T) {
 	sut := New()
 
-	assert.Equal(t, kind, sut.Kind())
+	assert.Equal(t, Kind, sut.Kind())
 }

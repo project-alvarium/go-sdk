@@ -23,9 +23,9 @@ import (
 // To converts a string representation to a hashprovider.Contract (or nil if unable to do so).
 func To(name string) (hash hashprovider.Contract) {
 	switch name {
-	case md5.Name():
+	case md5.Kind:
 		hash = md5.New()
-	case sha256.Name():
+	case sha256.Kind:
 		hash = sha256.New()
 	default:
 		hash = nil
@@ -36,7 +36,7 @@ func To(name string) (hash hashprovider.Contract) {
 // Supported returns a slice of supported hashprovider.Contract.
 func Supported() []hashprovider.Contract {
 	return []hashprovider.Contract{
-		To(md5.Name()),
-		To(sha256.Name()),
+		To(md5.Kind),
+		To(sha256.Kind),
 	}
 }

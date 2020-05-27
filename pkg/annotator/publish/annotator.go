@@ -70,8 +70,8 @@ func (a *annotator) TearDown() {
 }
 
 // failureFindByIdentity returns annotations for failure case; separated to facilitate unit testing.
-func (a *annotator) failureFindByIdentity(result status.Value) *publishMetadata.Failure {
-	return publishMetadata.NewFailure(a.publisher.Kind(), fmt.Sprintf("FindByIdentity returned %d", result))
+func (a *annotator) failureFindByIdentity(result status.Value) string {
+	return fmt.Sprintf("FindByIdentity returned %d", result)
 }
 
 // publish delegates to publisher's publish method, stores publish result as annotation, and returns status.
@@ -84,10 +84,10 @@ func (a *annotator) publish(data []byte) *status.Contract {
 	case status.Success:
 		publishResult = a.publisher.Publish(a.filter.Do(annotations))
 	default:
-		publishResult = a.failureFindByIdentity(result)
+		publishResult = a.publisher.Failure(a.failureFindByIdentity(result))
 	}
 
-	m := annotation.New(a.uniqueProvider.Get(), id, nil, publishMetadata.NewSuccess(a.provenance, publishResult))
+	m := annotation.New(a.uniqueProvider.Get(), id, nil, publishMetadata.New(a.provenance, publishResult))
 	result = a.store.Append(id, m)
 	if result == status.NotFound {
 		result = a.store.Create(id, m)

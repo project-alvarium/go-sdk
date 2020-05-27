@@ -20,11 +20,9 @@ import (
 
 	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/reducer"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15"
 	pkcsHash "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/hash"
-	pkcsMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2"
-	tpmMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/metadata"
+	pkcsSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
+	tpmSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signtpmv2/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 
 	"github.com/stretchr/testify/assert"
@@ -58,7 +56,7 @@ func TestFactory_Create(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Create(pkcsMetadata.NewSuccess(signpkcs1v15.Name, 0, sha256.New().Name()))
+				result := sut.Create(pkcsSignerMetadata.NewSuccess(0, sha256.Kind))
 
 				assert.Nil(t, result)
 			},
@@ -68,7 +66,7 @@ func TestFactory_Create(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Create(pkcsMetadata.NewSuccess(signpkcs1v15.Name, crypto.SHA256, "unknown"))
+				result := sut.Create(pkcsSignerMetadata.NewSuccess(crypto.SHA256, "unknown"))
 
 				assert.Nil(t, result)
 			},
@@ -81,14 +79,14 @@ func TestFactory_Create(t *testing.T) {
 						sut := newSUT()
 
 						result := sut.Create(
-							pkcsMetadata.NewSuccess(signpkcs1v15.Name, signerHash, reducerHash.Name()),
+							pkcsSignerMetadata.NewSuccess(signerHash, reducerHash.Kind()),
 						)
 
 						assert.NotNil(t, result)
 						assert.Equal(
 							t,
 							result,
-							sut.Create(pkcsMetadata.NewSuccess(signpkcs1v15.Name, signerHash, reducerHash.Name())),
+							sut.Create(pkcsSignerMetadata.NewSuccess(signerHash, reducerHash.Kind())),
 						)
 					}
 				}
@@ -99,7 +97,7 @@ func TestFactory_Create(t *testing.T) {
 			test: func(t *testing.T) {
 				sut := newSUT()
 
-				result := sut.Create(tpmMetadata.NewSuccess(signtpmv2.Name, "unknown", nil))
+				result := sut.Create(tpmSignerMetadata.NewSuccess("unknown", nil))
 
 				assert.Nil(t, result)
 			},
@@ -110,11 +108,11 @@ func TestFactory_Create(t *testing.T) {
 				for _, reducerHash := range reducer.Supported() {
 					sut := newSUT()
 
-					result := sut.Create(tpmMetadata.NewSuccess(signtpmv2.Name, reducerHash.Name(), nil))
+					result := sut.Create(tpmSignerMetadata.NewSuccess(reducerHash.Kind(), nil))
 
 					assert.NotNil(t, result)
 					assert.Equal(t, result, sut.Create(
-						tpmMetadata.NewSuccess(signtpmv2.Name, reducerHash.Name(), nil)),
+						tpmSignerMetadata.NewSuccess(reducerHash.Kind(), nil)),
 					)
 				}
 			},

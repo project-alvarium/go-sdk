@@ -23,11 +23,9 @@ import (
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	pkiSigner "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer"
-	pkiMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
+	pkcsSignerMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/signpkcs1v15/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider"
 )
-
-const Name = "x509.pkcsv1"
 
 // signer is a receiver that encapsulates required dependencies.
 type signer struct {
@@ -83,7 +81,7 @@ func (s *signer) Sign(identity, data []byte) (identitySignature, dataSignature [
 // Metadata returns implementation-specific metadata.
 func (s *signer) Metadata() metadata.Contract {
 	if s.signerError != nil {
-		return pkiMetadata.NewFailure(Name, s.signerError.Error())
+		return pkcsSignerMetadata.NewFailure(s.signerError.Error())
 	}
-	return pkiMetadata.NewSuccess(Name, s.hash, s.hashProvider.Name())
+	return pkcsSignerMetadata.NewSuccess(s.hash, s.hashProvider.Kind())
 }

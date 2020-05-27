@@ -33,10 +33,5 @@ func TestInstance_Kind(t *testing.T) {
 		metadataStub.NewNullObject(),
 	)
 
-	assert.Equal(t, kind, sut.Kind())
-}
-
-// TestKind tests Kind.
-func TestKind(t *testing.T) {
-	assert.Equal(t, kind, Kind())
+	assert.Equal(t, Kind, sut.Kind())
 }

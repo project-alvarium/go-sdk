@@ -25,7 +25,7 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/pki/signer/fail"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish"
-	publishStub "github.com/project-alvarium/go-sdk/pkg/annotator/publish/stub"
+	publisherStub "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/stub"
 	annotatorStub "github.com/project-alvarium/go-sdk/pkg/annotator/stub"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
@@ -86,7 +86,7 @@ func TestInstance_Close(t *testing.T) {
 		{
 			name: "TearDown called (annotator - stub publisher)",
 			test: func(t *testing.T) {
-				p := publishStub.New(test.FactoryRandomString(), metadataStub.NewNullObject())
+				p := publisherStub.New(test.FactoryRandomString(), metadataStub.NewNullObject())
 				a := publish.New(
 					test.FactoryRandomString(),
 					ulid.New(),

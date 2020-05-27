@@ -20,12 +20,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/project-alvarium/go-sdk/internal/pkg/ipfs/sdk"
+	"github.com/project-alvarium/go-sdk/internal/pkg/ipfs/sdk/stub"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
 	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
-	publisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/sdk"
-	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/sdk/stub"
+	ipfsPublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/test"
@@ -106,7 +106,7 @@ func TestPublisher_Publish(t *testing.T) {
 					),
 				},
 				expectedResult: func(sut *publisher) metadata.Contract {
-					return publisherMetadata.New(name, cid)
+					return ipfsPublisherMetadata.NewSuccess(cid)
 				},
 			}
 		}(),
@@ -133,7 +133,7 @@ func TestPublisher_Publish(t *testing.T) {
 					),
 				},
 				expectedResult: func(sut *publisher) metadata.Contract {
-					return publisherMetadata.New(name, cid)
+					return ipfsPublisherMetadata.NewSuccess(cid)
 				},
 			}
 		}(),
@@ -162,7 +162,7 @@ func TestPublisher_Publish(t *testing.T) {
 					),
 				},
 				expectedResult: func(sut *publisher) metadata.Contract {
-					return publisherMetadata.New(name, cid)
+					return ipfsPublisherMetadata.NewSuccess(cid)
 				},
 			}
 		}(),
@@ -189,10 +189,5 @@ func TestPublisher_Kind(t *testing.T) {
 
 	result := sut.Kind()
 
-	assert.Equal(t, name, result)
-}
-
-// TestKind tests Kind.
-func TestKind(t *testing.T) {
-	assert.Equal(t, name, Kind())
+	assert.Equal(t, ipfsPublisherMetadata.Kind, result)
 }

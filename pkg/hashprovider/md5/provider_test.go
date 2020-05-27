@@ -68,13 +68,8 @@ func TestProvider_Derive(t *testing.T) {
 	}
 }
 
-// TestProvider_Name tests provider.Name.
-func TestProvider_Name(t *testing.T) {
+// TestProvider_Kind tests provider.Kind.
+func TestProvider_Kind(t *testing.T) {
 	sut := newSUT()
-	assert.Equal(t, name, sut.Name())
-}
-
-// TestName tests Name.
-func TestName(t *testing.T) {
-	assert.Equal(t, name, Name())
+	assert.Equal(t, Kind, sut.Kind())
 }

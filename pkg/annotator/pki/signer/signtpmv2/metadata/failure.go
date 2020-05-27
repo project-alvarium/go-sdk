@@ -16,23 +16,23 @@ package metadata
 
 import "github.com/project-alvarium/go-sdk/pkg/annotator"
 
+const FailureResult = annotator.FailureKind
+
 // Failure defines the structure that encapsulates this signer's result.
 type Failure struct {
-	kind         string
 	Result       string `json:"result"`
 	ErrorMessage string `json:"errorMessage"`
 }
 
 // NewFailure is a factory function that returns an initialized Failure.
-func NewFailure(kind string, errorMessage string) *Failure {
+func NewFailure(errorMessage string) *Failure {
 	return &Failure{
-		kind:         kind,
-		Result:       annotator.FailureKind,
+		Result:       FailureResult,
 		ErrorMessage: errorMessage,
 	}
 }
 
 // Kind returns the type of concrete implementation.
-func (f *Failure) Kind() string {
-	return f.kind
+func (*Failure) Kind() string {
+	return Kind
 }

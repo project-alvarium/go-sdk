@@ -44,9 +44,9 @@ func TestProvider_Derive(t *testing.T) {
 	}
 }
 
-// TestProvider_Name tests provider.Name.
-func TestProvider_Name(t *testing.T) {
-	name := test.FactoryRandomString()
-	sut := newSUT(name)
-	assert.Equal(t, name, sut.Name())
+// TestProvider_Kind tests provider.Kind.
+func TestProvider_Kind(t *testing.T) {
+	kind := test.FactoryRandomString()
+	sut := newSUT(kind)
+	assert.Equal(t, kind, sut.Kind())
 }
