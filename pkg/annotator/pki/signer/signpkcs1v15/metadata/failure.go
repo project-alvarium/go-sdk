@@ -33,6 +33,6 @@ func NewFailure(errorMessage string) *Failure {
 }
 
 // Kind returns the type of concrete implementation.
-func (f *Failure) Kind() string {
+func (*Failure) Kind() string {
 	return Kind
 }

@@ -40,6 +40,6 @@ func NewSuccess(signerHash crypto.Hash, reducerHash string) *Success {
 }
 
 // Kind returns the type of concrete implementation.
-func (s *Success) Kind() string {
+func (*Success) Kind() string {
 	return Kind
 }

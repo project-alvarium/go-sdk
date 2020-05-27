@@ -33,6 +33,6 @@ func NewSuccess(cid string) *Success {
 }
 
 // Kind returns the type of concrete implementation.
-func (i *Success) Kind() string {
+func (*Success) Kind() string {
 	return Kind
 }

@@ -38,6 +38,6 @@ func NewSuccess(reducerHash string, capabilityProperties CapabilityProperties) *
 }
 
 // Kind returns the type of concrete implementation.
-func (s *Success) Kind() string {
+func (*Success) Kind() string {
 	return Kind
 }
