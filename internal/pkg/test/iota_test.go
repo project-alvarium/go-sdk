@@ -15,10 +15,15 @@
 package test
 
 import (
+	"encoding/json"
 	"math/rand"
 	"strings"
 	"testing"
 
+	ipfsPublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/test"
+
+	"github.com/iotaledger/iota.go/converter"
 	"github.com/iotaledger/iota.go/guards/validators"
 	"github.com/iotaledger/iota.go/trinary"
 	"github.com/stretchr/testify/assert"
@@ -155,6 +160,48 @@ func TestFactoryRandomAddressTrytesString(t *testing.T) {
 	}
 }
 
+// TestFactoryRandomInvalidAddressTrytesString tests FactoryRandomInvalidAddressTrytesString.
+func TestFactoryRandomInvalidAddressTrytesString(t *testing.T) {
+	type testCase struct {
+		name string
+		test func(t *testing.T)
+	}
+
+	cases := []testCase{
+		{
+			name: "returns fixed size",
+			test: func(t *testing.T) {
+				result := FactoryRandomInvalidAddressTrytesString()
+
+				assert.Equal(t, addressSize-1, len(result))
+			},
+		},
+		{
+			name: "returns valid charset",
+			test: func(t *testing.T) {
+				result := FactoryRandomInvalidAddressTrytesString()
+
+				for i := range result {
+					assert.True(t, strings.Contains(trytesCharset, string(result[i])))
+				}
+			},
+		},
+		{
+			name: "returns varying content",
+			test: func(t *testing.T) {
+				result1 := FactoryRandomInvalidAddressTrytesString()
+				result2 := FactoryRandomInvalidAddressTrytesString()
+
+				assert.NotEqual(t, result1, result2)
+			},
+		},
+	}
+
+	for i := range cases {
+		t.Run(cases[i].name, cases[i].test)
+	}
+}
+
 // TestFactoryRandomFixedSizeBundle tests FactoryRandomFixedSizeBundle.
 func TestFactoryRandomFixedSizeBundle(t *testing.T) {
 	type testCase struct {
@@ -215,6 +262,52 @@ func TestFactoryRandomFixedSizeBundle(t *testing.T) {
 					assert.NotEqual(t, len(result1[i].Tag), len(result2[i].Tag))
 				}
 
+			},
+		},
+	}
+
+	for i := range cases {
+		t.Run(cases[i].name, cases[i].test)
+	}
+}
+
+// TestFactoryAnnotationTransaction tests FactoryAnnotationTransaction.
+func TestFactoryAnnotationTransaction(t *testing.T) {
+	type testCase struct {
+		name string
+		test func(t *testing.T)
+	}
+
+	cases := []testCase{
+		{
+			name: "transaction's content varies",
+			test: func(t *testing.T) {
+				unique := test.FactoryRandomString()
+				ipfsMetadata := ipfsPublisherMetadata.NewSuccess(test.FactoryRandomString())
+				result1 := FactoryAnnotationTransaction(t, unique, ipfsMetadata)
+				result2 := FactoryAnnotationTransaction(t, unique, ipfsMetadata)
+
+				assert.NotEqual(t, result1, result2)
+			},
+		},
+		{
+			name: "transaction content contains an annotation instance",
+			test: func(t *testing.T) {
+				unique := test.FactoryRandomString()
+				ipfsMetadata := ipfsPublisherMetadata.NewSuccess(test.FactoryRandomString())
+				result := FactoryAnnotationTransaction(t, unique, ipfsMetadata)
+
+				content, err := converter.TrytesToASCII(result.SignatureMessageFragment[:len(result.SignatureMessageFragment)-9])
+				if err != nil {
+					assert.FailNow(t, "Unexpected error converting Trtyes to ASCII", err.Error())
+				}
+
+				a := factoryPublisherAnnotation(unique, ipfsMetadata)
+				marshalledAnnotation, err := json.Marshal(a)
+				if err != nil {
+					assert.FailNow(t, "Unexpected marshal failure", err.Error())
+				}
+				assert.IsType(t, string(marshalledAnnotation), content)
 			},
 		},
 	}
