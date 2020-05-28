@@ -48,6 +48,10 @@ func NewDefault() *instance {
 func (i *instance) Create(kind string, data json.RawMessage) metadata.Contract {
 	switch kind {
 	case assessMetadata.Kind:
+		if string(data) == "null" {
+			return nil
+		}
+
 		var concrete assessMetadata.Instance
 		concrete.SetAssessorFactories(i.assessorFactories)
 		if err := json.Unmarshal(data, &concrete); err == nil {
