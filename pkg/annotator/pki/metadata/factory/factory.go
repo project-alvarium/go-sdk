@@ -50,6 +50,10 @@ func NewDefault() *instance {
 func (i *instance) Create(kind string, data json.RawMessage) metadata.Contract {
 	switch kind {
 	case pkiAnnotatorMetadata.Kind:
+		if string(data) == "null" {
+			return nil
+		}
+
 		var concrete pkiAnnotatorMetadata.Instance
 		concrete.SetSignerFactories(i.signerFactories)
 		if err := json.Unmarshal(data, &concrete); err == nil {

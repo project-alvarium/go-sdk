@@ -33,9 +33,13 @@ func New() *instance {
 func (i *instance) Create(kind string, data json.RawMessage) identity.Contract {
 	switch kind {
 	case hash.Kind:
-		var idContract hash.Identity
-		if err := json.Unmarshal(data, &idContract); err == nil {
-			return &idContract
+		if string(data) == "null" {
+			return nil
+		}
+
+		var concrete hash.Identity
+		if err := json.Unmarshal(data, &concrete); err == nil {
+			return &concrete
 		}
 	}
 	return nil

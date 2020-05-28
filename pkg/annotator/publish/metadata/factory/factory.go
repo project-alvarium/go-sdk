@@ -52,6 +52,10 @@ func NewDefault() *instance {
 func (i *instance) Create(kind string, data json.RawMessage) metadata.Contract {
 	switch kind {
 	case publishMetadata.Kind:
+		if string(data) == "null" {
+			return nil
+		}
+
 		var concrete publishMetadata.Instance
 		concrete.SetPublisherFactories(i.publisherFactories)
 		if err := json.Unmarshal(data, &concrete); err == nil {
