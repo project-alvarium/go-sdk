@@ -14,9 +14,7 @@
 
 package matching
 
-import (
-	"github.com/project-alvarium/go-sdk/pkg/annotation"
-)
+import "github.com/project-alvarium/go-sdk/pkg/annotation"
 
 // Compare is a function which facilitates filtering determining if an annotation should be included in the result.
 type Compare func(annotation *annotation.Instance) bool

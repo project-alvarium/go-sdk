@@ -17,27 +17,31 @@ package factory
 import (
 	"encoding/json"
 
-	"github.com/project-alvarium/go-sdk/pkg/identity"
-	identityHash "github.com/project-alvarium/go-sdk/pkg/identity/hash"
+	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 )
 
 // instance is a receiver that encapsulates required dependencies.
-type instance struct{}
+type instance struct {
+	stub *metadataStub.Instance
+}
 
 // New is a factory function that returns an initialized instance.
-func New() *instance {
-	return &instance{}
+func New(stub *metadataStub.Instance) *instance {
+	return &instance{
+		stub: stub,
+	}
 }
 
 // Create returns a contract implementation based on the provided metadata.
-func (i *instance) Create(kind string, data json.RawMessage) identity.Contract {
+func (i *instance) Create(kind string, data json.RawMessage) metadata.Contract {
 	switch kind {
-	case identityHash.Kind:
+	case i.stub.Kind():
 		if string(data) == "null" {
 			return nil
 		}
 
-		var concrete identityHash.Identity
+		var concrete metadataStub.Instance
 		if err := json.Unmarshal(data, &concrete); err == nil {
 			return &concrete
 		}

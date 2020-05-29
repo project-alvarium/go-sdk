@@ -15,18 +15,19 @@
 package factory
 
 import (
+	"encoding/json"
 	"testing"
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
-	identityHash "github.com/project-alvarium/go-sdk/pkg/identity/hash"
+	metadataStub "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/stub"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/stretchr/testify/assert"
 )
 
 // newSUT returns a new system under test.
-func newSUT() *instance {
-	return New()
+func newSUT(metadataStub *metadataStub.Instance) *instance {
+	return New(metadataStub)
 }
 
 // TestInstance_Create tests instance.Create.
@@ -40,7 +41,7 @@ func TestInstance_Create(t *testing.T) {
 		{
 			name: "Unknown name",
 			test: func(t *testing.T) {
-				sut := newSUT()
+				sut := newSUT(metadataStub.NewNullObject())
 
 				result := sut.Create(test.FactoryRandomString(), test.FactoryRandomByteSlice())
 
@@ -48,16 +49,18 @@ func TestInstance_Create(t *testing.T) {
 			},
 		},
 		{
-			name: "Valid (hash)",
+			name: "Known name",
 			test: func(t *testing.T) {
-				sut := newSUT()
+				kind := test.FactoryRandomString()
 				value := test.FactoryRandomByteSlice()
+				stub := metadataStub.New(kind, value)
+				marshalledStub := testInternal.Marshal(t, stub)
+				sut := newSUT(stub)
 
-				result := sut.Create(identityHash.Kind, []byte(testInternal.Marshal(t, identityHash.New(value))))
+				result := sut.Create(kind, json.RawMessage(marshalledStub))
 
 				assert.NotNil(t, result)
-				assert.IsType(t, &identityHash.Identity{}, result)
-				assert.Equal(t, value, result.Binary())
+				assert.Equal(t, marshalledStub, testInternal.Marshal(t, result))
 			},
 		},
 	}
