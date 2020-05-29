@@ -17,6 +17,7 @@ package main
 import (
 	"crypto"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -52,16 +53,6 @@ import (
 	"github.com/google/go-tpm/tpm2"
 	"github.com/google/go-tpm/tpmutil"
 	"github.com/iotaledger/iota.go/api"
-)
-
-const (
-	// IOTA constants
-	iotaURL          = "http://localhost:14265"
-	iotaDepth uint64 = 3
-	iotaMWM   uint64 = 9
-
-	// IPFS constants
-	ipfsURL = "localhost:5001"
 )
 
 // exampleData defines the structure of the example data.
@@ -122,6 +113,16 @@ func newClient(url string) *api.API {
 
 // main is the example entry point.
 func main() {
+	var iotaURL string
+	var iotaDepth uint64
+	var iotaMWM uint64
+	var ipfsURL string
+	flag.StringVar(&iotaURL, "iotaURL", "http://localhost:14265", "IOTA Tangle URL (http://localhost:14265)")
+	flag.Uint64Var(&iotaDepth, "iotaDepth", 3, "IOTA Tangle Depth (3)")
+	flag.Uint64Var(&iotaMWM, "iotaMWM", 9, "IOTA Tangle Minimum Weight Magnitude (9)")
+	flag.StringVar(&ipfsURL, "ipfsURL", "localhost:5001", "IPFS URL (localhost:5001)")
+	flag.Parse()
+
 	hashProvider := sha256.New()
 	uniqueProvider := ulid.New()
 	idProvider := identityProvider.New(hashProvider)
