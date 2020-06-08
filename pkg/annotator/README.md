@@ -136,7 +136,7 @@ The filter abstraction is not part of the annotator contract and is not required
 
 ### Annotations
 
-The SDK defines an [annotation abstraction](../annotation/contract.go).
+The SDK defines an [annotation abstraction](../annotation/annotation.go).
 
 An annotation contains metadata derived from and related to specific data.  The SDK implements a common annotation envelope that includes a unique identifier, current and previous identities (and corresponding type), a created datetime stamp, and a general metadata object (and corresponding type).  
 
