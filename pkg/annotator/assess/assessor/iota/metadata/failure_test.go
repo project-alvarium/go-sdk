@@ -19,7 +19,7 @@ import (
 
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
-	"github.com/magiconair/properties/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 // TestFailure_Kind tests failure.Kind.

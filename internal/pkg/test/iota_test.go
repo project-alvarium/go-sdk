@@ -20,7 +20,10 @@ import (
 	"strings"
 	"testing"
 
-	ipfsPublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/annotation"
+	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
+	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
+	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/test"
 
 	"github.com/iotaledger/iota.go/converter"
@@ -271,6 +274,7 @@ func TestFactoryRandomFixedSizeBundle(t *testing.T) {
 	}
 }
 
+// TODO: figure out a way to work this test without the need for an existing publishMetadata annotation implementation.
 // TestFactoryAnnotationTransaction tests FactoryAnnotationTransaction.
 func TestFactoryAnnotationTransaction(t *testing.T) {
 	type testCase struct {
@@ -283,9 +287,8 @@ func TestFactoryAnnotationTransaction(t *testing.T) {
 			name: "transaction's content varies",
 			test: func(t *testing.T) {
 				unique := test.FactoryRandomString()
-				ipfsMetadata := ipfsPublisherMetadata.NewSuccess(test.FactoryRandomString())
-				result1 := FactoryAnnotationTransaction(t, unique, ipfsMetadata)
-				result2 := FactoryAnnotationTransaction(t, unique, ipfsMetadata)
+				result1 := FactoryAnnotationTransaction(unique, publishMetadata.New(test.FactoryRandomString(), nil))
+				result2 := FactoryAnnotationTransaction(unique, publishMetadata.New(test.FactoryRandomString(), nil))
 
 				assert.NotEqual(t, result1, result2)
 			},
@@ -294,15 +297,22 @@ func TestFactoryAnnotationTransaction(t *testing.T) {
 			name: "transaction content contains an annotation instance",
 			test: func(t *testing.T) {
 				unique := test.FactoryRandomString()
-				ipfsMetadata := ipfsPublisherMetadata.NewSuccess(test.FactoryRandomString())
-				result := FactoryAnnotationTransaction(t, unique, ipfsMetadata)
+				pm := publishMetadata.New(test.FactoryRandomString(), nil)
+				result := FactoryAnnotationTransaction(unique, pm)
 
-				content, err := converter.TrytesToASCII(result.SignatureMessageFragment[:len(result.SignatureMessageFragment)-9])
+				content, err := converter.TrytesToASCII(
+					result.SignatureMessageFragment[:len(result.SignatureMessageFragment)-9],
+				)
 				if err != nil {
 					assert.FailNow(t, "Unexpected error converting Trtyes to ASCII", err.Error())
 				}
 
-				a := factoryPublisherAnnotation(unique, ipfsMetadata)
+				a := annotation.New(
+					unique,
+					identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
+					nil,
+					pm,
+				)
 				marshalledAnnotation, err := json.Marshal(a)
 				if err != nil {
 					assert.FailNow(t, "Unexpected marshal failure", err.Error())
@@ -315,4 +325,20 @@ func TestFactoryAnnotationTransaction(t *testing.T) {
 	for i := range cases {
 		t.Run(cases[i].name, cases[i].test)
 	}
+}
+
+// TestFactoryNonIotaPublisherAnnotation tests FactoryNonIotaPublisherAnnotation.
+func TestFactoryNonIotaPublisherAnnotation(t *testing.T) {
+	result := FactoryNonIotaPublisherAnnotation()
+
+	assert.Equal(t, &nonIotaPublisherAnnotation{}, result)
+}
+
+// TestNonIotaPublisherAnnotation_Kind tests nonIotaPublisherAnnotation.Kind.
+func TestNonIotaPublisherAnnotation_Kind(t *testing.T) {
+	sut := FactoryNonIotaPublisherAnnotation()
+
+	result := sut.Kind()
+
+	assert.Equal(t, nonIOTAKind, result)
 }

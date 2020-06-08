@@ -24,7 +24,6 @@ import (
 
 	testInternal "github.com/project-alvarium/go-sdk/internal/pkg/test"
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
-	metadataFactory "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/factory"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/store/memory"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/uniqueprovider/ulid"
 	"github.com/project-alvarium/go-sdk/pkg/annotator"
@@ -42,12 +41,10 @@ import (
 	"github.com/project-alvarium/go-sdk/pkg/annotator/provenance"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish"
 	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
-	publisherMetadataFactory "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata/factory"
+	publishMetadataFactory "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata/factory"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/example/writer/testwriter"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota"
-	iotaPublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
-	iotaMetadataFactory "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata/factory"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs"
 	ipfsPublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/ipfs/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
@@ -271,14 +268,9 @@ func main() {
 				persistence,
 				iotaAssessor.New(
 					newClient(iotaURL),
-					publisherMetadataFactory.New([]metadataFactory.Contract{iotaMetadataFactory.New()}),
+					publishMetadataFactory.NewDefault(),
 				),
-				filterFactory.New(
-					func(annotation *annotation.Instance) bool {
-						t, ok := annotation.Metadata.(*publishMetadata.Instance)
-						return ok && t.PublisherKind == iotaPublisherMetadata.Kind
-					},
-				),
+				passthroughFilter,
 			),
 			publish.New(p, uniqueProvider, idProvider, persistence, example.New(w), passthroughFilter),
 		},

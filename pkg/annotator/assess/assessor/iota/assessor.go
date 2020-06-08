@@ -15,28 +15,29 @@
 package iota
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/iotaledger/iota.go/address"
-	"github.com/iotaledger/iota.go/api"
-	"github.com/iotaledger/iota.go/trinary"
+
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
-	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata/factory"
+	metadataFactory "github.com/project-alvarium/go-sdk/pkg/annotation/metadata/factory"
 	"github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/iota/client"
 	iotaAssessorMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/assess/assessor/iota/metadata"
 	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
 	iotaPublisherMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/publisher/iota/metadata"
+
+	"github.com/iotaledger/iota.go/address"
+	"github.com/iotaledger/iota.go/api"
+	"github.com/iotaledger/iota.go/trinary"
 )
 
 // assessor is a receiver that encapsulates required dependencies.
 type assessor struct {
 	client  client.Contract
-	factory factory.Contract
+	factory metadataFactory.Contract
 }
 
 // New is a factory function that returns an initialized assessor.
-func New(client client.Contract, factory factory.Contract) *assessor {
+func New(client client.Contract, factory metadataFactory.Contract) *assessor {
 	return &assessor{
 		client:  client,
 		factory: factory,
@@ -54,8 +55,8 @@ func (*assessor) failureAnnotationMatch() *iotaAssessorMetadata.Failure {
 	return iotaAssessorMetadata.NewFailure("failed to find an IOTA assessor annotation")
 }
 
-// failureTransactionQueryError returns an annotation with a failure case; separated to facilitate unit testing.
-func (*assessor) failureTransactionQueryError() *iotaAssessorMetadata.Failure {
+// failureTransactionResultError returns an annotation with a failure case; separated to facilitate unit testing.
+func (*assessor) failureTransactionResultError() *iotaAssessorMetadata.Failure {
 	return iotaAssessorMetadata.NewFailure("expected 1 IOTA annotation result")
 }
 
@@ -73,35 +74,38 @@ func (*assessor) failureFindTransactionError(errorMessage string) *iotaAssessorM
 func (a *assessor) Assess(annotations []*annotation.Instance) metadata.Contract {
 	uniques := make([]string, 0)
 	for i := range annotations {
-		metadataBytes, _ := json.Marshal(annotations[i].Metadata)
-		pmd := a.factory.Create(
-			annotations[i].MetadataKind,
-			metadataBytes,
-		).(*publishMetadata.Instance).PublisherMetadata
-		switch pmd.(type) {
-		case *iotaPublisherMetadata.Success:
-			addr := pmd.(*iotaPublisherMetadata.Success).Address
-			addrChecksum, err := address.Checksum(addr)
-			if err != nil {
-				return a.failureAddressChecksumError(err.Error())
-			}
-
-			txs, err := a.client.FindTransactionObjects(api.FindTransactionsQuery{
-				Addresses: []trinary.Hash{addr + addrChecksum},
-			})
-			if err != nil {
-				return a.failureFindTransactionError(err.Error())
-			}
-
-			if len(txs) != 1 {
-				return a.failureTransactionQueryError()
-			}
-
-			uniques = append(uniques, annotations[i].Unique)
-		case *iotaPublisherMetadata.Failure:
-			return iotaAssessorMetadata.NewSuccess(false, []string{annotations[i].Unique})
-		default:
+		if annotations[i].MetadataKind != publishMetadata.Kind {
 			continue
+		}
+
+		if m, ok := annotations[i].Metadata.(*publishMetadata.Instance); ok {
+			if pm, pOk := m.PublisherMetadata.(*iotaPublisherMetadata.Success); pOk {
+				addrChecksum, err := address.Checksum(pm.Address)
+				if err != nil {
+					return a.failureAddressChecksumError(err.Error())
+				}
+
+				txs, err := a.client.FindTransactionObjects(
+					api.FindTransactionsQuery{
+						Addresses: []trinary.Hash{
+							pm.Address + addrChecksum,
+						},
+					},
+				)
+				if err != nil {
+					return a.failureFindTransactionError(err.Error())
+				}
+
+				if len(txs) != 1 {
+					return a.failureTransactionResultError()
+				}
+
+				uniques = append(uniques, annotations[i].Unique)
+			}
+
+			if _, pOk := m.PublisherMetadata.(*iotaPublisherMetadata.Failure); pOk {
+				return iotaAssessorMetadata.NewSuccess(false, []string{annotations[i].Unique})
+			}
 		}
 	}
 

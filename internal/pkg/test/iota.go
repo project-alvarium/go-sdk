@@ -17,11 +17,9 @@ package test
 import (
 	"encoding/json"
 	"math/rand"
-	"testing"
 
 	"github.com/project-alvarium/go-sdk/pkg/annotation"
 	"github.com/project-alvarium/go-sdk/pkg/annotation/metadata"
-	publishMetadata "github.com/project-alvarium/go-sdk/pkg/annotator/publish/metadata"
 	"github.com/project-alvarium/go-sdk/pkg/hashprovider/sha256"
 	identityProvider "github.com/project-alvarium/go-sdk/pkg/identityprovider/hash"
 	"github.com/project-alvarium/go-sdk/pkg/test"
@@ -36,6 +34,7 @@ const (
 	trytesCharset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ9"
 	seedSize      = 81
 	addressSize   = 81
+	nonIOTAKind   = "nonIOTA"
 )
 
 // FactoryRandomSeedString returns an IOTA Tangle seed with a random value.
@@ -73,30 +72,31 @@ func FactoryRandomFixedSizeBundle(size int) bundle.Bundle {
 }
 
 // FactoryAnnotationTransaction returns a Transaction comprised of a single annotation instance.
-func FactoryAnnotationTransaction(t *testing.T, unique string, metadata metadata.Contract) transaction.Transaction {
-	marshalledAnnotations, _ := json.Marshal(factoryPublisherAnnotation(unique, metadata))
-	return bytesToTransaction(marshalledAnnotations)
-}
-
-// factoryPublisherAnnotation is a factory function that returns an initialized instance of an annotation.
-func factoryPublisherAnnotation(unique string, metadata metadata.Contract) *annotation.Instance {
-	return &annotation.Instance{
-		Unique:               unique,
-		Created:              test.FactoryRandomString(),
-		CurrentIdentityKind:  test.FactoryRandomString(),
-		CurrentIdentity:      identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
-		PreviousIdentityKind: test.FactoryRandomString(),
-		PreviousIdentity:     nil,
-		MetadataKind:         publishMetadata.Kind,
-		Metadata:             metadata,
-	}
-}
-
-// bytesToTransaction returns a Transaction containing a signature made up of the given byte slice.
-func bytesToTransaction(data []byte) transaction.Transaction {
-	trytes, _ := converter.ASCIIToTrytes(string(data))
+func FactoryAnnotationTransaction(unique string, metadata metadata.Contract) transaction.Transaction {
+	marshalledAnnotations, _ := json.Marshal(
+		annotation.New(
+			unique,
+			identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
+			nil,
+			metadata,
+		),
+	)
+	trytes, _ := converter.ASCIIToTrytes(string(marshalledAnnotations))
 	signatureTrytes, _ := trinary.Pad(trytes, len(trytes)+9)
 	return transaction.Transaction{
 		SignatureMessageFragment: signatureTrytes,
 	}
+}
+
+// nonIotaPublisherAnnotation is a receiver which encapsulates required dependencies; enables unit-testing.
+type nonIotaPublisherAnnotation struct{}
+
+// FactoryNonIotaPublisherAnnotation is a factory function which returns an initialized instance; enables unit-testing.
+func FactoryNonIotaPublisherAnnotation() *nonIotaPublisherAnnotation {
+	return &nonIotaPublisherAnnotation{}
+}
+
+// Kind returns an implementation mnemonic; enables unit-testing.
+func (*nonIotaPublisherAnnotation) Kind() string {
+	return nonIOTAKind
 }
