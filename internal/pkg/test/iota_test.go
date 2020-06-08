@@ -274,7 +274,6 @@ func TestFactoryRandomFixedSizeBundle(t *testing.T) {
 	}
 }
 
-// TODO: figure out a way to work this test without the need for an existing publishMetadata annotation implementation.
 // TestFactoryAnnotationTransaction tests FactoryAnnotationTransaction.
 func TestFactoryAnnotationTransaction(t *testing.T) {
 	type testCase struct {
@@ -287,8 +286,14 @@ func TestFactoryAnnotationTransaction(t *testing.T) {
 			name: "transaction's content varies",
 			test: func(t *testing.T) {
 				unique := test.FactoryRandomString()
-				result1 := FactoryAnnotationTransaction(unique, publishMetadata.New(test.FactoryRandomString(), nil))
-				result2 := FactoryAnnotationTransaction(unique, publishMetadata.New(test.FactoryRandomString(), nil))
+				result1 := FactoryAnnotationTransaction(
+					unique,
+					publishMetadata.New(test.FactoryRandomString(), FactoryNonIotaPublisherAnnotation()),
+				)
+				result2 := FactoryAnnotationTransaction(
+					unique,
+					publishMetadata.New(test.FactoryRandomString(), FactoryNonIotaPublisherAnnotation()),
+				)
 
 				assert.NotEqual(t, result1, result2)
 			},
@@ -297,8 +302,8 @@ func TestFactoryAnnotationTransaction(t *testing.T) {
 			name: "transaction content contains an annotation instance",
 			test: func(t *testing.T) {
 				unique := test.FactoryRandomString()
-				pm := publishMetadata.New(test.FactoryRandomString(), nil)
-				result := FactoryAnnotationTransaction(unique, pm)
+				m := publishMetadata.New(test.FactoryRandomString(), FactoryNonIotaPublisherAnnotation())
+				result := FactoryAnnotationTransaction(unique, m)
 
 				content, err := converter.TrytesToASCII(
 					result.SignatureMessageFragment[:len(result.SignatureMessageFragment)-9],
@@ -311,7 +316,7 @@ func TestFactoryAnnotationTransaction(t *testing.T) {
 					unique,
 					identityProvider.New(sha256.New()).Derive(test.FactoryRandomByteSlice()),
 					nil,
-					pm,
+					m,
 				)
 				marshalledAnnotation, err := json.Marshal(a)
 				if err != nil {
