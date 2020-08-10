@@ -18,6 +18,7 @@ This repository contains a software development kit (SDK) to track data provenan
 - [Basic SDK Usage](#basic-sdk-usage)
 - [Example Code](#example-code)
 - [Project Structure](#project-structure)
+- [Opportunities for Improvement](#opportunities-for-improvement)
 
 
 
@@ -321,3 +322,27 @@ pkg/
     status/
         contract.go                      Return value abstraction
 ```
+
+
+
+## Opportunities for Improvement
+
+The current SDK implementation is incomplete and limited.  It was intended as a simple reference implementation.  Opportunities for improvement exist -- in no particular order:
+
+1. It is not optimized or performant.  
+2. While part of its guiding vision, the current implementation does not implement trust scoring.  A scoring implementation would leverage the annotations created by the SDK. 
+3. It does not include a non-transient annotation persistence implementation.  Only an example in-memory store service is provided.
+4. While the annotation store contract implies immutability, there are no restrictions on implementation to enforce it. 
+5. It does not version, sign, or encrypt individual annotations.  Annotations created by the current implementation are not signed or secured against tampering.
+6. It does not conform to existing annotation standards.  SDK annotations use bespoke JSON schema.
+7. It is currently limited to storing, retrieving, and processing only the annotations it originates. This precludes accessing and evaluating metadata originated and stored outside of Alvarium -- particularly limiting when Alvarium is not the primary annotation mechanism (as is expected in most use-cases).
+8. It does not currently delineate -- must less track and attest -- authorship.  Authorship is the identity of the entity that recorded the annotation.  Authorship could be captured using the current SDK implementation as ad-hoc context.  This is less desirable/flexible than adding explicit authorship as an Alvarium annotation property.
+9. It does not currently delineate -- much less track and attest -- data ownership.  Ownership is the identity of the entity currently responsible for the data and which acts as the source of truth for that data.  Ownership could be captured using the current SDK implementation as ad-hoc context.  This is less desirable/flexible than adding explicit ownership as an Alvarium annotation property.
+10. It does not evaluate conformance of data to a specification.  It could be made to do so via a new purpose-specific annotator.
+11. It does not evaluate data consistency to specified dynamic tolerances.  This would require definition of a data set -- a concept not currently recognized by the Alvarium architecture -- to bound evaluation across a subset of data.
+12. It does not evaluate data consistency to specified static tolerances. It could be made to do so through a new purpose-specific annotator.
+13. While Alvarium annotations are treated as immutable historical events and assessments can be successfully repeated (given an identical configuration of the SDK and no new related annotations have been added), Alvarium does not currently implement arbitrary assessment for a given point in time.
+14. It implements trust factor assessment as a function via purpose-built annotators. The function implementing assessment is not portable.
+15. It does not include annotators that retrieve published annotations (from IPFS or IOTA Tangle).
+16. The IOTA Tangle publisher implementation uses a single transaction for storage which limits maximum annotation storage size.  
+17. The IOTA Tangle publisher implementation uses a unique address for each transaction.
