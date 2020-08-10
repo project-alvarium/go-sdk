@@ -343,6 +343,7 @@ The current SDK implementation is incomplete and limited.  It was intended as a 
 12. It does not evaluate data consistency to specified static tolerances. It could be made to do so through a new purpose-specific annotator.
 13. While Alvarium annotations are treated as immutable historical events and assessments can be successfully repeated (given an identical configuration of the SDK and no new related annotations have been added), Alvarium does not currently implement arbitrary assessment for a given point in time.
 14. It implements trust factor assessment as a function via purpose-built annotators. The function implementing assessment is not portable.
-15. It does not include annotators that retrieve published annotations (from IPFS or IOTA Tangle).
-16. The IOTA Tangle publisher implementation uses a single transaction for storage which limits maximum annotation storage size.  
-17. The IOTA Tangle publisher implementation uses a unique address for each transaction.
+15. It uses RSA PKCS#1 v1.5 for signatures and verification.  Version 1 has know flaws.  The SDK should be updated to use version 2 (i.e.  OAEP and PSS).
+16. It does not include annotators that retrieve published annotations (from IPFS or IOTA Tangle).
+17. The IOTA Tangle publisher implementation uses a single transaction for storage which limits maximum annotation storage size.  
+18. The IOTA Tangle publisher implementation uses a unique address for each transaction.
